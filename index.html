@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopwizer - Pearl BlueStar Commerce</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              accent: '#1A9B9B', // Pearl BlueStar Teal
+              secondary: '#3B5998', // Dark Blue
+              bgMain: '#F0F7FA', // Pale Blue
+              textMain: '#2C3E50', // Dark Gray
+              textSub: '#7F8C9A', // Medium Gray
+              border: '#E1E4E8',
+              brandDark: '#3A4A5A', // Charcoal
+              success: '#4CAF50',
+              warning: '#FF9F40',
+              danger: '#FF6B6B',
+              info: '#4A90E2',
+            },
+            fontFamily: {
+              sans: ['Inter', 'DM Sans', 'sans-serif'],
+            },
+            boxShadow: {
+              premium: '0 2px 8px rgba(0, 0, 0, 0.08), 0 12px 24px rgba(0, 0, 0, 0.04)',
+            },
+            animation: {
+              'pulse-custom': 'pulse-custom 2s infinite',
+              'fill-bar': 'fillBar 1.5s ease-out forwards',
+              'shimmer': 'shimmer 2s linear infinite',
+            },
+            keyframes: {
+              'pulse-custom': {
+                '0%': { transform: 'scale(0.95)', boxShadow: '0 0 0 0 rgba(26, 155, 155, 0.7)' },
+                '70%': { transform: 'scale(1)', boxShadow: '0 0 0 6px rgba(26, 155, 155, 0)' },
+                '100%': { transform: 'scale(0.95)', boxShadow: '0 0 0 0 rgba(26, 155, 155, 0)' },
+              },
+              fillBar: {
+                '0%': { width: '0%' },
+                '100%': { width: 'var(--target-width)' },
+              },
+              shimmer: {
+                '0%': { backgroundPosition: '200% 0' },
+                '100%': { backgroundPosition: '-200% 0' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Custom utilities for 3D transforms not in default Tailwind */
+      .stage-perspective {
+        perspective: 2000px;
+      }
+      .preserve-3d {
+        transform-style: preserve-3d;
+      }
+      .backface-hidden {
+        backface-visibility: hidden;
+      }
+      .rotate-y-n5 {
+        transform: rotateY(-5deg);
+      }
+      .translate-z-40 {
+        transform: translateZ(40px);
+      }
+      /* Hover effects specifically for the scene interaction */
+      .scene-hover-trigger:hover .card-main-hover {
+        transform: translateZ(25px) scale(1.005);
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1);
+      }
+      .scene-hover-trigger:hover .card-rec-hover {
+        transform: rotateY(-6deg) translateZ(5px) translateX(15px);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1"
+  }
+}
+</script>
+</head>
+  <body class="h-screen w-full bg-bgMain overflow-hidden">
+    <div id="root" class="h-full w-full"></div>
+  </body>
+</html>
