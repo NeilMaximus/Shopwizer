@@ -1,12 +1,12 @@
 """Build steps for the Growth Lab website. Standard library only.
 
-  python3 scripts/build.py            sync tokens and render the draft legal pages into site/
-  python3 scripts/build.py preview    also write dist/preview/ (self contained pages for the private artifact)
+  python3 scripts/build.py            sync tokens, render the draft legal pages and the contact phone line into site/
+  python3 scripts/build.py preview    also write dist/preview/ (pages for the private Claude artifact)
                                       and dist/browser/ (the same pages to open straight from a folder)
-  python3 scripts/build.py package    also write dist/growth-lab-site.zip (the Vercel ready folder)
+  python3 scripts/build.py package    also write dist/growth-lab-site.zip (the Vercel ready folder, with api/)
 
 site/ stays deployable as it is, with no build step on Vercel. Run this after editing
-tokens/tokens.css or anything in legal/.
+tokens/tokens.css, anything in legal/, or config/contact.json.
 """
 import base64
 import html
@@ -50,7 +50,7 @@ def inline_md(text):
 
 
 def md_to_html(md):
-    """Enough Markdown for the legal drafts: headings, paragraphs, bullet lists, bold, emphasis."""
+    """Enough Markdown for the legal drafts: headings (levels 1 to 3), paragraphs, bullet lists, bold, emphasis."""
     out, para, items = [], [], []
 
     def flush():
@@ -67,6 +67,9 @@ def md_to_html(md):
         s = line.strip()
         if not s:
             flush()
+        elif s.startswith("### "):
+            flush()
+            out.append(f"<h3>{inline_md(s[4:])}</h3>")
         elif s.startswith("## "):
             flush()
             out.append(f"<h2>{inline_md(s[3:])}</h2>")
@@ -137,88 +140,104 @@ def inline_assets(page_html):
     page_html = re.sub(r'\s*<link rel="icon"[^>]*>', "", page_html)
     page_html = re.sub(r'\s*<link rel="stylesheet" href="assets/css/tokens.css">', "", page_html)
     page_html = page_html.replace('<link rel="stylesheet" href="assets/css/site.css">', f"<style>\n{css}\n</style>")
-    js_path = SITE / "assets" / "js" / "site.js"
-    page_html = page_html.replace('<script src="assets/js/site.js" defer></script>',
-                                  f"<script>\n{js_path.read_text(encoding='utf8')}\n</script>")
+    def script(match):
+        return "<script>\n" + (SITE / "assets" / "js" / match.group(1)).read_text(encoding="utf8") + "\n</script>"
+    page_html = re.sub(r'<script src="assets/js/([\w.-]+\.js)" defer></script>', script, page_html)
     return page_html
 
 
-# The artifact preview swaps every email link for a copy button with a selectable address. Each
-# swap must match the site markup exactly, so a changed button fails the build instead of shipping
-# an email link into the Claude viewer.
-PREVIEW_SWAPS = [
-    ('<a class="btn btn-quiet" href="mailto:hello@growthlab.co.za">Talk to us</a>',
-     '<button class="btn btn-quiet" type="button" data-copy="hello@growthlab.co.za" '
-     'data-copied="Email copied">Talk to us</button>'),
-    ('<a class="btn btn-dark" href="mailto:hello@growthlab.co.za?subject=Audit%20enquiry">Book an audit</a>',
-     '<button class="btn btn-dark" type="button" data-copy="hello@growthlab.co.za" data-copy-target="audit-email" '
-     'data-copied="Email copied">Book an audit</button>'),
-    ('<p class="cta-note">Email us to agree the scope and next steps.</p>',
-     '<p class="cta-note">Copies <span class="email" id="audit-email">hello@growthlab.co.za</span> '
-     'so you can email us to agree the scope and next steps.</p>'),
-]
+def render_contact_phone():
+    """Writes Neil's phone line into site/contact.html from config/contact.json. While the number is
+    pending the line is left out: never a placeholder, never another company's number."""
+    cfg = json.loads((ROOT / "config" / "contact.json").read_text(encoding="utf8"))
+    display, tel = cfg.get("phone_display", "").strip(), cfg.get("phone_tel", "").strip()
+    if bool(display) != bool(tel):
+        sys.exit("config/contact.json: set both phone_display and phone_tel, or neither")
+    if tel and not re.fullmatch(r"\+[1-9][0-9]{7,14}", tel):
+        sys.exit("config/contact.json: phone_tel must be digits with the country code, like +27820000000")
+    if display and not re.fullmatch(r"[+0-9 ()]{7,24}", display):
+        sys.exit("config/contact.json: phone_display may only hold digits, spaces, brackets and a leading +")
+    if tel:
+        block = (f'        <div>\n          <dt>Phone</dt>\n'
+                 f'          <dd><a href="tel:{tel}">{html.escape(display)}</a></dd>\n        </div>\n')
+    else:
+        block = "        <!-- Phone pending: set phone_display and phone_tel in config/contact.json -->\n"
+    path = SITE / "contact.html"
+    page = path.read_text(encoding="utf8")
+    page, n = re.subn(r"(        <!-- contact-phone:start -->\n).*?(        <!-- contact-phone:end -->)",
+                      lambda m: m.group(1) + block + m.group(2), page, flags=re.S)
+    assert n == 1, "contact.html lost its contact-phone markers"
+    path.write_text(page, encoding="utf8")
+    return bool(tel)
+
+
+def offline_contact(page_html):
+    """The Claude preview and the browser files have no server behind them, so their contact form
+    runs in preview mode: it validates but never sends, and says so on the page."""
+    assert page_html.count('data-mode="live"') == 1, "contact form mode marker missing"
+    return page_html.replace('data-mode="live"', 'data-mode="preview"')
 
 
 def build_preview():
-    """Pages for the private Claude artifact. Its viewer cannot follow email links reliably and
-    can show a blank page after one, so the preview copies the address instead and shows email
-    addresses as plain selectable text. The site itself keeps its working mailto links."""
+    """Pages for the private Claude artifact. Its viewer cannot follow email or phone links reliably
+    and can show a blank page after one, so the preview shows addresses and numbers as plain
+    selectable text. The contact form runs in preview mode. The site keeps its working links."""
     out = DIST / "preview"
     out.mkdir(parents=True, exist_ok=True)
     # Main page: the artifact host supplies doctype, head and body, so keep only what sits inside them
     page = inline_assets((SITE / "index.html").read_text(encoding="utf8"))
-    for site_markup, preview_markup in PREVIEW_SWAPS:
-        assert page.count(site_markup) == 1, f"preview swap no longer matches the site: {site_markup}"
-        page = page.replace(site_markup, preview_markup)
     head = re.search(r"<head>(.*?)</head>", page, re.S).group(1)
     body = re.search(r"<body>(.*?)</body>", page, re.S).group(1)
     head = re.sub(r'\s*<meta (charset|name="viewport")[^>]*>', "", head)
     (out / "index.html").write_text(head.strip() + "\n" + body.strip() + "\n", encoding="utf8")
-    for name in ("privacy.html", "terms.html"):
-        legal = inline_assets((SITE / name).read_text(encoding="utf8"))
-        legal = re.sub(r'<a href="mailto:([^"]+)">([^<]+)</a>', r"\2", legal)
-        legal = legal.replace('href="./"', 'href="index.html"')  # the artifact serves the page as index.html
-        (out / name).write_text(legal, encoding="utf8")
+    for name in ("contact.html", "privacy.html", "terms.html"):
+        other = inline_assets((SITE / name).read_text(encoding="utf8"))
+        if name == "contact.html":
+            other = offline_contact(other)
+        other = re.sub(r'<a href="(?:mailto|tel):[^"]+">([^<]+)</a>', r"\1", other)
+        other = other.replace('href="./"', 'href="index.html"')  # the artifact serves the page as index.html
+        (out / name).write_text(other, encoding="utf8")
     # Images stay separate files, published beside the page with the artifact
     shutil.rmtree(out / "assets", ignore_errors=True)
     shutil.copytree(SITE / "assets" / "media", out / "assets" / "media")
     for f in out.glob("*.html"):
-        assert "mailto:" not in f.read_text(encoding="utf8"), f"email link left in preview {f.name}"
+        text = f.read_text(encoding="utf8")
+        assert "mailto:" not in text and "tel:" not in text, f"email or phone link left in preview {f.name}"
     return out
 
 
-BROWSER_NAMES = {"index.html": "growth-lab-martech.html", "privacy.html": "growth-lab-privacy-draft.html",
-                 "terms.html": "growth-lab-terms-draft.html"}
-BROWSER_FULL_MAP = "growth-lab-martechmap-2026-full.jpg"
+BROWSER_NAMES = {"index.html": "growth-lab-martech.html", "contact.html": "growth-lab-contact.html",
+                 "privacy.html": "growth-lab-privacy-draft.html", "terms.html": "growth-lab-terms-draft.html"}
 
 
 def inline_images(page_html):
     """Embeds the page images as data URIs for the browser files. The map keeps its 1600 px file
-    only, so srcset goes. The full size map stays a separate file beside the page."""
+    only, so srcset goes."""
     def data_uri(match):
         data = (SITE / "assets" / "media" / match.group(1)).read_bytes()
         return 'src="data:image/jpeg;base64,' + base64.b64encode(data).decode() + '"'
     page_html = re.sub(r'\s(srcset|sizes)="[^"]*"', "", page_html)
-    page_html = re.sub(r'src="assets/media/([\w.-]+\.jpg)"', data_uri, page_html)
-    return page_html.replace('href="assets/media/martechmap-2026-full.jpg"', f'href="{BROWSER_FULL_MAP}"')
+    return re.sub(r'src="assets/media/([\w.-]+\.jpg)"', data_uri, page_html)
 
 
 def build_browser():
     """The same pages as complete, self contained files that open straight from a folder in any
-    browser (font, styles and script inlined, so no server is needed). Email links work here."""
+    browser (font, styles, scripts and images inlined, so no server is needed). Email links work
+    here; the contact form runs in preview mode because there is no server to send through."""
     out = DIST / "browser"
     shutil.rmtree(out, ignore_errors=True)
     out.mkdir(parents=True)
     icon = base64.b64encode((SITE / "favicon.svg").read_bytes()).decode()
     for name, target in BROWSER_NAMES.items():
         page = inline_images(inline_assets((SITE / name).read_text(encoding="utf8")))
+        if name == "contact.html":
+            page = offline_contact(page)
         page = page.replace("</title>", f'</title>\n<link rel="icon" href="data:image/svg+xml;base64,{icon}">', 1)
         page = page.replace('href="./"', f'href="{BROWSER_NAMES["index.html"]}"')
         for src, dst in BROWSER_NAMES.items():
             page = page.replace(f'href="{src}"', f'href="{dst}"')
         assert not re.search(r'(src|href|srcset)="assets/', page), f"unresolved asset path in browser file {target}"
         (out / target).write_text(page, encoding="utf8")
-    shutil.copyfile(SITE / "assets" / "media" / "martechmap-2026-full.jpg", out / BROWSER_FULL_MAP)
     return out
 
 
@@ -232,6 +251,7 @@ def build_package():
         z.write(ROOT / "PRELAUNCH.md", top / "PRELAUNCH.md")
         z.write(ROOT / "DESIGN_SYSTEM.md", top / "DESIGN_SYSTEM.md")
         z.write(ROOT / "SOURCES.md", top / "SOURCES.md")
+        z.write(ROOT / ".env.example", top / ".env.example")
         for f in sorted(SITE.rglob("*")):
             if f.is_file():
                 z.write(f, top / "site" / f.relative_to(SITE))
@@ -240,6 +260,7 @@ def build_package():
 
 def main(args):
     sync_tokens()
+    print("contact phone:", "set" if render_contact_phone() else "pending (config/contact.json)")
     legal_page("DRAFT_PRIVACY_NOTICE.md", "privacy.html", "Privacy notice")
     legal_page("DRAFT_WEBSITE_TERMS.md", "terms.html", "Website terms")
     print("site/ updated")

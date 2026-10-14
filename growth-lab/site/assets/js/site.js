@@ -1,6 +1,6 @@
 /* Growth Lab website behaviour. Motion rules: growth-lab/DESIGN_SYSTEM.md, section Motion.
-   Everything here is an enhancement: without it the page shows the finished cube, a still
-   rune and a working email link. */
+   Everything here is an enhancement: without it the page shows the finished cube and a still
+   rune. The contact form has its own script, contact.js. */
 (function () {
   var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -49,44 +49,6 @@
     }, { rootMargin: '160px 0px' }).observe(stage);
   }
 
-  /* Copy buttons ([data-copy]). Fall back to selecting the address where the clipboard is refused.
-     The private preview build also turns the footer's email link into one of these, because an
-     email link inside the Claude artifact viewer can leave a blank page. */
-  function copyButtons() {
-    var buttons = document.querySelectorAll('[data-copy]');
-    for (var i = 0; i < buttons.length; i++) { copyButton(buttons[i]); }
-  }
-  function copyButton(btn) {
-    var status = document.getElementById('copy-status'), label = btn.textContent, timer = null;
-    var done = btn.getAttribute('data-copied') || 'Copied';
-    function say(message, buttonText) {
-      if (status) { status.textContent = message; }
-      btn.textContent = buttonText;
-      clearTimeout(timer);
-      timer = setTimeout(function () { btn.textContent = label; if (status) { status.textContent = ''; } }, 2400);
-    }
-    function select() {
-      var el = document.getElementById(btn.getAttribute('data-copy-target') || 'email');
-      if (el && window.getSelection && document.createRange) {
-        var range = document.createRange();
-        range.selectNodeContents(el);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-      }
-      say('Email address selected. Press Control C or Command C to copy it.', 'Selected');
-    }
-    btn.addEventListener('click', function () {
-      var text = btn.getAttribute('data-copy');
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function () { say('Email address copied.', done); }, select);
-      } else {
-        select();
-      }
-    });
-  }
-
   buildCube();
   liveRune();
-  copyButtons();
 })();

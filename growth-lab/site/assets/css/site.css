@@ -1,8 +1,9 @@
 /* Growth Lab website. Rules: growth-lab/DESIGN_SYSTEM.md. Tokens: tokens.css.
-   Layout: white header with the real logo, a white hero that pairs the headline with the value
-   cube on a light grey panel, the four stages on a black section joined by a line of icon nodes,
-   three white sections (evidence, workshops, the audit action), then the oversized rune cropped
-   by a hairline above a white footer. */
+   Layout: white header with the real logo and one action, a white hero that pairs the headline
+   with the value cube on a light grey panel, the four stages on a black section joined by a line
+   of icon nodes, three white sections (evidence, workshops, getting going), then the oversized rune
+   cropped by a hairline above a restrained white footer. The contact view reuses the header,
+   footer and a light grey form panel. */
 
 @font-face {
   font-family: "Geist";
@@ -36,14 +37,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-button { font: inherit; color: inherit; }
-p, h1, h2, h3, figure, ul, ol { margin: 0; }
+button, input, textarea { font: inherit; color: inherit; }
+p, h1, h2, h3, figure, ul, ol, dl, dd { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
 h1, h2, h3 { text-wrap: balance; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--gl-purple-strong); outline-offset: 3px; border-radius: 6px; }
 ::selection { background: var(--gl-purple-soft); color: var(--gl-ink); }
 .wrap { max-width: var(--gl-wrap); margin: 0 auto; padding-inline: var(--gl-gutter); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 .skip {
   position: absolute; left: 16px; top: -64px; z-index: 10;
@@ -53,7 +55,8 @@ a { color: inherit; }
 }
 .skip:focus { top: 16px; }
 
-/* Buttons */
+/* Buttons. Dark for the header action, coral for the one conversion action. White on coral is
+   3.25:1, so coral buttons always carry large bold text (19 px, 700), which meets WCAG for large text */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: 44px; padding: 10px 20px; border-radius: var(--gl-radius-pill);
@@ -63,21 +66,24 @@ a { color: inherit; }
 }
 .btn-dark { background: var(--gl-ink); color: var(--gl-white); }
 .btn-dark:hover { background: #2B2B2B; }
-.btn-quiet { background: var(--gl-white); color: var(--gl-ink); border-color: var(--gl-line); min-height: 36px; padding: 6px 14px; font-size: var(--gl-text-small); }
-.btn-quiet:hover { background: var(--gl-panel); }
+.btn-coral {
+  background: var(--gl-coral); color: var(--gl-white);
+  min-height: 52px; padding: 12px 30px;
+  font-size: var(--gl-text-cta); font-weight: var(--gl-weight-bold); letter-spacing: -0.01em;
+}
+.btn-coral:hover { background: var(--gl-coral-hover); }
+.btn[disabled] { cursor: progress; opacity: 0.8; }
+.text-link {
+  color: var(--gl-purple-strong); font-weight: var(--gl-weight-medium);
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
+}
+.text-link:hover { text-decoration-thickness: 2px; }
 
-/* Header */
-.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 22px; }
+/* Header: the real logo and one action, no menu. One fixed height on every page, so the logo never
+   shifts between the homepage and the contact view: 76 px, 68 px on phones. */
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 76px; padding-block: 16px; }
 .logo-link { display: inline-flex; color: var(--gl-ink); border-radius: 6px; }
 .logo { display: block; height: 30px; width: auto; fill: currentColor; }
-.site-nav { display: flex; align-items: center; gap: clamp(20px, 2.6vw, 36px); }
-.nav-links { display: flex; align-items: center; gap: clamp(18px, 2.2vw, 30px); }
-.nav-links a {
-  text-decoration: none; color: var(--gl-ink-2);
-  font-size: var(--gl-text-ui); font-weight: var(--gl-weight-medium); letter-spacing: var(--gl-track-ui);
-  padding-block: 8px;
-}
-.nav-links a:hover { color: var(--gl-ink); }
 
 /* Hero */
 .hero { background: var(--gl-white); padding-block: clamp(32px, 5vw, 72px) var(--gl-section); }
@@ -145,21 +151,16 @@ h1 {
   width: 10px; height: 10px; border-top: 1.5px solid var(--gl-purple); border-right: 1.5px solid var(--gl-purple);
   transform: rotate(45deg);
 }
-.stage .num {
-  display: block; margin-top: 28px;
-  font-size: 14px; font-weight: var(--gl-weight-medium); font-variant-numeric: tabular-nums;
-  color: var(--gl-on-black-2); line-height: 1.4;
-}
 .stage h2 {
-  margin-top: 6px; color: var(--gl-coral);
+  margin-top: 30px; color: var(--gl-coral);
   font-size: clamp(28px, 2.5vw, 34px); line-height: 1.1; letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold);
 }
 .stage .tag span { display: inline-block; }
 .stage .tag { margin-top: 14px; font-size: 18px; line-height: 1.4; font-weight: var(--gl-weight-semibold); letter-spacing: -0.01em; color: var(--gl-white); text-wrap: balance; }
 .stage .body { margin-top: 12px; max-width: 60ch; font-size: 16px; line-height: 1.62; color: var(--gl-on-black); text-wrap: pretty; }
 
-/* White sections after the black stages: evidence, workshops, then the audit action. One job
-   each, hairlines between them, and no cards, tiles, icons or counters */
+/* White sections after the black stages: evidence, workshops, then getting going. One job each,
+   hairlines between them, no cards, tiles or counters */
 .plain { background: var(--gl-white); }
 .plain-body { padding-block: clamp(56px, 7vw, 96px); }
 .plain + .plain .plain-body { border-top: 1px solid var(--gl-line); }
@@ -168,51 +169,61 @@ h1 {
   letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold); color: var(--gl-ink);
 }
 .plain .lede { margin-top: 18px; max-width: 34em; font-size: var(--gl-text-lead); line-height: 1.55; color: var(--gl-ink-2); text-wrap: pretty; }
-.text-link {
-  color: var(--gl-purple-strong); font-weight: var(--gl-weight-medium);
-  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
-}
-.text-link:hover { text-decoration-thickness: 2px; }
 
-/* Evidence: the benchmark number is the evidence, the map is supporting material */
+/* Evidence: client benefits first; MartechTribe's figures support them, quietly */
 .evidence-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: clamp(40px, 5vw, 80px); align-items: center; }
-.evidence .quiet { margin-top: 22px; max-width: 34em; font-size: var(--gl-text-ui); line-height: 1.55; color: var(--gl-ink-3); text-wrap: pretty; }
-.source { margin-top: 10px; font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3); }
-.source a { color: inherit; text-decoration: underline; text-underline-offset: 3px; display: inline-block; padding-block: 4px; }
-.source a:hover { color: var(--gl-ink); }
+.benefits { margin-top: 24px; display: grid; gap: 12px; }
+.benefits li { position: relative; padding-left: 24px; font-size: 18px; line-height: 1.45; font-weight: var(--gl-weight-medium); color: var(--gl-ink); text-wrap: pretty; }
+.benefits li::before {
+  content: ""; position: absolute; left: 1px; top: calc(0.725em - 4px);
+  width: 8px; height: 8px; border-radius: 2px; background: var(--gl-purple);
+}
+.proof { margin-top: 24px; font-size: var(--gl-text-ui); line-height: 1.5; color: var(--gl-ink-3); }
+.sources { margin-top: 4px; font-size: var(--gl-text-small); line-height: 1.55; color: var(--gl-ink-3); }
+.sources summary { cursor: pointer; width: fit-content; padding-block: 4px; }
+.sources summary:hover { color: var(--gl-ink); }
+.sources p { margin-top: 4px; max-width: 46em; text-wrap: pretty; }
+.sources a { color: inherit; text-decoration: underline; text-underline-offset: 3px; display: inline-block; padding-block: 2px; }
 .map { min-width: 0; }
-/* Vendor artwork: shown whole at its own 16 by 9, never cropped or recoloured. The ring is a box
-   shadow so it adds no size and the image keeps its exact ratio */
+/* Vendor artwork: shown whole at its own 16 by 9 with the credit band it carries, never cropped or
+   recoloured. The ring is a box shadow so it adds no size and the image keeps its exact ratio */
 .map img {
   display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
   border-radius: var(--gl-radius-image); box-shadow: 0 0 0 1px var(--gl-line); background: var(--gl-panel);
 }
-.map figcaption {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 20px;
-  margin-top: 8px; font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3);
-}
-.map .text-link { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--gl-text-ui); }
 
-/* Workshops: two equal open columns split by one hairline. Extra detail sits in native details */
+/* Workshops: two equal open columns split by one hairline, each with a small coloured line icon
+   that matches its duration and value bullets. Value lists sit in native details */
+.attribution { margin-top: 10px; font-size: var(--gl-text-ui); color: var(--gl-ink-3); }
 .workshop-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: clamp(36px, 4.5vw, 56px); }
 .workshop { min-width: 0; padding-right: clamp(28px, 4vw, 64px); }
 .workshop + .workshop { padding-right: 0; padding-left: clamp(28px, 4vw, 64px); border-left: 1px solid var(--gl-line); }
-.workshop h3 { font-size: clamp(22px, 2vw, 26px); line-height: 1.2; letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold); }
+.workshop-value { --accent: var(--gl-purple); }
+.workshop-strategy { --accent: var(--gl-coral); }
+.workshop h3 {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: clamp(22px, 2vw, 26px); line-height: 1.2; letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold);
+}
+/* Centred on the heading's first line, so a heading that wraps keeps its icon at the top */
+.w-icon { flex: none; width: 28px; height: 28px; margin-top: calc(0.6em - 14px); color: var(--accent); }
 .workshop .outcome { margin-top: 12px; max-width: 34em; font-size: 18px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
-.workshop .duration { margin-top: 14px; font-size: var(--gl-text-ui); font-weight: var(--gl-weight-medium); color: var(--gl-ink); }
+.workshop .duration { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: var(--gl-text-ui); font-weight: var(--gl-weight-medium); color: var(--gl-ink); }
+.workshop .duration::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
 .workshop details { margin-top: 14px; }
 .workshop summary {
   cursor: pointer; padding-block: 10px; min-height: 44px; width: fit-content;
   font-size: var(--gl-text-ui); font-weight: var(--gl-weight-medium); color: var(--gl-ink);
 }
-.workshop summary::marker { color: var(--gl-purple-strong); }
+.workshop summary::marker { color: var(--accent); }
 .workshop summary:hover { color: var(--gl-ink-2); }
-.details-body p { margin-top: 10px; max-width: 40em; font-size: var(--gl-text-ui); line-height: 1.6; color: var(--gl-ink-2); text-wrap: pretty; }
-.details-body p:first-child { margin-top: 2px; }
-.example .text-link { display: inline-flex; align-items: center; min-height: 32px; }
-.example-label { display: block; font-size: var(--gl-text-small); color: var(--gl-ink-3); }
+.value-list { display: grid; gap: 8px; margin-top: 2px; padding-bottom: 4px; }
+.value-list li { position: relative; padding-left: 18px; font-size: var(--gl-text-ui); line-height: 1.5; color: var(--gl-ink-2); }
+.value-list li::before {
+  content: ""; position: absolute; left: 1px; top: calc(0.75em - 3px);
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+}
 
-/* The audit action: what an audit does, who the two people are, one enquiry button */
+/* Getting going: what happens first, who the two people are, one coral action to the contact view */
 .start-grid {
   display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); grid-template-rows: auto 1fr;
   grid-template-areas: "intro people" "action people"; column-gap: clamp(40px, 5vw, 80px);
@@ -228,8 +239,6 @@ h1 {
 .person h3 { font-size: 18px; line-height: 1.3; letter-spacing: -0.01em; font-weight: var(--gl-weight-semibold); }
 .person .role { margin-top: 2px; font-size: var(--gl-text-ui); line-height: 1.45; color: var(--gl-ink-3); }
 .person .bio { margin-top: 8px; max-width: 40em; font-size: 16px; line-height: 1.55; color: var(--gl-ink-2); text-wrap: pretty; }
-.cta-note { margin-top: 12px; font-size: var(--gl-text-ui); line-height: 1.5; color: var(--gl-ink-3); text-wrap: pretty; }
-.cta-note .email { font-size: inherit; }
 
 /* The rune: oversized, faint, cropped by the hairline above the footer */
 .rune-stage {
@@ -255,29 +264,64 @@ h1 {
 @keyframes rune-a { from { transform: translate(0, 0); } to { transform: translate(-1.3px, -1.3px); } }
 @keyframes rune-b { from { transform: translate(0, 0); } to { transform: translate(1.3px, 1.3px); } }
 
-/* Footer */
+/* Footer: restrained. Logo, copyright and the legal links only */
 .site-footer { background: var(--gl-white); }
-.foot-main {
-  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center;
-  gap: 28px 48px; padding-block: 44px 36px;
-}
-.foot-nav ul { display: flex; flex-wrap: wrap; gap: 8px 28px; }
-.foot-nav a { text-decoration: none; color: var(--gl-ink-2); font-size: var(--gl-text-ui); font-weight: var(--gl-weight-medium); padding-block: 6px; display: inline-block; }
-.foot-nav a:hover { color: var(--gl-ink); }
-.foot-contact { display: flex; align-items: center; gap: 14px 18px; flex-wrap: wrap; justify-content: flex-end; }
-.email-line { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.email { font-size: var(--gl-text-ui); font-weight: var(--gl-weight-medium); color: var(--gl-ink); user-select: all; }
-[data-copy] { min-width: 5.6em; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.foot-legal {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap;
-  border-top: 1px solid var(--gl-line); padding-block: 22px 32px;
-  font-size: var(--gl-text-small); color: var(--gl-ink-3);
-}
+.foot-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px 32px; padding-block: 32px 40px; }
+.foot-legal { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 24px; font-size: var(--gl-text-small); color: var(--gl-ink-3); }
 .foot-legal ul { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 22px; }
 .foot-legal a { color: var(--gl-ink-2); text-decoration: none; padding-block: 4px; display: inline-block; }
 .foot-legal a:hover { color: var(--gl-ink); text-decoration: underline; text-underline-offset: 3px; }
 .draft-note { background: var(--gl-panel); color: var(--gl-ink-3); border-radius: var(--gl-radius-pill); padding: 3px 10px; }
+.contact-page .site-footer { border-top: 1px solid var(--gl-line); }
+
+/* Contact view: heading and direct details on the left, the form on a light grey panel on the right */
+.contact { padding-block: clamp(32px, 5vw, 72px) clamp(64px, 8vw, 112px); }
+.contact-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: clamp(40px, 5vw, 80px); align-items: start; }
+/* Scales with the screen so the stacked tablet layout keeps a confident heading; never above the
+   homepage hero's desktop size or below 36 px */
+.contact h1 { font-size: clamp(36px, 6.8vw, 60px); line-height: 1.04; text-wrap: balance; }
+.contact .lead { margin-top: 20px; max-width: 26em; }
+/* Email and phone side by side where they fit, stacked on phones */
+.contact-details { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--gl-line); display: flex; flex-wrap: wrap; gap: 16px 48px; }
+.contact-details dt { font-size: var(--gl-text-small); color: var(--gl-ink-3); }
+.contact-details dd { margin-top: 2px; font-size: var(--gl-text-body); font-weight: var(--gl-weight-medium); color: var(--gl-ink); white-space: nowrap; }
+.contact-details a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; display: inline-block; padding-block: 2px; }
+.contact-details a:hover { text-decoration-thickness: 2px; }
+.contact-panel { min-width: 0; background: var(--gl-panel); border-radius: var(--gl-radius-panel); padding: clamp(20px, 3vw, 36px); }
+.form-notice {
+  margin-bottom: 20px; padding: 12px 16px; border-radius: 12px;
+  background: var(--gl-amber-tint); color: var(--gl-ink); font-size: var(--gl-text-ui); line-height: 1.5;
+}
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; }
+.field { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.field-full { grid-column: 1 / -1; }
+.field label { font-size: var(--gl-text-ui); font-weight: var(--gl-weight-medium); line-height: 1.4; color: var(--gl-ink); }
+.optional { font-weight: var(--gl-weight-regular); color: var(--gl-ink-3); }
+.field input, .field textarea {
+  width: 100%; min-height: 48px; padding: 11px 14px;
+  font-size: 16px; line-height: 1.4; color: var(--gl-ink);
+  background: var(--gl-white); border: 1px solid var(--gl-field-line); border-radius: 12px;
+}
+.field textarea { min-height: 148px; resize: vertical; line-height: 1.5; }
+.field input::placeholder, .field textarea::placeholder { color: var(--gl-ink-3); opacity: 1; }
+.field input:focus-visible, .field textarea:focus-visible { outline-offset: 2px; border-color: var(--gl-purple-strong); border-radius: 12px; }
+.field [aria-invalid="true"] { border-color: var(--gl-error); box-shadow: inset 0 0 0 1px var(--gl-error); }
+.field-error { font-size: 14px; line-height: 1.4; font-weight: var(--gl-weight-medium); color: var(--gl-error); }
+.hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+.captcha { margin-top: 22px; display: grid; gap: 6px; }
+.recaptcha-slot { min-height: 78px; }
+.recaptcha-preview {
+  display: grid; place-items: center; max-width: 304px; min-height: 78px; padding: 12px 16px;
+  border: 1px dashed var(--gl-field-line); border-radius: 12px;
+  font-size: var(--gl-text-small); line-height: 1.45; color: var(--gl-ink-3); text-align: center;
+}
+.form-actions { margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
+.form-status { flex: 1 1 220px; font-size: var(--gl-text-ui); line-height: 1.5; color: var(--gl-ink-2); }
+.form-status:empty { display: none; }
+.form-status.is-error { color: var(--gl-error); font-weight: var(--gl-weight-medium); }
+.form-success h2 { font-size: clamp(26px, 2.6vw, 34px); line-height: 1.15; letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold); }
+.form-success p { margin-top: 10px; font-size: var(--gl-text-body); color: var(--gl-ink-2); }
+.form-success:focus { outline: none; }
 
 /* Draft legal pages */
 .legal-page { padding-block: clamp(32px, 5vw, 64px) var(--gl-section); }
@@ -289,6 +333,7 @@ h1 {
 .draft-banner strong { font-weight: var(--gl-weight-semibold); }
 .legal-page h1 { font-size: clamp(34px, 5vw, 52px); }
 .legal-page h2 { font-size: 22px; letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold); margin-top: 40px; }
+.legal-page h3 { font-size: 18px; letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold); margin-top: 28px; color: var(--gl-ink); }
 .legal-page p, .legal-page li { color: var(--gl-ink-2); margin-top: 12px; }
 .legal-page ul { list-style: disc; padding-left: 22px; }
 .legal-page strong { color: var(--gl-ink); font-weight: var(--gl-weight-semibold); }
@@ -304,32 +349,38 @@ h1 {
   .stages { grid-template-columns: minmax(0, 1fr); --node: 56px; }
   .stage { display: grid; grid-template-columns: var(--node) minmax(0, 1fr); column-gap: 22px; padding-bottom: 52px; }
   .stage:last-child { padding-bottom: 0; }
-  .stage .node { grid-column: 1; grid-row: 1 / span 4; }
+  .stage .node { grid-column: 1; grid-row: 1 / span 3; }
   .stage > :not(.node) { grid-column: 2; }
-  .stage .num { margin-top: 0; }
+  .stage h2 { margin-top: 12px; }
   .node .ico { width: 32px; height: 32px; }
   .stage:not(:last-child)::before { top: calc(var(--node) + 12px); bottom: 12px; left: calc(var(--node) / 2 - 0.75px); right: auto; width: 1.5px; height: auto; }
   .stage:not(:last-child)::after { top: auto; bottom: 14px; left: calc(var(--node) / 2 - 5px); right: auto; transform: rotate(135deg); }
-  .foot-main { grid-template-columns: minmax(0, 1fr); align-items: start; }
-  .foot-contact { justify-content: flex-start; }
   .evidence-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
   .start-grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "intro" "people" "action"; }
   .people { margin-top: 36px; }
   .start-action { margin-top: 36px; }
+  .contact-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .contact .lead { margin-top: 16px; }
 }
 @media (max-width: 760px) {
-  .nav-links { display: none; }
   .rune-stage { --rune-w: min(84vw, 520px); }
   .workshop-grid { grid-template-columns: minmax(0, 1fr); }
   .workshop { padding-right: 0; }
   .workshop + .workshop { padding-left: 0; border-left: 0; border-top: 1px solid var(--gl-line); margin-top: 36px; padding-top: 36px; }
+  .foot-row { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 640px) {
+  .fields { grid-template-columns: minmax(0, 1fr); }
+  .form-actions .btn-coral { width: 100%; }
 }
 @media (max-width: 560px) {
+  .site-header .wrap { min-height: 68px; padding-block: 12px; }
   .logo { height: 26px; }
   .stage { column-gap: 18px; padding-bottom: 44px; }
   .stage .tag { font-size: 17px; }
   .device-card { padding-inline: 8px; }
   .person { column-gap: 16px; }
+  .contact-details { margin-top: 24px; padding-top: 20px; }
 }
 /* The narrowest phones: the portrait sits above the text so the bios keep a readable measure */
 @media (max-width: 380px) {

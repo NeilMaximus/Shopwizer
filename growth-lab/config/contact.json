@@ -1,0 +1,6 @@
+{
+  "$comment": "Direct contact details on the contact view. Neil confirmed his phone number on 14 October 2026. phone_display is shown as written; phone_tel is the tel: link, digits with the country code. After any change run python3 scripts/build.py, which writes the phone line into site/contact.html. Never use a placeholder or another company's number.",
+  "email": "hello@growthlab.co.za",
+  "phone_display": "+27 84 504 0505",
+  "phone_tel": "+27845040505"
+}
