@@ -67,7 +67,26 @@
     <!-- Client logo strip. Written by scripts/build.py from config/client-logos.json and the genuine
          files in assets/clients/. Rules: DESIGN_SYSTEM.md, section 10. -->
     <!-- client-logos:start -->
-    <!-- Client logos pending: no genuine files in site/assets/clients yet. Missing: Sanlam, KFC, Old Mutual, Philips, Santam, Sportsmans Warehouse, Momentum, Famous Brands, Telesure, Multiply, Budget Insurance, First for Women. See config/client-logos.json -->
+    <!-- Still missing: Old Mutual, Philips, Sportsmans Warehouse, Famous Brands, Telesure, Multiply -->
+    <div class="wrap clients" data-speed="20" data-speed-narrow="18">
+      <div class="clients-viewport">
+        <div class="clients-track">
+          <ul class="clients-set" role="list" aria-label="Clients">
+            <li><img src="assets/clients/sanlam.svg" width="4840" height="1000" alt="Sanlam" style="--logo-scale: 0.92" decoding="async"></li>
+            <li><img src="assets/clients/kfc.png" width="3163" height="1000" alt="KFC" style="--logo-scale: 0.84" decoding="async"></li>
+            <li><img src="assets/clients/santam.svg" width="2675" height="1000" alt="Santam" style="--logo-scale: 1.2" decoding="async"></li>
+            <li><img src="assets/clients/momentum.png" width="8889" height="1000" alt="Momentum" style="--logo-scale: 0.68" decoding="async"></li>
+            <li><img src="assets/clients/budget-insurance.png" width="3704" height="1000" alt="Budget Insurance" style="--logo-scale: 1.08" decoding="async"></li>
+            <li><img src="assets/clients/first-for-women.png" width="3846" height="1000" alt="First for Women" style="--logo-scale: 1.35" decoding="async"></li>
+          </ul>
+        </div>
+      </div>
+      <button class="clients-toggle" type="button" aria-label="Pause the client logos" hidden>
+        <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg>
+        <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.4v9.2L12.6 8z"/></svg>
+        <span class="clients-toggle-text">Pause</span>
+      </button>
+    </div>
     <!-- client-logos:end -->
   </section>
 

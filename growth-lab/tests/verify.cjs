@@ -136,6 +136,7 @@ function stripFixturePage() {
     .replace(/(<!-- client-logos:start -->\n)[\s\S]*?( {4}<!-- client-logos:end -->)/, (m, a, b) => a + strip + b);
 }
 let stripPage = '';
+const LOGOS_PRESENT = CLIENT_MANIFEST.logos.filter((l) => ['.svg', '.png'].some((x) => fs.existsSync(path.join(SITE, 'assets', 'clients', l.file + x))));
 
 function serve() {
   return new Promise((resolve) => {
@@ -331,7 +332,14 @@ async function homeChecks(page, vp) {
       banned: (document.querySelector('main').innerText.match(/richest|world.?s|largest|leading|best in class|unrivalled|\bfees?\b|\bfree\b|\bpric|\bR\s?\d|1,500,505|booked|appointment|confirmed/gi) || []),
       retail: document.querySelectorAll('a[href*="martechtribe.com/blog"]').length + (/retail/i.test(document.body.textContent) ? 1 : 0),
       small, primaries: [...document.querySelectorAll('.btn-dark, .btn-coral')].filter(visible).map((b) => Math.round(b.getBoundingClientRect().height)),
-      anims: document.getAnimations().map((a) => a.animationName || a.transitionProperty || 'unknown'),
+      anims: document.getAnimations().map((a) => (a.effect && a.effect.target && a.effect.target.classList && a.effect.target.classList.contains('clients-track')) ? 'client-strip' : (a.animationName || a.transitionProperty || 'unknown')),
+      strip: (() => { const st = document.querySelector('.clients'); if (!st) return null;
+        const sets = [...st.querySelectorAll('.clients-set')], imgs = [...sets[0].querySelectorAll('img')];
+        return { moving: st.classList.contains('is-moving'), named: [...st.querySelectorAll('img')].filter((i) => i.alt && !i.closest('[aria-hidden="true"]')).map((i) => i.alt),
+          loaded: imgs.every((i) => i.complete && i.naturalWidth > 0), ratio: imgs.every((i) => Math.abs((i.getBoundingClientRect().width / i.getBoundingClientRect().height) / (i.naturalWidth / i.naturalHeight) - 1) < 0.01),
+          rows: new Set(imgs.map((i) => Math.round(i.closest('li').getBoundingClientRect().top))).size, hidden: sets.slice(1).every((c) => c.getAttribute('aria-hidden') === 'true' && c.hasAttribute('inert')),
+          bottomGap: document.querySelector('.approach').getBoundingClientRect().top - st.getBoundingClientRect().bottom,
+          topGap: st.getBoundingClientRect().top - document.querySelector('.hero-grid').getBoundingClientRect().bottom }; })(),
     };
   });
 
@@ -407,13 +415,20 @@ async function homeChecks(page, vp) {
   check(`${tag} no email or phone links on the homepage`, x.mailto === 0 && !x.emailText);
   check(`${tag} no pricing, superlatives or booking claims`, x.banned.length === 0, x.banned.join(', '));
   check(`${tag} click targets at least 24px, action buttons at least 44px`, x.small.length === 0 && x.primaries.every((h) => h >= 44), x.small.join(' | ') || x.primaries.join(', '));
-  check(`${tag} no new animation: only the rune moves after the cube`, x.anims.length === 2 && x.anims.every((n) => /^rune-[ab]$/.test(n)), x.anims.join(', '));
+  const allowed = LOGOS_PRESENT.length ? ['client-strip', 'rune-a', 'rune-b'] : ['rune-a', 'rune-b'];
+  check(`${tag} no other animation: after the cube only the rune${LOGOS_PRESENT.length ? ' and the logo strip' : ''} move`, JSON.stringify([...x.anims].sort()) === JSON.stringify(allowed), x.anims.join(', '));
+  if (LOGOS_PRESENT.length) {
+    const st = x.strip;
+    check(`${tag} logo strip at the foot of the hero: the ${LOGOS_PRESENT.length} genuine logos, loaded, unstretched, one moving row, copies hidden`, !!st && st.moving &&
+      JSON.stringify(st.named) === JSON.stringify(LOGOS_PRESENT.map((l) => l.name)) && st.loaded && st.ratio && st.rows === 1 && st.hidden && st.topGap >= 56 && st.bottomGap >= 56,
+      st && `${st.named.join(', ')}; ${Math.round(st.topGap)}px above, ${Math.round(st.bottomGap)}px below`);
+  }
 }
 
 // Keyboard only: open and close the workshop details with Enter and Space
 async function detailsKeyboard(page, tag) {
   await page.evaluate(() => { document.activeElement && document.activeElement.blur(); window.scrollTo({ top: 0, behavior: 'instant' }); });
-  await page.focus('.site-header .btn-dark');
+  await page.focus((await page.$('.clients-toggle:not([hidden])')) ? '.clients-toggle' : '.site-header .btn-dark');
   const stops = [];
   for (let i = 0; i < 2; i++) {
     await page.keyboard.press('Tab');
@@ -643,7 +658,7 @@ async function apiChecks() {
           await page.screenshot({ path: path.join(SHOTS, 'focus-header.png'), clip: { x: 0, y: 0, width: 1440, height: 110 } });
         }
       }
-      const expected = ['Skip to content', 'Growth Lab', 'Book an audit', 'The value you get', 'The value you get', 'Let’s Talk',
+      const expected = ['Skip to content', 'Growth Lab', 'Book an audit', ...(LOGOS_PRESENT.length ? ['Pause the client logos'] : []), 'The value you get', 'The value you get', 'Let’s Talk',
         'Growth Lab, back to top', 'Privacy', 'Website terms'];
       check('[home desktop] keyboard order follows the page and every stop shows a ring', stops.every((s) => s.ring) &&
         JSON.stringify(stops.map((s) => s.label)) === JSON.stringify(expected), stops.map((s) => s.label + (s.ring ? '' : ' (no ring)')).join(' > '));
@@ -951,7 +966,7 @@ async function apiChecks() {
     const narrow = await sp.evaluate(() => {
       const vw = document.documentElement.clientWidth;
       const outside = [...document.querySelectorAll('body *')].filter((el) => {
-        if (el.closest('.rune-stage, .sr-only, .skip')) return false;
+        if (el.closest('.rune-stage, .sr-only, .skip, .clients-viewport')) return false;
         const r = el.getBoundingClientRect();
         return r.width > 0 && (r.right > vw + 0.5 || r.left < -0.5);
       }).map((el) => `${el.tagName}.${el.className}`).slice(0, 6);
@@ -997,10 +1012,11 @@ async function apiChecks() {
     const pv = await pp.evaluate(async () => { await document.fonts.ready; return {
       geist: document.fonts.check('600 16px Geist'), overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       external: [...document.querySelectorAll('link[href], script[src]')].map((e) => e.getAttribute('href') || e.getAttribute('src')),
-      imgs: [...document.querySelectorAll('img')].map((i) => i.complete && i.naturalWidth > 0),
+      imgs: [...document.querySelectorAll('img:not(.clients img)')].map((i) => i.complete && i.naturalWidth > 0),
+      logos: [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')].map((i) => i.complete && i.naturalWidth > 0),
       actions: [...document.querySelectorAll('.btn')].map((a) => a.getAttribute('href')), mail: document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').length }; });
     check('[preview] homepage self contained: Geist, images from published files, no overflow, no requests out', pv.geist && pv.overflow <= 0 &&
-      pv.external.length === 0 && perr.length === 0 && pv.imgs.length === 3 && pv.imgs.every(Boolean) && external.length === 0, JSON.stringify({ ...pv, external }));
+      pv.external.length === 0 && perr.length === 0 && pv.imgs.length === 3 && pv.imgs.every(Boolean) && pv.logos.length === LOGOS_PRESENT.length && pv.logos.every(Boolean) && external.length === 0, JSON.stringify({ ...pv, external }));
     check('[preview] both actions open the published contact view', pv.actions.length === 2 && pv.actions.every((h) => h === 'contact.html') &&
       fs.existsSync(path.join(previewDir, 'contact.html')) && pv.mail === 0);
     await pctx.close();
@@ -1050,14 +1066,15 @@ async function apiChecks() {
       for (const i of document.querySelectorAll('img')) { i.scrollIntoView(); await i.decode().catch(() => {}); }
       return { geist: document.fonts.check('600 16px Geist'), cube: !document.getElementById('device').className.includes('pre-build'),
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-        imgs: [...document.querySelectorAll('img')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/jpeg')),
+        imgs: [...document.querySelectorAll('img:not(.clients img)')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/jpeg')),
+        logos: [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')].map((i) => i.complete && i.naturalWidth > 0 && /^data:image\/(svg\+xml|png);base64,/.test(i.src)),
         files: [...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => !/^(#|mailto:|tel:|https:)/.test(h)),
         external: [...document.querySelectorAll('a[href^="http"]')].map((a) => a.getAttribute('href')),
         actions: [...document.querySelectorAll('.btn')].map((a) => a.getAttribute('href')) };
     });
     const missing = bv.files.filter((h) => !fs.existsSync(path.join(browserDir, h)));
     check('[browser file] homepage opens from a folder: Geist, cube, images built in, links resolve, no requests', bv.geist && bv.cube && bv.overflow <= 0 &&
-      bv.imgs.length === 3 && bv.imgs.every(Boolean) && missing.length === 0 && requests.length === 0 && berr.length === 0 &&
+      bv.imgs.length === 3 && bv.imgs.every(Boolean) && bv.logos.length === LOGOS_PRESENT.length && bv.logos.every(Boolean) && missing.length === 0 && requests.length === 0 && berr.length === 0 &&
       bv.actions.every((h) => h === 'growth-lab-contact.html') && bv.external.length === 0,
       JSON.stringify({ ...bv, imgs: bv.imgs.length, missing, requests, errors: berr }));
     await bp.goto('file://' + path.join(browserDir, 'growth-lab-contact.html'));

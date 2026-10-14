@@ -83,22 +83,22 @@ The 4096 px full map was removed in version 2.4 with the "View the full map" lin
 
 Approved by Neil for version 2.5. Each logo must be the genuine artwork from the source below, prepared as a clean black variant on transparent without changing its geometry, and saved in `site/assets/clients/` under the file name in `config/client-logos.json`. `scripts/build.py` shows only the files that are present and names the rest.
 
-Neil's folder `/Users/neilbotha/Desktop/Client logos/client-logos` holds black and white SVG and PNG variants of the first ten, with its own `SOURCES.txt` and `contact-sheet.png`. That package has not reached this project yet.
+Neil's folder `/Users/neilbotha/Desktop/Client logos/client-logos` holds black and white SVG and PNG variants of ten of them, with its own `SOURCES.txt` and `contact-sheet.png`. That package has not reached this project. On 14 October 2026 Neil attached six white variants in this session; they are converted as recorded below. The source column is the provenance listed in Neil's folder.
 
 | Brand | Source | Status, 14 October 2026 |
 | --- | --- | --- |
-| Sanlam | https://upload.wikimedia.org/wikipedia/en/6/67/Sanlam_logo.svg | Missing: host blocked by this environment's network policy; awaiting Neil's package |
-| KFC | https://upload.wikimedia.org/wikipedia/commons/2/26/KFC_Logo_2026.svg (or the original https://upload.wikimedia.org/wikipedia/commons/b/bf/KFC_logo.svg; confirm which is current) | Missing: as above |
-| Old Mutual | https://upload.wikimedia.org/wikipedia/en/5/5c/Old_Mutual.svg | Missing: as above |
-| Philips | https://upload.wikimedia.org/wikipedia/commons/5/52/Philips_logo_new.svg | Missing: as above |
-| Santam | https://upload.wikimedia.org/wikipedia/en/7/75/Santam_logo.svg | Missing: as above |
+| Sanlam | https://upload.wikimedia.org/wikipedia/en/6/67/Sanlam_logo.svg | In use, `sanlam.svg`. Supplied by Neil in this session, 14 October 2026, as a white knockout SVG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged |
+| KFC | https://upload.wikimedia.org/wikipedia/commons/2/26/KFC_Logo_2026.svg (or the original https://upload.wikimedia.org/wikipedia/commons/b/bf/KFC_logo.svg; confirm which is current) | In use, `kfc.png` (291 × 92 px). Supplied by Neil in this session, 14 October 2026, as a white knockout PNG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged. The top of the C was slightly clipped by the box in the supplied file; which KFC version it is has not been confirmed |
+| Old Mutual | https://upload.wikimedia.org/wikipedia/en/5/5c/Old_Mutual.svg | Missing: host blocked by this environment's network policy; awaiting Neil's file |
+| Philips | https://upload.wikimedia.org/wikipedia/commons/5/52/Philips_logo_new.svg | Missing: host blocked; awaiting Neil's file |
+| Santam | https://upload.wikimedia.org/wikipedia/en/7/75/Santam_logo.svg | In use, `santam.svg`. Supplied by Neil in this session, 14 October 2026, as a white knockout SVG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged |
 | Sportsmans Warehouse | Official site, https://www.sportsmanswarehouse.co.za/ (not in Neil's folder) | Missing: host blocked; needs sourcing from the official site |
-| Momentum | Inline header SVG `#mom-logo-svg` on https://www.momentum.co.za | Missing: host blocked; awaiting Neil's package |
+| Momentum | Inline header SVG `#mom-logo-svg` on https://www.momentum.co.za | In use, `momentum.png` (400 × 45 px). Supplied by Neil in this session, 14 October 2026, as a white knockout PNG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged. The final m touches the edge of the supplied file; an SVG would be sharper |
 | Famous Brands | Official site, https://famousbrands.co.za/ (not in Neil's folder) | Missing: host blocked; needs sourcing from the official site |
-| Telesure | https://tihsa.co.za/wp-content/uploads/2024/06/TIH-logo_without-descriptor.png | Missing: host blocked; awaiting Neil's package |
-| Multiply | https://www.multiply.co.za/static-assets/images/multiply-logo.svg | Missing: as above |
-| Budget Insurance | https://blobs.digitalcdn.co.za/production-budget-marketing/Angular/assets/Images/logo.svg | Missing: as above |
-| First for Women | https://www.firstforwomen.co.za/img/logo.png | Missing: as above |
+| Telesure | https://tihsa.co.za/wp-content/uploads/2024/06/TIH-logo_without-descriptor.png | Missing: host blocked; awaiting Neil's file |
+| Multiply | https://www.multiply.co.za/static-assets/images/multiply-logo.svg | Missing: host blocked; awaiting Neil's file |
+| Budget Insurance | https://blobs.digitalcdn.co.za/production-budget-marketing/Angular/assets/Images/logo.svg | In use, `budget-insurance.png` (400 × 108 px). Supplied by Neil in this session, 14 October 2026, as a white knockout PNG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged. It arrived twice as identical files |
+| First for Women | https://www.firstforwomen.co.za/img/logo.png | In use, `first-for-women.png` (400 × 104 px). Supplied by Neil in this session, 14 October 2026, as a white knockout PNG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged. The flower inside the crest is only faintly present in the supplied file; replace it with a cleaner black original when available |
 
 Neil's Google Drive holds older logo files (a 2019 "Client Logos" folder with Illustrator and EPS files, one from a logo aggregator site, and some single files). They were not used: their sources and currency do not match the inventory above.
 

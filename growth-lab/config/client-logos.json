@@ -1,18 +1,81 @@
 {
   "$comment": "Client logo strip at the foot of the hero. Rules: DESIGN_SYSTEM.md, section 10. Put each genuine logo in site/assets/clients/ as <file>.svg (preferred) or <file>.png: a clean black variant on a transparent background, never redrawn, retyped, stretched or cropped. Then run python3 scripts/build.py, which writes the strip into site/index.html in this order and names any brand still missing. scale evens out optical prominence (1 = the standard row height). Speeds are CSS pixels per second, left to right; narrow applies under 640 px. Record every source in SOURCES.md.",
-  "speed": { "wide": 20, "narrow": 18 },
+  "speed": {
+    "wide": 20,
+    "narrow": 18
+  },
   "logos": [
-    { "name": "Sanlam", "file": "sanlam", "scale": 1, "source": "https://upload.wikimedia.org/wikipedia/en/6/67/Sanlam_logo.svg" },
-    { "name": "KFC", "file": "kfc", "scale": 1, "source": "https://upload.wikimedia.org/wikipedia/commons/2/26/KFC_Logo_2026.svg (alternative: https://upload.wikimedia.org/wikipedia/commons/b/bf/KFC_logo.svg; confirm which is current)" },
-    { "name": "Old Mutual", "file": "old-mutual", "scale": 1, "source": "https://upload.wikimedia.org/wikipedia/en/5/5c/Old_Mutual.svg" },
-    { "name": "Philips", "file": "philips", "scale": 1, "source": "https://upload.wikimedia.org/wikipedia/commons/5/52/Philips_logo_new.svg" },
-    { "name": "Santam", "file": "santam", "scale": 1, "source": "https://upload.wikimedia.org/wikipedia/en/7/75/Santam_logo.svg" },
-    { "name": "Sportsmans Warehouse", "file": "sportsmans-warehouse", "scale": 1, "source": "To obtain from the official site, https://www.sportsmanswarehouse.co.za/" },
-    { "name": "Momentum", "file": "momentum", "scale": 1, "source": "Inline header SVG #mom-logo-svg on https://www.momentum.co.za" },
-    { "name": "Famous Brands", "file": "famous-brands", "scale": 1, "source": "To obtain from the official site, https://famousbrands.co.za/" },
-    { "name": "Telesure", "file": "telesure", "scale": 1, "source": "https://tihsa.co.za/wp-content/uploads/2024/06/TIH-logo_without-descriptor.png" },
-    { "name": "Multiply", "file": "multiply", "scale": 1, "source": "https://www.multiply.co.za/static-assets/images/multiply-logo.svg" },
-    { "name": "Budget Insurance", "file": "budget-insurance", "scale": 1, "source": "https://blobs.digitalcdn.co.za/production-budget-marketing/Angular/assets/Images/logo.svg" },
-    { "name": "First for Women", "file": "first-for-women", "scale": 1, "source": "https://www.firstforwomen.co.za/img/logo.png" }
+    {
+      "name": "Sanlam",
+      "file": "sanlam",
+      "scale": 0.92,
+      "source": "https://upload.wikimedia.org/wikipedia/en/6/67/Sanlam_logo.svg"
+    },
+    {
+      "name": "KFC",
+      "file": "kfc",
+      "scale": 0.84,
+      "source": "https://upload.wikimedia.org/wikipedia/commons/2/26/KFC_Logo_2026.svg (alternative: https://upload.wikimedia.org/wikipedia/commons/b/bf/KFC_logo.svg; confirm which is current)"
+    },
+    {
+      "name": "Old Mutual",
+      "file": "old-mutual",
+      "scale": 1,
+      "source": "https://upload.wikimedia.org/wikipedia/en/5/5c/Old_Mutual.svg"
+    },
+    {
+      "name": "Philips",
+      "file": "philips",
+      "scale": 1,
+      "source": "https://upload.wikimedia.org/wikipedia/commons/5/52/Philips_logo_new.svg"
+    },
+    {
+      "name": "Santam",
+      "file": "santam",
+      "scale": 1.2,
+      "source": "https://upload.wikimedia.org/wikipedia/en/7/75/Santam_logo.svg"
+    },
+    {
+      "name": "Sportsmans Warehouse",
+      "file": "sportsmans-warehouse",
+      "scale": 1,
+      "source": "To obtain from the official site, https://www.sportsmanswarehouse.co.za/"
+    },
+    {
+      "name": "Momentum",
+      "file": "momentum",
+      "scale": 0.68,
+      "source": "Inline header SVG #mom-logo-svg on https://www.momentum.co.za"
+    },
+    {
+      "name": "Famous Brands",
+      "file": "famous-brands",
+      "scale": 1,
+      "source": "To obtain from the official site, https://famousbrands.co.za/"
+    },
+    {
+      "name": "Telesure",
+      "file": "telesure",
+      "scale": 1,
+      "source": "https://tihsa.co.za/wp-content/uploads/2024/06/TIH-logo_without-descriptor.png"
+    },
+    {
+      "name": "Multiply",
+      "file": "multiply",
+      "scale": 1,
+      "source": "https://www.multiply.co.za/static-assets/images/multiply-logo.svg"
+    },
+    {
+      "name": "Budget Insurance",
+      "file": "budget-insurance",
+      "scale": 1.08,
+      "source": "https://blobs.digitalcdn.co.za/production-budget-marketing/Angular/assets/Images/logo.svg"
+    },
+    {
+      "name": "First for Women",
+      "file": "first-for-women",
+      "scale": 1.35,
+      "source": "https://www.firstforwomen.co.za/img/logo.png"
+    }
   ]
 }
