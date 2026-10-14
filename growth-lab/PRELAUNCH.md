@@ -8,6 +8,7 @@ The site is ready to preview, not to publish. Clear every item below, with legal
 - [ ] **Information Officer.** Name and contact address for POPIA.
 - [ ] **Privacy notice.** Complete every CONFIRM item in `legal/DRAFT_PRIVACY_NOTICE.md`: hosting provider, what it logs and for how long, the contact form and its email delivery provider (Resend), Google reCAPTCHA and whether it needs consent before it loads, phone and email enquiries, cross border transfers, retention, security summary, Information Regulator contact details. Have it reviewed.
 - [ ] **Website terms.** Complete every CONFIRM item in `legal/DRAFT_WEBSITE_TERMS.md`, including whether section 43 of the Electronic Communications and Transactions Act applies. Have it reviewed.
+- [ ] **Launch treatment (14 October 2026).** The production build leaves out the draft privacy notice and website terms and their footer links, so nothing unapproved is published as policy. The site collects no personal data while the form is not connected; the privacy notice must be approved and published before the form is switched on.
 - [ ] **Publish the approved versions.** Replace the drafts, rename the files without the `DRAFT_` prefix, remove the draft banner sentence, run `python3 scripts/build.py`, then remove the "Drafts, pending approval" label from the footers in `site/index.html` and `site/contact.html` and the `noindex` rules for the two pages in `site/vercel.json`.
 
 ## Content and brand
@@ -30,10 +31,13 @@ The form is built and tested against mocked Google and Resend responses. It cann
 
 - [ ] Create Growth Lab's own Google reCAPTCHA v2 checkbox keys for the final domains and any preview domain used for testing.
 - [ ] Set up Resend: verify a sending domain (agree the DNS records with whoever manages growthlab.co.za), create a sending only API key and choose the sender address.
+- [ ] Status 14 October 2026: the Vercel project `growth-lab-2026` has no environment variables, so the live form will say online enquiries are not connected and point to email and phone.
 - [ ] Add `RECAPTCHA_SITE_KEY`, `RECAPTCHA_SECRET_KEY`, `RESEND_API_KEY`, `CONTACT_FROM_EMAIL` and, ideally, `CONTACT_ALLOWED_HOSTNAMES` to the Vercel project, then redeploy.
 - [ ] On a protected preview, send a test enquiry and confirm it reaches hello@growthlab.co.za with the right reply address, that an unticked check is refused, and that the logs hold no personal details.
 
 ## Technical
+
+- [ ] hello@growthlab.co.za is the fallback for every enquiry. It bounced on 21 August 2026 (recorded in the Growth-Lab-2026 repository); outside mail addressed to it reached Neil's inbox on 16 and 22 September 2026, so it appears to work now. Send one test message to confirm before launch.
 
 - [ ] Choose the domain or path. If it replaces part of growthlab.co.za, plan that change with whoever runs the current site.
 - [ ] Vercel project: `site/` is the deployment root (Root Directory `growth-lab/site` in the repository, or `site` in the package), framework preset Other, no build command. Nothing outside `site/` is deployed.

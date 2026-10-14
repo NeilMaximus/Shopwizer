@@ -110,6 +110,8 @@ Neil's folder `/Users/neilbotha/Desktop/Client logos/client-logos` holds black a
 | Budget Insurance | https://blobs.digitalcdn.co.za/production-budget-marketing/Angular/assets/Images/logo.svg | In use, `budget-insurance.png` (400 × 108 px). Supplied by Neil in this session, 14 October 2026, as a white knockout PNG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged. It arrived twice as identical files |
 | First for Women | https://www.firstforwomen.co.za/img/logo.png | In use, `first-for-women.png` (400 × 104 px). Supplied by Neil in this session, 14 October 2026, as a white knockout PNG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged. The flower inside the crest is only faintly present in the supplied file; replace it with a cleaner black original when available |
 
+**Growth Lab email logo.** `site/assets/brand/growthlab-email-logo-v1.png` (840 × 198 px, black on transparent) is rendered unchanged from the verified `growthlab-logo.svg` by `scripts/render_email_logo.cjs`, 14 October 2026. No other source.
+
 Neil's Google Drive holds older logo files (a 2019 "Client Logos" folder with Illustrator and EPS files, one from a logo aggregator site, and some single files). They were not used: their sources and currency do not match the inventory above.
 
 ## Not used, and why

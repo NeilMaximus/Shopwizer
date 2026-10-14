@@ -4,7 +4,7 @@
 
 ## Before any deployment
 
-Do not deploy publicly until every item in `PRELAUNCH.md` is cleared. The privacy notice and website terms in this package are drafts.
+Neil authorised the production launch on 14 October 2026, replacing the current growthlab.co.za site. The open items in `PRELAUNCH.md` still stand. The privacy notice and website terms are drafts, so the production build in this package (`site/`) leaves both pages and their footer links out; they return once approved. The contact form has no keys yet, so it says online enquiries are not connected and points to hello@growthlab.co.za and the phone number.
 
 Do not assume a Vercel preview is private. Who can open a preview depends on the project's Deployment Protection settings and on your Vercel plan, so check them before you create or share one:
 
@@ -80,14 +80,14 @@ Everything below sits in `site/`, the deployment root.
 | `index.html` | Make Your Martech Pay |
 | `contact.html` | The contact view: heading, email and phone, and the form |
 | `api/contact.mjs` | Serverless function: validates the enquiry, verifies reCAPTCHA with Google, sends the email through Resend |
-| `privacy.html`, `terms.html` | Draft legal pages, generated from the source repository's `legal/` folder |
+| `privacy.html`, `terms.html` | Not in the production package: draft legal pages, built from the source repository's `legal/` folder for the preview only, until approved |
 | `vercel.json` | Headers and caching |
 | `assets/css/tokens.css` | Design tokens (edit the source copy in `tokens/`, not this one) |
 | `assets/css/site.css` | Page styles and the Geist `@font-face` |
 | `assets/js/site.js` | Cube build, rune breathing and the client logo strip |
 | `assets/js/contact.js` | Contact form: validation, the reCAPTCHA check, sending and honest status messages |
 | `assets/fonts/geist/` | Geist variable woff2 (Latin, weights 400 to 700) and its SIL Open Font License |
-| `assets/brand/` | Verified Growth Lab logo, the rune (logo paths 1 and 2) and the mark |
+| `assets/brand/` | Verified Growth Lab logo, the rune (logo paths 1 and 2), the mark, and `growthlab-email-logo-v1.png`, the email signature logo (keep its URL stable) |
 | `assets/media/` | MartechMap 2026 by chiefmartec and MartechTribe (800 and 1600 px) and the two portraits |
 | `assets/clients/` | Genuine client logos for the strip in the hero, once supplied (see `SOURCES.md`) |
 | `favicon.svg` | The mark |

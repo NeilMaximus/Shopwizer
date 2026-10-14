@@ -1,6 +1,6 @@
 # Growth Lab website design system
 
-Version 2.10, 14 October 2026. Owner: Neil Botha.
+Version 2.11, 14 October 2026. Owner: Neil Botha.
 
 These rules govern every page of the Growth Lab website, starting with Make Your Martech Pay and its contact view. They are durable: follow them by default in every new page, edit and review. Neil requested and approved the changes recorded here. Change a rule only when he asks for it, and record the change in the change log at the end.
 
@@ -156,6 +156,7 @@ The header keeps one height on every page so the logo does not shift between the
 - Never retype the name as a placeholder, redraw, stretch or recolour it beyond ink on light grounds (and white on dark grounds if one is ever needed). Keep the 297 by 70 proportions.
 - In the header the logo is 36 px high (153 px wide) on desktop and tablet and 30 px (127 px) on phones, inside the unchanged 76 and 68 px headers (Neil, version 2.6). In the footer it stays restrained at 30 px, 26 px on phones. Keep clear space of at least half the logo height around it.
 - Inline the SVG in pages so it inherits `currentColor`. `growthlab-mark.svg` (paths 1 to 3) is the favicon.
+- **Email logo (version 2.11).** For Gmail and other email signatures, which do not show SVG: `site/assets/brand/growthlab-email-logo-v1.png`, served at `https://growthlab.co.za/assets/brand/growthlab-email-logo-v1.png`. It is the verified SVG rendered unchanged by `scripts/render_email_logo.cjs`: the file's own black, transparent background, 840 by 198 px (three times the 280 by 66 display size, artwork scaled uniformly). Show it at `width="280" height="66"`. The URL must stay stable because sent emails keep pointing at it: never overwrite v1 with different artwork; a changed logo becomes `growthlab-email-logo-v2.png` beside it. It is cached for a year.
 
 ## 7. Rune
 
@@ -311,6 +312,7 @@ Three white sections sit between the black stages and the rune band, in this ord
 
 - Never invent legal entity details, registration numbers, addresses, compliance claims or policies.
 - Privacy and Website terms stay labelled as drafts ("Drafts, pending approval") until approved versions replace them. See `PRELAUNCH.md`.
+- The production build (`python3 scripts/build.py package`, version 2.11) leaves both draft pages out and drops their footer links, so the live footer carries only the copyright line until approved versions exist. The preview keeps the drafts for review. Never publish the drafts as final policy.
 - The homepage sets no cookies and loads nothing from third parties. Once sending is connected, the contact view loads Google reCAPTCHA, which may set cookies and collect device data for Google, and enquiries are delivered by Resend. The privacy notice must cover both before launch, and whether consent is needed must be confirmed. No cookie banner until that is decided.
 
 ## 17. Where things live
@@ -334,6 +336,7 @@ Three white sections sit between the black stages and the rune band, in this ord
 
 ## Change log
 
+- **2.11, 14 October 2026.** Release preparation for production (Neil authorised the launch). Added the email logo PNG (section 6). The production build omits the unapproved privacy notice and website terms and their footer links (section 16); the preview keeps them.
 - **2.10, 14 October 2026.** The research response "Move faster and smarter through leading independent global martech research, applied to your business." is now regular weight (Neil), keeping the coral, size, line height and 24 px gaps of version 2.9. The question stays bold. Regular coral at 19 to 20 px is below WCAG AA contrast (3.25:1 against 4.5:1); Neil chose this over dark ink or a 24 px response, and it is recorded as the one exception in section 11 and in `PRELAUNCH.md`.
 - **2.9, 14 October 2026.** Research column correction (Neil). The question "Considering Deloitte or Accenture?" and the response "Move faster and smarter through leading independent global martech research, applied to your business." now share one treatment (bold brand coral, 19 to 20 px, line height 1.4) instead of a small question and a larger 22 to 26 px subheading. One token, `--gl-space-research` (24 px, baseline to capitals), sets the gap from the heading to the question and from the question to the response, replacing the 36 to 52 px gap. The sentence, the bullets (still 18 px), the map, glow, caption, credit and biographies are unchanged.
 - **2.8, 14 October 2026.** Research section restructured for scanning (Neil): black heading, the short coral question "Considering Deloitte or Accenture?", generous space, the coral subheading "Leading independent global martech research, applied to your business.", then "We combine that research with proven patterns, practical know-how and your own data to:" and three new bullets in regular dark text. The long coral paragraph, the MartechTribe paragraph and the closing line are removed from the left column; the map, glow, caption and credit stay. New biographies: Neil's names customer experience strategy and South African organisations; Frans's is Neil's approved positioning.

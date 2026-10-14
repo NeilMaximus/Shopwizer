@@ -325,8 +325,35 @@ def build_browser():
     return out
 
 
+DRAFT_PAGES = ("privacy.html", "terms.html")
+DRAFT_FOOTER = """      <ul>
+        <li><a href="privacy.html">Privacy</a></li>
+        <li><a href="terms.html">Website terms</a></li>
+        <li class="draft-note">Drafts, pending approval</li>
+      </ul>
+"""
+
+
+def build_production():
+    """The site as it goes live. The privacy notice and website terms are unapproved drafts, so the
+    production copy leaves both pages out and drops their footer links, keeping only the copyright
+    line, until approved versions replace them (PRELAUNCH.md). Everything else is site/ unchanged."""
+    out = DIST / "production"
+    if out.exists():
+        shutil.rmtree(out)
+    shutil.copytree(SITE, out, ignore=shutil.ignore_patterns(*DRAFT_PAGES))
+    for name in ("index.html", "contact.html"):
+        page = (out / name).read_text(encoding="utf8")
+        assert page.count(DRAFT_FOOTER) == 1, f"draft legal links not found in {name}"
+        page = page.replace(DRAFT_FOOTER, "")
+        assert not re.search(r"privacy\.html|terms\.html|Drafts, pending approval", page), f"draft legal reference left in {name}"
+        (out / name).write_text(page, encoding="utf8")
+    return out
+
+
 def build_package():
-    """Zip layout: docs at the top, the deployable site in site/ so the docs are never served."""
+    """Zip layout: docs at the top, the deployable production site in site/ so the docs are never served."""
+    site = build_production()
     DIST.mkdir(exist_ok=True)
     zpath = DIST / "growth-lab-site.zip"
     top = pathlib.Path("growth-lab-site")
@@ -336,9 +363,9 @@ def build_package():
         z.write(ROOT / "DESIGN_SYSTEM.md", top / "DESIGN_SYSTEM.md")
         z.write(ROOT / "SOURCES.md", top / "SOURCES.md")
         z.write(ROOT / ".env.example", top / ".env.example")
-        for f in sorted(SITE.rglob("*")):
+        for f in sorted(site.rglob("*")):
             if f.is_file():
-                z.write(f, top / "site" / f.relative_to(SITE))
+                z.write(f, top / "site" / f.relative_to(site))
     return zpath
 
 
