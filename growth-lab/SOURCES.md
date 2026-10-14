@@ -4,6 +4,10 @@ Every figure, link and image in the white sections of Make Your Martech Pay (evi
 
 **As at 14 October 2026.**
 
+## Hero copy
+
+Headline, unchanged: "Make your martech investment pay." Body since version 2.6, approved by Neil on 14 October 2026: "Growth Lab helps you get more from your marketing technology, customer data and AI. We find what needs to change, put the improvements in place and keep improving the results." It describes Growth Lab's own work and makes no guarantee.
+
 ## Figures
 
 These are MartechTribe's own figures. They describe MartechTribe's research and the MartechMap, not Growth Lab audits.
@@ -35,12 +39,14 @@ Never claim that Frans attends every Growth Lab audit, an exclusive partnership,
 
 ## Workshops
 
-Source for both: https://martechtribe.com/workshops, checked 14 October 2026, which confirms both formats and their outcomes, and the copy Neil supplied from the Life Insurer Lens v10.
+Source for both: https://martechtribe.com/workshops, checked 14 October 2026, which confirms both formats and their outcomes, and the copy Neil supplied from the Life Insurer Lens v10. Since version 2.6 the wording on the page is Neil's: outcome sentences and bullets phrased as benefits rather than paperwork, with the same underlying deliverables.
 
-| Workshop | Outcome line and duration | The value you get |
-| --- | --- | --- |
-| Value Engineering Workshop | Turn marketing initiatives into boardroom business cases using your own data. Three mornings | A quantified view of business value. An executive ready business case. Ranked investment priorities. A framework your team can reuse |
-| Technology Strategy Workshop | Benchmark your stack against high performing peers and leave with technology priorities and an investment roadmap. Three mornings or one full day | A benchmark against high performing peers. Prioritised technology investments. An investment roadmap. Executive recommendations |
+| Workshop | Outcome sentence | The value you get | Duration on the page |
+| --- | --- | --- | --- |
+| Value Engineering Workshop | Identify the initiatives with the strongest potential return and focus your investment where it matters. | The value at stake, quantified. Investment priorities, ranked by potential return. A clear case for where to invest. A framework your team can reuse | Three mornings or one full day. |
+| Technology Strategy Workshop | See how your stack compares with peers, identify the gaps and set a clear investment roadmap. | A benchmark against high performing peers. Prioritised technology investments. A clear investment roadmap. Recommendations your executives can act on | Three mornings or one full day. |
+
+**Duration, by Neil's instruction (14 October 2026).** Both workshops show "Three mornings or one full day." as the same format. This is Neil's instruction for the page, superseding the earlier source wording that Value Engineering runs over three mornings only. It is not an independently verified public MartechTribe offer: confirm it with MartechTribe before launch (see `PRELAUNCH.md`).
 
 Version 2.4 dropped the method sentence (the Apex Martech Score, GrowTechHQ and MartechTribe's benchmark research) from the Technology Strategy detail so the outcomes read as crisp bullets.
 
@@ -58,6 +64,8 @@ Not on the page since version 2.4 (Neil's refinement removed the retail example 
 | --- | --- | --- | --- |
 | Neil Botha | Founder and Strategy Director, Growth Lab | More than 20 years turning customer strategy, data and martech into measurable growth for South African financial services. | Life Insurer Lens v10, About the authors |
 | Frans Riemersma | Founder, MartechTribe | Produces the MartechMap and writes the annual State of Martech report with Scott Brinker. More than 30 years in consulting. | Life Insurer Lens v10, About the authors |
+
+Section line since version 2.6, Neil's wording: "Neil brings customer strategy and implementation experience. Frans brings deep martech research and benchmarking expertise." It describes what each person brings; it does not claim that both attend every engagement.
 
 ## Contact details
 

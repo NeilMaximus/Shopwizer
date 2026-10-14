@@ -40,13 +40,15 @@
   }
 
   /* Rune. It breathes by default and pauses only while it is known to be off screen, so it
-     still moves in viewers where the observer never reports. */
+     still moves in viewers where the observer never reports. It runs as soon as any part of the band
+     is within 120 px of the viewport, keeps running while partly visible, and rests once it has
+     fully left. */
   function liveRune() {
     var stage = document.querySelector('.rune-stage');
     if (!stage || reduce || !('IntersectionObserver' in window)) { return; }
     new IntersectionObserver(function (entries) {
       for (var i = 0; i < entries.length; i++) { stage.classList.toggle('rune-idle', !entries[i].isIntersecting); }
-    }, { rootMargin: '160px 0px' }).observe(stage);
+    }, { rootMargin: '120px 0px', threshold: [0, 0.01] }).observe(stage);
   }
 
   /* Client logos. One slow, constant drift from left to right (DESIGN_SYSTEM.md, section 10). The

@@ -38,6 +38,7 @@ const PHONE = { display: '+27 84 504 0505', href: 'tel:+27845040505' }; // confi
 
 // Approved copy. It must match DESIGN_SYSTEM.md and SOURCES.md
 const HOME = {
+  heroLead: 'Growth Lab helps you get more from your marketing technology, customer data and AI. We find what needs to change, put the improvements in place and keep improving the results.',
   evidenceH2: 'Your next move shouldn’t take months. Or millions.',
   evidenceLede: 'Considering Deloitte or Accenture for your martech strategy? See what years of benchmark research can tell you before committing to a large consulting engagement.',
   evidenceBody: 'Through MartechTribe, Growth Lab draws on 1,634 benchmarked martech stacks and research across industries since 2017. We bring those patterns into your business to focus the investigation, challenge assumptions and prioritise where to act.',
@@ -45,19 +46,19 @@ const HOME = {
   closing: 'Less time establishing the landscape. More time improving your business.',
   caption: 'Through MartechTribe, Growth Lab draws on 1,634 benchmarked martech stacks and research across industries since 2017.',
   credit: 'Research: MartechTribe. MartechMap © chiefmartec and MartechTribe.',
-  workshopsH2: 'Build the case. Set the priorities.',
-  attribution: 'Two workshops with MartechTribe.',
+  workshopsH2: 'See the opportunity. Know where to act.',
+  workshopsLede: 'Use cross-industry research and your own data to identify opportunities, prioritise investment and plan the next steps.',
   startH2: 'Experience that moves you forward.',
-  startLede: 'We examine your martech, data and customer journeys to find where value is being lost.',
+  startLede: 'Neil brings customer strategy and implementation experience. Frans brings deep martech research and benchmarking expertise.',
 };
 const WORKSHOPS = [
   { name: 'Value Engineering Workshop', icon: '#i-value', colour: 'rgb(119, 97, 255)',
-    outcome: 'Turn marketing initiatives into boardroom business cases using your own data.', duration: 'Three mornings',
-    values: ['A quantified view of business value', 'An executive ready business case', 'Ranked investment priorities', 'A framework your team can reuse'] },
+    outcome: 'Identify the initiatives with the strongest potential return and focus your investment where it matters.', duration: 'Three mornings or one full day.',
+    values: ['The value at stake, quantified', 'Investment priorities, ranked by potential return', 'A clear case for where to invest', 'A framework your team can reuse'] },
   { name: 'Technology Strategy Workshop', icon: '#i-route', colour: 'rgb(255, 78, 78)',
-    outcome: 'Benchmark your stack against high performing peers and leave with technology priorities and an investment roadmap.',
-    duration: 'Three mornings or one full day',
-    values: ['A benchmark against high performing peers', 'Prioritised technology investments', 'An investment roadmap', 'Executive recommendations'] },
+    outcome: 'See how your stack compares with peers, identify the gaps and set a clear investment roadmap.',
+    duration: 'Three mornings or one full day.',
+    values: ['A benchmark against high performing peers', 'Prioritised technology investments', 'A clear investment roadmap', 'Recommendations your executives can act on'] },
 ];
 const PEOPLE = [['Neil Botha', 'Founder and Strategy Director, Growth Lab'], ['Frans Riemersma', 'Founder, MartechTribe']];
 const CONTACT = {
@@ -232,7 +233,7 @@ async function pageChecks(page, tag, opts = {}) {
     const sheetText = [...document.styleSheets].map((s) => { try { return [...s.cssRules].map((r) => r.cssText).join('\n'); } catch (e) { return ''; } }).join('\n');
     const logos = [...document.querySelectorAll('svg.logo')].map((svg) => {
       const r = svg.getBoundingClientRect(); const word = svg.querySelectorAll('path')[3].getBBox();
-      return { viewBox: svg.getAttribute('viewBox'), paths: [...svg.querySelectorAll('path')].map((p) => p.getAttribute('d')),
+      return { where: svg.closest('.site-header') ? 'header' : 'footer', viewBox: svg.getAttribute('viewBox'), paths: [...svg.querySelectorAll('path')].map((p) => p.getAttribute('d')),
         w: r.width, h: r.height, wordmark: word.height * r.height / 70 };
     });
     const anchors = [...document.querySelectorAll('a[href^="#"]')].map((a) => a.getAttribute('href'));
@@ -255,7 +256,8 @@ async function pageChecks(page, tag, opts = {}) {
   const wrongTokens = Object.entries(EXPECTED_TOKENS).filter(([k, v]) => info.tokens[k] !== v).map(([k]) => `${k}=${info.tokens[k]}`);
   check(`${tag} brand and form tokens`, wrongTokens.length === 0, wrongTokens.join(', '));
   check(`${tag} logos use the verified SVG at a legible size`, info.logos.length === 2 && info.logos.every((l) => l.viewBox === '0 0 297 70' &&
-    JSON.stringify(l.paths) === JSON.stringify(logoPaths) && l.h >= 24 && l.h <= 32 && l.wordmark >= 9),
+    JSON.stringify(l.paths) === JSON.stringify(logoPaths) && Math.abs(l.w / l.h - 297 / 70) < 0.02 && l.wordmark >= 9 &&
+    l.h === (l.where === 'header' ? (info.vw <= 560 ? 30 : 36) : (info.vw <= 560 ? 26 : 30))),
     info.logos.map((l) => `${Math.round(l.w)}x${Math.round(l.h)}, wordmark ${l.wordmark.toFixed(1)}px`).join(' and '));
   check(`${tag} anchors resolve`, info.missing.length === 0 && info.deadHash.length === 0, info.missing.join(','));
   const headerTarget = info.vw <= 560 ? 68 : 76;
@@ -282,6 +284,7 @@ async function homeChecks(page, vp) {
     }
     const cta = document.querySelector('#start .start-action a');
     return {
+      hero: { h1: t('.hero h1'), lead: t('.hero .lead') },
       inOrder: order.every((el, i) => i === 0 || (order[i - 1].compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING)),
       grounds: { hero: colour('.hero', 'backgroundColor'), stages: colour('.approach', 'backgroundColor'),
         white: ['#evidence', '#workshops', '#start'].map((s) => colour(s, 'backgroundColor')),
@@ -290,7 +293,9 @@ async function homeChecks(page, vp) {
       numbering: document.querySelectorAll('.stage .num').length + [...document.querySelectorAll('.stage *')].filter((e) => /^0[1-4]$/.test(e.textContent.trim())).length,
       header: { links: [...document.querySelectorAll('.site-header a')].map((a) => `${a.textContent.trim() || a.getAttribute('aria-label')}|${a.getAttribute('href')}|${a.className}`),
         navs: document.querySelectorAll('.site-header nav, .site-header ul').length },
-      evidence: { h2: t('#evidence h2'), lede: t('#evidence .lede'), body: t('#evidence .body'), closing: t('#evidence .closing'),
+      evidence: { h2: t('#evidence h2'), lede: t('#evidence .lede'), ledeColour: cs(document.querySelector('#evidence .lede')).color,
+        ledeSize: parseFloat(cs(document.querySelector('#evidence .lede')).fontSize), ledeWeight: Number(cs(document.querySelector('#evidence .lede')).fontWeight),
+        stageColour: cs(document.querySelector('.stage h2')).color, mapShadow: cs(map).boxShadow, mapFilter: cs(map).filter, mapOpacity: cs(map).opacity, body: t('#evidence .body'), closing: t('#evidence .closing'),
         benefits: [...document.querySelectorAll('#evidence .benefits li')].map((l) => l.textContent.trim()),
         details: document.querySelectorAll('#evidence details, #evidence summary, #evidence .sources, #evidence .proof').length,
         links: document.querySelectorAll('#evidence a').length, visibleText: document.querySelector('#evidence').innerText,
@@ -301,20 +306,22 @@ async function homeChecks(page, vp) {
         figBelow: document.querySelector('#evidence figcaption').getBoundingClientRect().top >= map.getBoundingClientRect().bottom,
         map: { ok: map.complete && map.naturalWidth > 0, ratio: map.naturalWidth / map.naturalHeight, boxRatio: map.getBoundingClientRect().width / map.getBoundingClientRect().height,
           fit: cs(map).objectFit, alt: map.alt, box: box(map) }, copyBox: box(document.querySelector('.evidence-copy')) },
-      workshops: { h2: t('#workshops h2'), attribution: t('#workshops .attribution'),
+      workshops: { h2: t('#workshops h2'), lede: t('#workshops .lede'), disclosure: document.querySelectorAll('#workshops details, #workshops summary').length,
         items: [...document.querySelectorAll('.workshop')].map((w) => {
           const icon = w.querySelector('h3 .w-icon'); const use = icon && icon.querySelector('use');
-          const d = w.querySelector('details');
-          const h3 = w.querySelector('h3');
+          const h3 = w.querySelector('h3'), label = w.querySelector('.value-label'), list = w.querySelector('.value-list'), dur = w.querySelector('.duration');
+          const order = [...w.children].map((c) => c.className || c.tagName.toLowerCase());
           const iconOffset = icon ? icon.getBoundingClientRect().top - h3.getBoundingClientRect().top - (parseFloat(cs(h3).lineHeight) - 28) / 2 : 99;
           return { name: t('h3', w), outcome: t('.outcome', w), duration: t('.duration', w), box: box(w), iconOffset,
             lines: Math.round(h3.getBoundingClientRect().height / parseFloat(cs(h3).lineHeight)),
             icon: use ? use.getAttribute('href') : null, iconColour: icon ? cs(icon).color : null, iconSize: icon ? Math.round(icon.getBoundingClientRect().width) : 0,
-            bullet: getComputedStyle(w.querySelector('.duration'), '::before').backgroundColor,
+            durIcon: dur.querySelector('use').getAttribute('href'), durIconColour: cs(dur.querySelector('svg')).color, durTop: dur.getBoundingClientRect().top + scrollY,
+            durLast: w.lastElementChild === dur && dur.getBoundingClientRect().top >= list.getBoundingClientRect().bottom, order,
             card: [cs(w).backgroundColor, cs(w).boxShadow, cs(w).borderTopLeftRadius].join(' '),
             borderLeft: `${cs(w).borderLeftWidth} ${cs(w).borderLeftStyle}`, borderTop: `${cs(w).borderTopWidth} ${cs(w).borderTopStyle}`,
-            open: d.open, summary: t('summary', d), values: [...d.querySelectorAll('li')].map((l) => l.textContent.trim()),
-            valueBullet: getComputedStyle(d.querySelector('li'), '::before').backgroundColor, images: w.querySelectorAll('img, picture, video, canvas').length };
+            label: label.textContent.trim(), labelTag: label.tagName, labelIcon: label.querySelector('use').getAttribute('href'), labelIconColour: cs(label.querySelector('svg')).color,
+            values: [...list.querySelectorAll('li')].map((l) => l.textContent.trim()), valuesShown: [...list.querySelectorAll('li')].every((l) => l.checkVisibility()),
+            valueBullet: getComputedStyle(list.querySelector('li'), '::before').backgroundColor, images: w.querySelectorAll('img, picture, video, canvas').length };
         }) },
       start: { h2: t('#start h2'), lede: t('#start .lede'), people: [...document.querySelectorAll('.person')].map((p) => {
           const img = p.querySelector('img'); const r = img.getBoundingClientRect();
@@ -343,6 +350,7 @@ async function homeChecks(page, vp) {
     };
   });
 
+  check(`${tag} hero: headline unchanged and the approved body copy`, x.hero.h1 === 'Make your martech investment pay.' && x.hero.lead === HOME.heroLead, x.hero.lead);
   const g = x.grounds;
   check(`${tag} hero white, stages black, new sections white`, g.hero === 'rgb(255, 255, 255)' && g.stages === 'rgb(17, 17, 17)' &&
     g.white.every((c) => c === 'rgb(255, 255, 255)'), `${g.hero}, ${g.stages}, ${g.white.join(', ')}`);
@@ -353,8 +361,8 @@ async function homeChecks(page, vp) {
     Object.entries(ratios).map(([k, v]) => `${k} ${v.toFixed(2)}`).join(', '));
   check(`${tag} no 01 to 04 numbering`, x.numbering === 0);
   check(`${tag} sections in order between the stages and the rune`, x.inOrder);
-  check(`${tag} header: real logo and one action, Book an audit to the contact view, no menu`, x.header.navs === 0 && x.header.links.length === 2 &&
-    x.header.links[1] === 'Book an audit|contact.html|btn btn-dark', x.header.links.join(' ; '));
+  check(`${tag} header: real logo and one action, Let’s Talk to the contact view, no menu`, x.header.navs === 0 && x.header.links.length === 2 &&
+    x.header.links[1] === 'Let’s Talk|contact.html|btn btn-dark', x.header.links.join(' ; '));
 
   const e = x.evidence;
   check(`${tag} research copy word for word: heading, question, paragraph, three bullets, closing line`, e.h2 === HOME.evidenceH2 &&
@@ -367,6 +375,11 @@ async function homeChecks(page, vp) {
     e.captionSize >= 16 && contrast(e.captionColour, 'rgb(255, 255, 255)') >= 7 && (e.visibleText.match(/draws on 1,634 benchmarked martech stacks/g) || []).length === 2,
     `${e.caption} (${e.captionSize}px)`);
   check(`${tag} smaller credit under the caption`, e.credit === HOME.credit, e.credit);
+  check(`${tag} the whole comparison question in the stage headings' coral, as WCAG large text`, e.ledeColour === e.stageColour && e.ledeColour === 'rgb(255, 78, 78)' &&
+    e.ledeSize >= 18.66 && e.ledeWeight >= 700 && contrast(e.ledeColour, 'rgb(255, 255, 255)') >= 3,
+    `${e.ledeColour}, ${e.ledeSize}px ${e.ledeWeight}, ${contrast(e.ledeColour, 'rgb(255, 255, 255)').toFixed(2)}:1`);
+  check(`${tag} a restrained coral glow behind the map, the map itself untouched`, /(rgba\(255, 78, 78, 0\.3\)|color\(srgb 1 0\.30\d* 0\.30\d* \/ 0\.3\))/.test(e.mapShadow) &&
+    e.mapFilter === 'none' && e.mapOpacity === '1', e.mapShadow);
   check(`${tag} map stays whole at 16:9 with no full map link`, !/View the full map/.test(e.visibleText) &&
     e.map.ok && Math.abs(e.map.ratio - 16 / 9) < 0.01 && Math.abs(e.map.boxRatio - 16 / 9) < 0.01 && e.map.fit !== 'cover' &&
     /chiefmartec and MartechTribe/.test(e.map.alt), `${Math.round(e.map.box.w)}x${Math.round(e.map.box.h)}`);
@@ -378,18 +391,22 @@ async function homeChecks(page, vp) {
   }
 
   const w = x.workshops;
-  check(`${tag} workshops: Build the case. Set the priorities., quiet MartechTribe attribution`, w.h2 === HOME.workshopsH2 && w.attribution === HOME.attribution);
+  check(`${tag} workshops: See the opportunity. Know where to act., with the new support line`, w.h2 === HOME.workshopsH2 && w.lede === HOME.workshopsLede, w.lede);
   check(`${tag} workshop names, lines and durations`, w.items.length === 2 && w.items.every((it, i) => it.name === WORKSHOPS[i].name &&
     it.outcome === WORKSHOPS[i].outcome && it.duration === WORKSHOPS[i].duration), w.items.map((it) => `${it.name} / ${it.duration}`).join(' | '));
-  check(`${tag} small coloured line icons match their duration and value bullets`, w.items.every((it, i) => it.icon === WORKSHOPS[i].icon &&
-    it.iconColour === WORKSHOPS[i].colour && it.bullet === WORKSHOPS[i].colour && it.valueBullet === WORKSHOPS[i].colour && it.iconSize === 28),
-    w.items.map((it) => `${it.icon} ${it.iconColour} ${it.iconSize}px, bullet ${it.bullet}`).join(' | '));
+  check(`${tag} small coloured line icons match their value label and bullets; a quiet clock marks the duration`, w.items.every((it, i) => it.icon === WORKSHOPS[i].icon &&
+    it.iconColour === WORKSHOPS[i].colour && it.labelIcon === '#i-target' && it.labelIconColour === WORKSHOPS[i].colour && it.valueBullet === WORKSHOPS[i].colour &&
+    it.iconSize === 28 && it.durIcon === '#i-clock' && it.durIconColour === 'rgb(102, 102, 102)'),
+    w.items.map((it) => `${it.icon} ${it.iconColour} ${it.iconSize}px, label ${it.labelIconColour}, clock ${it.durIconColour}`).join(' | '));
   check(`${tag} each icon sits on its heading's first line`, w.items.every((it) => Math.abs(it.iconOffset) <= 1.5),
     w.items.map((it) => `${it.lines} line(s), offset ${it.iconOffset.toFixed(1)}px`).join(' | '));
-  check(`${tag} The value you get: closed by default with crisp bullets`, w.items.every((it, i) => !it.open && it.summary === 'The value you get' &&
-    JSON.stringify(it.values) === JSON.stringify(WORKSHOPS[i].values)));
+  check(`${tag} no accordion: The value you get and every bullet always visible`, w.disclosure === 0 && w.items.every((it, i) => it.label === 'The value you get' &&
+    it.labelTag === 'H4' && it.valuesShown && JSON.stringify(it.values) === JSON.stringify(WORKSHOPS[i].values)), w.items.map((it) => it.values.join(' / ')).join(' | '));
+  check(`${tag} same order in both: title, outcome, value label, bullets, then the duration last`, w.items.every((it) => it.durLast &&
+    JSON.stringify(it.order) === JSON.stringify(['h3', 'outcome', 'value-label', 'value-list', 'duration'])), w.items.map((it) => it.order.join(' > ')).join(' | '));
   check(`${tag} open columns, no cards, no images, no retail example`, w.items.every((it) => it.card === 'rgba(0, 0, 0, 0) none 0px' && it.images === 0) && x.retail === 0);
   if (vp.width > 760) {
+    check(`${tag} the two durations line up across the columns`, Math.abs(w.items[0].durTop - w.items[1].durTop) < 1, w.items.map((it) => Math.round(it.durTop)).join(', '));
     check(`${tag} workshops side by side with one hairline`, w.items[1].box.l >= w.items[0].box.r - 1 && Math.abs(w.items[0].box.w - w.items[1].box.w) < 2 &&
       w.items[1].borderLeft === '1px solid' && w.items[0].borderLeft === '0px none');
   } else {
@@ -397,7 +414,7 @@ async function homeChecks(page, vp) {
   }
 
   const s = x.start;
-  check(`${tag} Experience that moves you forward. with the approved Diagnose line`, s.h2 === HOME.startH2 && s.lede === HOME.startLede);
+  check(`${tag} Experience that moves you forward. with the line about Neil and Frans`, s.h2 === HOME.startH2 && s.lede === HOME.startLede);
   check(`${tag} Neil and Frans: genuine portraits, identical 96px, separate roles`, s.people.length === 2 && s.people.every((p, i) => p.ok &&
     Math.round(p.w) === 96 && Math.round(p.h) === 96 && p.name === PEOPLE[i][0] && p.role === PEOPLE[i][1]) && s.people[0].style === s.people[1].style &&
     s.people.every((p) => !/audit|jointly|together|attend|every /i.test(p.bio)));
@@ -425,24 +442,6 @@ async function homeChecks(page, vp) {
   }
 }
 
-// Keyboard only: open and close the workshop details with Enter and Space
-async function detailsKeyboard(page, tag) {
-  await page.evaluate(() => { document.activeElement && document.activeElement.blur(); window.scrollTo({ top: 0, behavior: 'instant' }); });
-  await page.focus((await page.$('.clients-toggle:not([hidden])')) ? '.clients-toggle' : '.site-header .btn-dark');
-  const stops = [];
-  for (let i = 0; i < 2; i++) {
-    await page.keyboard.press('Tab');
-    const here = await page.evaluate(() => ({ tag: document.activeElement.tagName, text: document.activeElement.textContent.trim(),
-      ring: getComputedStyle(document.activeElement).outlineStyle }));
-    await page.keyboard.press('Enter');
-    const opened = await page.evaluate((n) => { const d = document.querySelectorAll('.workshop details')[n]; return d.open && d.querySelector('li').checkVisibility(); }, i);
-    await page.keyboard.press('Space');
-    const closed = await page.evaluate(() => [...document.querySelectorAll('details')].every((d) => !d.open));
-    stops.push({ ...here, opened, closed });
-  }
-  check(`${tag} workshop details open and close from the keyboard`, stops.every((st) => st.tag === 'SUMMARY' && st.text === 'The value you get' &&
-    st.ring !== 'none' && st.opened && st.closed), JSON.stringify(stops));
-}
 
 async function fillContact(page, entry) {
   await page.fill('#f-name', entry.name);
@@ -596,7 +595,6 @@ async function apiChecks() {
     await pageChecks(page, `[home ${vp.name}]`, { sizing });
     await loadImages(page);
     await homeChecks(page, vp);
-    await detailsKeyboard(page, `[home ${vp.name}]`);
 
     // Rune breathing: it runs by default while on screen and drifts far enough to see at this width
     await page.locator('.rune-stage').scrollIntoViewIfNeeded();
@@ -604,10 +602,10 @@ async function apiChecks() {
     const drift = await page.evaluate(() => {
       const a = document.querySelector('.rune-a'), anim = a.getAnimations()[0];
       if (!anim) return null;
-      const dur = anim.effect.getTiming().duration, was = anim.currentTime, state = anim.playState;
-      anim.pause(); anim.currentTime = 0;
+      const timing = anim.effect.getTiming(), dur = timing.duration, was = anim.currentTime, state = anim.playState;
+      anim.pause(); anim.currentTime = timing.delay;
       const r0 = a.getBoundingClientRect();
-      anim.currentTime = dur - 1;
+      anim.currentTime = timing.delay + dur - 1;
       const r1 = a.getBoundingClientRect();
       anim.currentTime = was; anim.play();
       return { state, dx: +(r0.left - r1.left).toFixed(1), dy: +(r0.top - r1.top).toFixed(1), idle: document.querySelector('.rune-stage').classList.contains('rune-idle') };
@@ -635,7 +633,8 @@ async function apiChecks() {
       check('[home desktop] rune moves slowly while on screen', t0 !== t1, `${t0} -> ${t1}`);
       const cycle = await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('.rune-a')).animationDuration) * 1000);
       for (const [name, ms] of [['rune-rest', 0], ['rune-peak', cycle - 1]]) {
-        await page.evaluate((tm) => document.getAnimations().forEach((a) => { a.pause(); a.currentTime = tm; }), ms);
+        await page.evaluate((tm) => document.querySelectorAll('.rune path').forEach((el) => el.getAnimations().forEach((a) => {
+          a.pause(); a.currentTime = a.effect.getTiming().delay + tm; })), ms);
         await page.locator('.rune-stage').screenshot({ path: path.join(SHOTS, `${name}.png`) });
       }
       await page.evaluate(() => document.getAnimations().forEach((a) => a.play()));
@@ -654,11 +653,11 @@ async function apiChecks() {
             n: [...document.querySelectorAll('a[href], button, summary')].indexOf(el), ring: cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 2 };
         });
         if (stop && !stops.some((s) => s.n === stop.n)) stops.push(stop);
-        if (stop && stop.label === 'Book an audit' && !fs.existsSync(path.join(SHOTS, 'focus-header.png'))) {
+        if (stop && stop.n === 2 && !fs.existsSync(path.join(SHOTS, 'focus-header.png'))) {
           await page.screenshot({ path: path.join(SHOTS, 'focus-header.png'), clip: { x: 0, y: 0, width: 1440, height: 110 } });
         }
       }
-      const expected = ['Skip to content', 'Growth Lab', 'Book an audit', ...(LOGOS_PRESENT.length ? ['Pause the client logos'] : []), 'The value you get', 'The value you get', 'Let’s Talk',
+      const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', ...(LOGOS_PRESENT.length ? ['Pause the client logos'] : []), 'Let’s Talk',
         'Growth Lab, back to top', 'Privacy', 'Website terms'];
       check('[home desktop] keyboard order follows the page and every stop shows a ring', stops.every((s) => s.ring) &&
         JSON.stringify(stops.map((s) => s.label)) === JSON.stringify(expected), stops.map((s) => s.label + (s.ring ? '' : ' (no ring)')).join(' > '));
@@ -666,11 +665,11 @@ async function apiChecks() {
       // Both actions open the contact view
       await page.click('.site-header .btn-dark');
       await page.waitForURL(/contact\.html$/);
-      check('[home desktop] Book an audit opens the contact view', (await page.textContent('h1')).trim() === CONTACT.h1);
+      check('[home desktop] the header Let’s Talk opens the contact view', (await page.textContent('h1')).trim() === CONTACT.h1);
       await page.goBack();
       await page.click('#start .btn-coral');
       await page.waitForURL(/contact\.html$/);
-      check('[home desktop] Let’s Talk opens the contact view', (await page.textContent('h1')).trim() === CONTACT.h1);
+      check('[home desktop] the section Let’s Talk opens the contact view', (await page.textContent('h1')).trim() === CONTACT.h1);
 
       // Draft legal pages
       for (const p of ['privacy.html', 'terms.html']) {
@@ -826,6 +825,37 @@ async function apiChecks() {
       st.status === `This form cannot send yet. Please email ${RECIPIENT}.` && api.posts === 0 && st.success === null &&
       (await page.evaluate(() => document.getElementById('recaptcha').hidden)), JSON.stringify(st));
     await page.screenshot({ path: path.join(SHOTS, 'contact-not-connected.png'), fullPage: true });
+    await ctx.close();
+  }
+
+  // Rune on partial entry: it must already be moving when only a sliver of the band shows, and rest off screen
+  for (const vp of [{ name: 'desktop', width: 1440, height: 900 }, { name: 'mobile', width: 390, height: 844 }]) {
+    const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: vp.width < 500 ? 2 : 1 });
+    const page = await ctx.newPage();
+    await page.goto(base, { waitUntil: 'load' });
+    await page.waitForTimeout(600);
+    const sliver = await page.evaluate(async () => {
+      const stage = document.querySelector('.rune-stage'), a = document.querySelector('.rune-a');
+      const startIdle = stage.classList.contains('rune-idle');
+      // Scroll so only about 2 percent of the band is inside the viewport
+      const r = stage.getBoundingClientRect();
+      window.scrollTo({ top: r.top + scrollY - innerHeight + r.height * 0.02, behavior: 'instant' });
+      await new Promise((res) => setTimeout(res, 400));
+      const shown = Math.max(0, innerHeight - stage.getBoundingClientRect().top) / stage.getBoundingClientRect().height;
+      const box0 = a.getBoundingClientRect(), y0 = stage.getBoundingClientRect().top;
+      await new Promise((res) => setTimeout(res, 1000));
+      const box1 = a.getBoundingClientRect(), y1 = stage.getBoundingClientRect().top;
+      const moved = Math.hypot(box1.left - box0.left, (box1.top - y1) - (box0.top - y0));
+      const running = a.getAnimations()[0].playState, idle = stage.classList.contains('rune-idle');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      await new Promise((res) => setTimeout(res, 400));
+      const anim = a.getAnimations()[0];
+      return { startIdle, shown: +(shown * 100).toFixed(1), moved: +moved.toFixed(1), running, idle, awayIdle: stage.classList.contains('rune-idle'), awayState: anim.playState,
+        cycle: getComputedStyle(a).animationDuration, keyframe: anim.effect.getKeyframes().slice(-1)[0].transform };
+    });
+    check(`[rune ${vp.name}] already moving with about 2 percent of the band in view, resting when off screen`, sliver.startIdle && sliver.shown > 0 && sliver.shown < 5 &&
+      !sliver.idle && sliver.running === 'running' && sliver.moved >= 2 && sliver.awayIdle && sliver.awayState === 'paused', JSON.stringify(sliver));
+    check(`[rune ${vp.name}] a 12 s breath (6 s each way) with 1.6 units of travel`, sliver.cycle === '6s' && /-1\.6px/.test(sliver.keyframe), `${sliver.cycle}, ${sliver.keyframe}`);
     await ctx.close();
   }
 

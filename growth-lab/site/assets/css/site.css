@@ -38,7 +38,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 button, input, textarea { font: inherit; color: inherit; }
-p, h1, h2, h3, figure, ul, ol, dl, dd { margin: 0; }
+p, h1, h2, h3, h4, figure, ul, ol, dl, dd { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
 h1, h2, h3 { text-wrap: balance; }
 a { color: inherit; }
@@ -84,6 +84,9 @@ a { color: inherit; }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 76px; padding-block: 16px; }
 .logo-link { display: inline-flex; color: var(--gl-ink); border-radius: 6px; }
 .logo { display: block; height: 30px; width: auto; fill: currentColor; }
+/* Header logo 20 percent larger than the footer's (Neil, version 2.6): 36 px, 30 px on phones, inside the
+   same 76 and 68 px headers. Width follows from the 297 by 70 artwork */
+.site-header .logo { height: 36px; }
 
 /* Hero */
 .hero { background: var(--gl-white); padding-block: clamp(32px, 5vw, 72px) var(--gl-section); }
@@ -205,8 +208,10 @@ h1 {
   content: ""; position: absolute; left: 1px; top: calc(0.725em - 4px);
   width: 8px; height: 8px; border-radius: 2px; background: var(--gl-purple);
 }
-/* The question is long: plain wrapping reads better here than the ragged lines of text-wrap: pretty */
-.evidence-copy .lede { text-wrap: wrap; }
+/* The comparison question in the stage headings' brand coral (Neil, version 2.6). Coral on white is
+   3.25:1, so it is set as WCAG large text: bold and at least 19 px (the bar is 18.66 px bold). Plain
+   wrapping reads better here than the ragged lines of text-wrap: pretty */
+.evidence-copy .lede { color: var(--gl-coral); font-size: clamp(19px, 1.5vw, 20px); font-weight: var(--gl-weight-bold); line-height: 1.5; text-wrap: wrap; }
 .evidence-copy .body { margin-top: 16px; max-width: 36em; font-size: var(--gl-text-body); line-height: 1.6; color: var(--gl-ink-2); text-wrap: pretty; }
 .evidence-copy .closing { margin-top: 24px; max-width: 34em; font-size: var(--gl-text-body); line-height: 1.5; font-weight: var(--gl-weight-medium); color: var(--gl-ink); text-wrap: pretty; }
 .map { min-width: 0; }
@@ -214,7 +219,10 @@ h1 {
    recoloured. The ring is a box shadow so it adds no size and the image keeps its exact ratio */
 .map img {
   display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
-  border-radius: var(--gl-radius-image); box-shadow: 0 0 0 1px var(--gl-line); background: var(--gl-panel);
+  border-radius: var(--gl-radius-image); background: var(--gl-panel);
+  /* Hairline ring, then one restrained glow in brand coral behind the map (Neil, version 2.6). The glow
+     sits outside the image, so the map itself is never tinted */
+  box-shadow: 0 0 0 1px var(--gl-line), 0 10px 44px -6px color-mix(in srgb, var(--gl-coral) 30%, transparent);
 }
 /* The caption repeats the research sentence on purpose (Neil, version 2.5): readable body size, the
    benchmark in bold. The credit below it is small print */
@@ -225,9 +233,8 @@ h1 {
 
 /* Workshops: two equal open columns split by one hairline, each with a small coloured line icon
    that matches its duration and value bullets. Value lists sit in native details */
-.attribution { margin-top: 10px; font-size: var(--gl-text-ui); color: var(--gl-ink-3); }
 .workshop-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: clamp(36px, 4.5vw, 56px); }
-.workshop { min-width: 0; padding-right: clamp(28px, 4vw, 64px); }
+.workshop { min-width: 0; display: flex; flex-direction: column; padding-right: clamp(28px, 4vw, 64px); }
 .workshop + .workshop { padding-right: 0; padding-left: clamp(28px, 4vw, 64px); border-left: 1px solid var(--gl-line); }
 .workshop-value { --accent: var(--gl-purple); }
 .workshop-strategy { --accent: var(--gl-coral); }
@@ -238,16 +245,19 @@ h1 {
 /* Centred on the heading's first line, so a heading that wraps keeps its icon at the top */
 .w-icon { flex: none; width: 28px; height: 28px; margin-top: calc(0.6em - 14px); color: var(--accent); }
 .workshop .outcome { margin-top: 12px; max-width: 34em; font-size: 18px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
-.workshop .duration { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: var(--gl-text-ui); font-weight: var(--gl-weight-medium); color: var(--gl-ink); }
-.workshop .duration::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-.workshop details { margin-top: 14px; }
-.workshop summary {
-  cursor: pointer; padding-block: 10px; min-height: 44px; width: fit-content;
-  font-size: var(--gl-text-ui); font-weight: var(--gl-weight-medium); color: var(--gl-ink);
+/* Always open (Neil, version 2.6): outcome, "The value you get" with its bullets, then the duration
+   as the last row. Columns stretch to equal height, so the durations line up across them */
+.workshop .value-label {
+  display: flex; align-items: center; gap: 8px; margin-top: 22px;
+  font-size: var(--gl-text-ui); line-height: 1.4; font-weight: var(--gl-weight-semibold); color: var(--gl-ink);
 }
-.workshop summary::marker { color: var(--accent); }
-.workshop summary:hover { color: var(--gl-ink-2); }
-.value-list { display: grid; gap: 8px; margin-top: 2px; padding-bottom: 4px; }
+.v-icon { flex: none; width: 18px; height: 18px; color: var(--accent); }
+.value-list { display: grid; gap: 8px; margin-top: 10px; }
+.workshop .duration {
+  display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 24px;
+  font-size: var(--gl-text-ui); line-height: 1.4; font-weight: var(--gl-weight-medium); color: var(--gl-ink);
+}
+.d-icon { flex: none; width: 18px; height: 18px; color: var(--gl-ink-3); }
 .value-list li { position: relative; padding-left: 18px; font-size: var(--gl-text-ui); line-height: 1.5; color: var(--gl-ink-2); }
 .value-list li::before {
   content: ""; position: absolute; left: 1px; top: calc(0.75em - 3px);
@@ -275,25 +285,27 @@ h1 {
 .rune-stage {
   --rune-w: min(60vw, 780px);
   position: relative; overflow: hidden;
-  height: calc(var(--rune-w) * 0.05 + var(--rune-w) / 0.8797 * 0.68);
+  height: calc(var(--rune-w) * 0.06 + var(--rune-w) / 0.8797 * 0.68);
   border-bottom: 1px solid var(--gl-line);
 }
 .rune {
-  position: absolute; left: 50%; top: calc(var(--rune-w) * 0.05);
+  position: absolute; left: 50%; top: calc(var(--rune-w) * 0.06);
   width: var(--rune-w); height: auto; aspect-ratio: 32.333 / 36.756;
   transform: translateX(-50%); overflow: visible;
 }
 .rune path { fill: url(#rune-fill); }
 .rune-a, .rune-b { transform-box: fill-box; }
 @media (prefers-reduced-motion: no-preference) {
-  .rune-a { animation: rune-a var(--gl-rune-cycle) var(--gl-ease) infinite alternate; }
-  .rune-b { animation: rune-b var(--gl-rune-cycle) var(--gl-ease) infinite alternate; }
+  /* The negative delay starts each chevron part way into its breath, so the drift is already
+     visible when the band comes into view rather than easing out of a standstill */
+  .rune-a { animation: rune-a var(--gl-rune-cycle) var(--gl-ease-rune) calc(var(--gl-rune-cycle) * -0.4) infinite alternate; }
+  .rune-b { animation: rune-b var(--gl-rune-cycle) var(--gl-ease-rune) calc(var(--gl-rune-cycle) * -0.4) infinite alternate; }
   .rune-stage.rune-idle .rune path { animation-play-state: paused; }
 }
-/* Drift of 1.3 rune units, about 4 percent of its width, so it reads on a phone too.
-   It stays inside the 5 percent headroom above the rune */
-@keyframes rune-a { from { transform: translate(0, 0); } to { transform: translate(-1.3px, -1.3px); } }
-@keyframes rune-b { from { transform: translate(0, 0); } to { transform: translate(1.3px, 1.3px); } }
+/* Drift of 1.6 rune units (version 2.6, up from 1.3), about 5 percent of its width. It stays inside
+   the 6 percent headroom above the rune, so the cropped composition holds */
+@keyframes rune-a { from { transform: translate(0, 0); } to { transform: translate(-1.6px, -1.6px); } }
+@keyframes rune-b { from { transform: translate(0, 0); } to { transform: translate(1.6px, 1.6px); } }
 
 /* Footer: restrained. Logo, copyright and the legal links only */
 .site-footer { background: var(--gl-white); }
@@ -410,6 +422,7 @@ h1 {
 @media (max-width: 560px) {
   .site-header .wrap { min-height: 68px; padding-block: 12px; }
   .logo { height: 26px; }
+  .site-header .logo { height: 30px; }
   .stage { column-gap: 18px; padding-bottom: 44px; }
   .stage .tag { font-size: 17px; }
   .device-card { padding-inline: 8px; }

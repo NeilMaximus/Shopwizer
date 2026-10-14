@@ -1,6 +1,6 @@
 # Growth Lab website design system
 
-Version 2.5, 14 October 2026. Owner: Neil Botha.
+Version 2.6, 14 October 2026. Owner: Neil Botha.
 
 These rules govern every page of the Growth Lab website, starting with Make Your Martech Pay and its contact view. They are durable: follow them by default in every new page, edit and review. Neil requested and approved the changes recorded here. Change a rule only when he asks for it, and record the change in the change log at the end.
 
@@ -28,7 +28,7 @@ The presentation system for decks keeps its own rules. This document covers the 
 1. Concise copy. Every word earns its place. Do not pad, add slogans or invent claims.
 2. A white hero and page with generous space and a clear hierarchy, inspired by the restraint of x.ai/bot, plus one deliberate black section for the four stages. The contact view takes its directness from Isoflow's contact page: a clear heading, a few large labelled fields and one button. Draw inspiration only. Never copy either site's layout, typeface, assets, keys or contact details.
 3. One bold device per section: the value cube in the hero, the line of stage nodes, the MartechMap beside the research, the rune above the footer. Everything around them stays quiet, including the client logo strip at the foot of the hero.
-4. Solid surfaces only. Panels are opaque. No translucency, frosted glass, blur, glows or heavy shadows.
+4. Solid surfaces only. Panels are opaque. No translucency, frosted glass, blur, glows or heavy shadows, with one approved exception: the restrained coral glow behind the MartechMap (section 11).
 5. Motion with a purpose, slow and controlled. Never spinning, bouncing or decorative noise.
 6. One kind of action. Every action on the homepage leads to the contact view.
 
@@ -50,6 +50,8 @@ The presentation system for decks keeps its own rules. This document covers the 
 | Workshop name (H3) | 22 to 26 px | 600 | minus 0.02em | Ink |
 | Person name (H3) | 18 px | 600 | minus 0.01em | Ink, role below in ink 3 |
 | Lead | 18 to 20 px | 400 | 0 | `--gl-ink-2` |
+| Research question | 19 to 20 px | 700 | 0 | Brand coral `--gl-coral`, as WCAG large text (section 11) |
+| "The value you get" | 15 px | 600 | 0 | Ink, with an 18 px target icon in the workshop accent |
 | Benefit bullets | 18 px | 500 | 0 | Ink, small purple square markers |
 | Tagline | 18 px | 600 | minus 0.01em | Two sentences break between sentences |
 | Body | 16 to 17 px | 400 | 0 | Line height 1.6 |
@@ -138,7 +140,8 @@ Measured contrast (WCAG 2.2):
 | Element | Desktop (1440, 1280) | Tablet (834) | Phone (390, 320) |
 | --- | --- | --- | --- |
 | Header | 76 px on every page | 76 px | 68 px |
-| Logo | 30 px high, 127 px wide | 30 px | 26 px high, 110 px wide |
+| Header logo | 36 px high, 153 px wide | 36 px | 30 px high, 127 px wide |
+| Footer logo | 30 px high, 127 px wide | 30 px | 26 px high, 110 px wide |
 | Content width | 1,104 px | 767 px | 350 px, 280 px |
 | Hero H1 | about 60 px | 72 px (stacked) | 38 px, 34 px |
 | Contact H1 | 56 px at 1440, 53 px at 1280 (three lines) | about 57 px (stacked, two lines) | 36 px (three lines) |
@@ -151,7 +154,7 @@ The header keeps one height on every page so the logo does not shift between the
 - Use only the verified vector logo: `site/assets/brand/growthlab-logo.svg`. It is the inline SVG from the live growthlab.co.za header (`role="img"`, `aria-label="growthlab"`, `viewBox="0 0 297 70"`), confirmed by Neil on 14 October 2026 and identical to the copy in the GrowthLab OS prototype.
 - Its four paths are, in order: the rune's two chevrons, the rounded container, and the wordmark.
 - Never retype the name as a placeholder, redraw, stretch or recolour it beyond ink on light grounds (and white on dark grounds if one is ever needed). Keep the 297 by 70 proportions.
-- Logo height 30 px on desktop and tablet, 26 px on phones, in the header and the footer alike. Keep clear space of at least half the logo height around it.
+- In the header the logo is 36 px high (153 px wide) on desktop and tablet and 30 px (127 px) on phones, inside the unchanged 76 and 68 px headers (Neil, version 2.6). In the footer it stays restrained at 30 px, 26 px on phones. Keep clear space of at least half the logo height around it.
 - Inline the SVG in pages so it inherits `currentColor`. `growthlab-mark.svg` (paths 1 to 3) is the favicon.
 
 ## 7. Rune
@@ -174,9 +177,9 @@ The header keeps one height on every page so the logo does not shift between the
 
 ## 10. Components
 
-- **Header:** white, 76 px (68 px on phones). The real logo on the left and one dark "Book an audit" pill on the right that opens the contact view, `contact.html`. No menu or section links. The contact view's header shows the logo only, at the same height, linking home.
+- **Header:** white, 76 px (68 px on phones). The real logo on the left and one dark "Let’s Talk" pill on the right that opens the contact view, `contact.html`. No menu or section links. The contact view's header shows the logo only, at the same height, linking home.
 - **Buttons:**
-  - Dark pill (`--gl-ink`, white 15 px 500 text, 44 px high) for "Book an audit" in the header.
+  - Dark pill (`--gl-ink`, white 15 px 500 text, 44 px high) for "Let’s Talk" in the header (it read "Book an audit" until version 2.6).
   - Coral pill (`--gl-coral`, white 19 px 700 text, 52 px high, `--gl-coral-hover` on hover) for "Let’s Talk", in the getting going section and as the contact form's submit, where it runs full width under 640 px. White on coral is 3.25:1, so the label must stay 19 px bold or larger. Never put smaller or lighter text on coral.
   - Every link, button and summary is at least 24 px each way, and both pills at least 44 px high.
 - **Four stage section:** black `#111111`, full width, `--gl-section` padding top and bottom. Coral heading, white tagline (Geist 600, two sentence taglines break between sentences), body in `--gl-on-black`. No numbers.
@@ -200,25 +203,28 @@ Three white sections sit between the black stages and the rune band, in this ord
 
 - Desktop: copy on the left (about 40 percent), map on the right (about 60 percent), vertically centred. Under 1000 px: copy first, then the map and its caption.
 - Heading: "Your next move shouldn’t take months. Or millions."
-- Lead, the question as worded: "Considering Deloitte or Accenture for your martech strategy? See what years of benchmark research can tell you before committing to a large consulting engagement." Neil chose the named comparison. Keep it a question: never turn it into a claim that those firms always cost millions or take months, and add no prices, timelines, revenue guarantees or predictions.
+- Lead, the question as worded: "Considering Deloitte or Accenture for your martech strategy? See what years of benchmark research can tell you before committing to a large consulting engagement." Neil chose the named comparison. Keep it a question: never turn it into a claim that those firms always cost millions or take months, and add no prices, timelines, revenue guarantees or predictions. The whole question is set in the stage headings' brand coral, `--gl-coral` (`#FF4E4E`), never a substitute red. Coral on white is 3.25:1, so the question must stay WCAG large text: weight 700 at 19 px or more (the bar is 18.66 px bold). Plain text, no panel or box.
 - Paragraph: "Through MartechTribe, Growth Lab draws on 1,634 benchmarked martech stacks and research across industries since 2017. We bring those patterns into your business to focus the investigation, challenge assumptions and prioritise where to act." Write "since 2017", never a count of years that ages.
 - Three bullets with small purple square markers: "Find the gaps worth investigating.", "Challenge spend that isn’t earning its place.", "Prioritise opportunities to grow revenue."
 - Closing line in ink, weight 500: "Less time establishing the landscape. More time improving your business."
-- The MartechMap is vendor artwork. Show it whole at 16:9 with the chiefmartec and MartechTribe credits in the artwork visible: never crop, recolour or stretch it. Hairline ring, 10 px radius (`--gl-radius-image`). No "View the full map" link.
+- The MartechMap is vendor artwork. Show it whole at 16:9 with the chiefmartec and MartechTribe credits in the artwork visible: never crop, recolour or stretch it. Hairline ring, 10 px radius (`--gl-radius-image`), and one restrained glow in the same brand coral behind it (`0 10px 44px -6px`, coral at 30 percent). The glow sits outside the image: never tint, filter or fade the map itself. No "View the full map" link.
 - Caption below the map, repeating the research sentence on purpose (Neil reversed the earlier removal): "Through MartechTribe, Growth Lab draws on **1,634 benchmarked martech stacks** and research across industries since 2017." 16 px, ink 2, the phrase in bold ink. A readable caption, not small print. Below it, in 13 px ink 3: "Research: MartechTribe. MartechMap © chiefmartec and MartechTribe."
 - The map is a vendor landscape, not a chart of the 1,634 benchmarked stacks: never label it as one.
 - No Sources dropdown, separate proof sentence, stat tiles or superlatives on the page. Provenance for every figure lives in `SOURCES.md`. Never attach the 49 categories to the map, and never present MartechTribe's figures as Growth Lab audits.
 
-**Workshops (`#workshops`).** Heading "Build the case. Set the priorities." with the quiet attribution "Two workshops with MartechTribe." in ink 3.
+**Workshops (`#workshops`).** Heading "See the opportunity. Know where to act." Then the support line: "Use cross-industry research and your own data to identify opportunities, prioritise investment and plan the next steps." The research section already credits MartechTribe, so there is no separate attribution line. The message is accessible insight, priorities and revenue opportunity, not laborious business case work, and never that a workshop implements anything or guarantees revenue.
 
 - Two equal open columns split by one vertical hairline, stacked with a horizontal hairline at 760 px and under. No cards, panels or images.
-- Each workshop has one accent: Value Engineering purple, Technology Strategy coral. The accent colours only small graphics: the 28 px line icon beside the name (section 9), the 8 px dot before the duration, the summary marker and the 6 px dots in the value list. Text stays ink.
-- Each column shows the name, one outcome line and the duration ("Three mornings"; "Three mornings or one full day"). The outcomes sit in a native `details` element, "The value you get", closed by default, with the browser's own marker in the accent:
-  - Value Engineering: A quantified view of business value. An executive ready business case. Ranked investment priorities. A framework your team can reuse.
-  - Technology Strategy: A benchmark against high performing peers. Prioritised technology investments. An investment roadmap. Executive recommendations.
+- Both columns follow one structure, everything visible, with no accordion, disclosure, arrow or hidden outcomes:
+  1. The name with its 28 px line icon (section 9).
+  2. One outcome sentence. Value Engineering: "Identify the initiatives with the strongest potential return and focus your investment where it matters." Technology Strategy: "See how your stack compares with peers, identify the gaps and set a clear investment roadmap."
+  3. "The value you get" (an H4, 15 px semibold) with an 18 px target icon in the accent.
+  4. Four short bullets with 6 px accent dots. Value Engineering: The value at stake, quantified. Investment priorities, ranked by potential return. A clear case for where to invest. A framework your team can reuse. Technology Strategy: A benchmark against high performing peers. Prioritised technology investments. A clear investment roadmap. Recommendations your executives can act on.
+  5. The duration as the last row, with an 18 px clock icon in ink 3: "Three mornings or one full day." in both columns (Neil's instruction, see `SOURCES.md`). Columns stretch to equal height so the durations line up side by side; stacked, each follows its own bullets.
+- Each workshop has one accent: Value Engineering purple, Technology Strategy coral. The accent colours only the small graphics (name icon, target icon, bullet dots). Text stays ink.
 - No retail benchmark example, Apex Martech Matrix link or caption on the page.
 
-**Getting going (`#start`).** Heading "Experience that moves you forward." Then the approved Diagnose line: "We examine your martech, data and customer journeys to find where value is being lost."
+**Getting going (`#start`).** Heading "Experience that moves you forward." Then: "Neil brings customer strategy and implementation experience. Frans brings deep martech research and benchmarking expertise." This section makes the people credible; it does not repeat the diagnosis pitch.
 
 - Neil Botha and Frans Riemersma get identical treatment: 96 px black and white portraits with a 14 px radius and hairline ring, then the name, their own separate role and one short credibility line.
 - Desktop: profiles on the right of the heading and button. Under 1000 px: heading, profiles, then the button. At 380 px and under, each portrait sits above its text.
@@ -227,7 +233,7 @@ Three white sections sit between the black stages and the rune band, in this ord
 
 ## 12. Contact view and form
 
-`site/contact.html`, opened by "Book an audit" and "Let’s Talk". Script: `site/assets/js/contact.js`. Sending: `site/api/contact.mjs` (see `DEPLOY.md`).
+`site/contact.html`, opened by both "Let’s Talk" actions (header and getting going). Script: `site/assets/js/contact.js`. Sending: `site/api/contact.mjs` (see `DEPLOY.md`).
 
 **Layout.**
 
@@ -274,7 +280,7 @@ Three white sections sit between the black stages and the rune band, in this ord
 ## 13. Motion
 
 - **Cube build:** on load, after 0.5 s, the cube grows from the core along one axis at a time (0.72 s each, cubic ease in and out), lighting each outcome label and arrow as its axis grows. It then rests.
-- **Rune breathing:** the two chevrons drift apart diagonally by 1.3 units, about 4 percent of the rune's width (31 px at full size, 13 px on a phone), and back, 8 s each way (`--gl-rune-cycle`). Smaller drifts could not be seen on a phone. It runs by default and pauses only while the band is known to be off screen. Its rest position is the true logo geometry, and the 5 percent headroom above the rune keeps the drift uncropped at the top.
+- **Rune breathing (version 2.6):** the two chevrons drift apart diagonally by 1.6 units, about 5 percent of the rune's width (39 px at full size, 16 px on a phone), and back, 6 s each way, so a full breath is 12 s (`--gl-rune-cycle`), on a gentle sine ease (`--gl-ease-rune`). Each chevron starts 40 percent into its breath, so the drift is already visible when the band appears rather than easing out of a standstill. It runs as soon as any part of the band is within 120 px of the viewport, keeps running while partly visible, and rests only once the band has fully left. Its rest position is the true logo geometry, and 6 percent headroom above the rune keeps the larger drift uncropped. No spin, bounce, flash or faster speeds.
 - **Client logo strip:** a slow, constant drift from left to right, approved by Neil for version 2.5. Details in section 10.
 - **Reduced motion:** with `prefers-reduced-motion: reduce`, the cube shows its finished state at once, the rune stays still and the client logos stand still and wrap. Smooth scrolling is off.
 - No other animation without Neil's approval. Never spin, bounce or loop attention grabbing effects.
@@ -323,6 +329,7 @@ Three white sections sit between the black stages and the rune band, in this ord
 
 ## Change log
 
+- **2.6, 14 October 2026.** Neil's final refinement of version 9. The header action reads "Let’s Talk". The research question is set in bold brand coral as WCAG large text, with a restrained coral glow behind the map. Workshops: "See the opportunity. Know where to act." with a support line, new outcome sentences, everything always visible (no accordion), "The value you get" with a target icon, benefit worded bullets, and "Three mornings or one full day." with a clock icon as the last row in both. The people section introduces Neil and Frans instead of repeating the diagnosis line. The rune breathes 25 percent faster with about 23 percent more travel, already in motion as it enters view. Neil then approved two recommendations: the hero body now reads "Growth Lab helps you get more from your marketing technology, customer data and AI. We find what needs to change, put the improvements in place and keep improving the results." (the headline is unchanged), and the header logo is 20 percent larger, 36 px high (30 px on phones), in the same header heights.
 - **2.5, 14 October 2026.** Neil's consolidated changes to version 7. Research section rewritten word for word: "Your next move shouldn’t take months. Or millions.", the Deloitte or Accenture question, the MartechTribe paragraph, three new bullets and a closing line. The Sources dropdown and the separate proof sentence are gone; the map gets a readable caption repeating the research sentence with "1,634 benchmarked martech stacks" in bold, and a small credit. New headings: "Build the case. Set the priorities.", "Experience that moves you forward." and, on the contact view, "Where could your business perform better?" New client logo strip at the foot of the hero, drifting left to right with a pause control and a still version for reduced motion; it shows only genuine logo files.
 - **2.4, 14 October 2026.** Neil's refinement of 2.3. Header: logo and one "Book an audit" action, no menu. Footer: logo and legal line only. The 01 to 04 stage numbers removed. Evidence: "Put independent research to work.", three client benefits, one quiet proof point, the other figures in a closed Sources note, the map without caption or full map link. Workshops: "Start creating value.", small coloured line icons with matching duration and value bullets, "The value you get", the retail example removed. "Let’s get going today." with a coral "Let’s Talk" button. New contact view with the email and Neil's phone (+27 84 504 0505) side by side, five labelled fields, Google reCAPTCHA v2 and a serverless function that sends through Resend and fails closed. Sizing review: one 76 px header on every page (68 px on phones), the contact heading scaled for tablets. New tokens: coral hover, error, field line, bold weight and the 19 px action size.
 - **2.3, 14 October 2026.** Three white sections after the black stages: the benchmark evidence with the MartechMap (40 / 60 split), two workshops with MartechTribe in open columns with native details, and the audit action with Neil and Frans at identical size. One action, "Book an audit", in the header and the audit section; the footer "Talk to us" goes quiet. Apex Martech Matrix linked as a retail example, not embedded. New `SOURCES.md`.
