@@ -208,9 +208,10 @@ h1 {
   content: ""; position: absolute; left: 1px; top: calc(0.725em - 4px);
   width: 8px; height: 8px; border-radius: 2px; background: var(--gl-purple);
 }
-/* Research question and response (Neil, version 2.9): a conversational pair with one treatment, the
-   brand coral at 19 to 20 px bold (WCAG large text: coral on white is 3.25:1, the bar is 18.66 px bold),
-   and one gap, --gl-space-research, from the heading to the question and from the question to the
+/* Research question and response (Neil, versions 2.9 and 2.10): a conversational pair in brand coral at
+   the same 19 to 20 px size and line height. The question is bold (WCAG large text: coral on white is
+   3.25:1, the bar is 18.66 px bold); the response is regular weight on Neil's instruction, a recorded
+   contrast exception (regular coral at this size falls short of WCAG AA's 4.5:1). One gap, --gl-space-research, from the heading to the question and from the question to the
    response. text-box trims each line box to the capitals and the baseline, so the token is the visible
    gap whatever the line heights; browsers without text-box keep the same margins, a few px looser */
 .evidence-copy h2 { text-box: trim-end cap alphabetic; }
@@ -219,7 +220,7 @@ h1 {
   font-size: clamp(19px, 1.5vw, 20px); line-height: 1.4; font-weight: var(--gl-weight-bold); text-wrap: pretty;
 }
 .evidence-copy .question { text-box: trim-both cap alphabetic; }
-.evidence-copy .response { text-box: trim-start cap alphabetic; }
+.evidence-copy .response { text-box: trim-start cap alphabetic; font-weight: var(--gl-weight-regular); }
 .evidence-copy .body { margin-top: 16px; max-width: 34em; font-size: 18px; line-height: 1.55; font-weight: var(--gl-weight-regular); color: var(--gl-ink); text-wrap: pretty; }
 .evidence-copy .benefits { margin-top: 14px; }
 .nowrap { white-space: nowrap; }

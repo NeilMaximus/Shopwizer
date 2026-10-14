@@ -384,9 +384,10 @@ async function homeChecks(page, vp) {
     e.captionSize >= 16 && contrast(e.captionColour, 'rgb(255, 255, 255)') >= 7 && (e.visibleText.match(/draws on 1,634 benchmarked martech stacks/g) || []).length === 1,
     `${e.caption} (${e.captionSize}px)`);
   check(`${tag} smaller credit under the caption`, e.credit === HOME.credit, e.credit);
-  check(`${tag} black heading; question and response in the stage headings' coral as WCAG large text, identical type; sentence and bullets regular dark`,
-    e.h2Colour === 'rgb(17, 17, 17)' && e.coral.every((c) => c.colour === e.stageColour && c.colour === 'rgb(255, 78, 78)' && c.size >= 18.66 && c.weight >= 700) &&
-    e.coral.every((c) => c.tag === 'P' && c.size === e.coral[0].size && c.weight === e.coral[0].weight && c.lineHeight === e.coral[0].lineHeight && c.family === e.coral[0].family) && e.dark.every((d) => d.colour === 'rgb(17, 17, 17)' && d.weight === 400),
+  check(`${tag} black heading; question and response in the stage headings' coral at one size and line height, question bold (WCAG large text), response regular (Neil's recorded exception); sentence and bullets regular dark`,
+    e.h2Colour === 'rgb(17, 17, 17)' && e.coral.every((c) => c.colour === e.stageColour && c.colour === 'rgb(255, 78, 78)' && c.size >= 18.66) &&
+    e.coral[0].weight >= 700 && e.coral[1].weight === 400 &&
+    e.coral.every((c) => c.tag === 'P' && c.size === e.coral[0].size && c.lineHeight === e.coral[0].lineHeight && c.family === e.coral[0].family) && e.dark.every((d) => d.colour === 'rgb(17, 17, 17)' && d.weight === 400),
     e.coral.map((c) => `${c.tag} ${c.size}px ${c.weight} ${c.lineHeight}`).join(', '));
   check(`${tag} equal space, heading to question and question to response (one 24 px token, baseline to capitals)`,
     e.gaps.every((g) => Math.abs(g - 24) <= 1) && Math.abs(e.gaps[0] - e.gaps[1]) <= 1, e.gaps.map((g) => `${Math.round(g * 10) / 10}px`).join(' / '));
