@@ -14,8 +14,8 @@ These are MartechTribe's own figures. They describe MartechTribe's research and 
 
 | On the page | Where | Source | Notes |
 | --- | --- | --- | --- |
-| 1,634 benchmarked martech stacks | The research paragraph, and again in the map caption (in bold), on purpose | https://martechtribe.com/, checked 14 October 2026 | Introduced as "Through MartechTribe, Growth Lab draws on…", so the benchmark is MartechTribe's |
-| Research across industries since 2017 | The same two sentences | https://martechtribe.com/, checked 14 October 2026 | The site also says 9 years. Use "since 2017" so the page does not age |
+| 1,634 benchmarked martech stacks | The map caption (in bold); since version 2.8 no longer in the left column | https://martechtribe.com/, checked 14 October 2026 | Introduced as "Through MartechTribe, Growth Lab draws on…", so the benchmark is MartechTribe's |
+| Research across industries since 2017 | The map caption | https://martechtribe.com/, checked 14 October 2026 | The site also says 9 years. Use "since 2017" so the page does not age |
 
 Since version 2.5 the page shows no other figures. The Sources dropdown is gone; these stay on record for provenance and for any future use:
 
@@ -27,7 +27,9 @@ Since version 2.5 the page shows no other figures. The Sources dropdown is gone;
 
 ## Research copy and the named comparison
 
-The research section is Neil's approved copy of 14 October 2026, word for word. Neil explicitly chose to name Deloitte and Accenture. Since version 2.7 the paragraph reads: "Considering Deloitte or Accenture for your martech strategy? We combine industry research, proven patterns and practical know-how with your own data. Then we pinpoint where your business can improve, prioritise the changes and help you put them into practice." It opens with the question and then describes Growth Lab's own approach; it makes no claim about those firms' prices, timelines or results, and none may be added. The heading "Your next move shouldn’t take months. Or millions." speaks about the visitor's next move, not about those firms.
+The research section is Neil's approved copy of 14 October 2026, word for word. Neil explicitly chose to name Deloitte and Accenture. Since version 2.8 the section reads: the question "Considering Deloitte or Accenture?", then the subheading "Leading independent global martech research, applied to your business.", then "We combine that research with proven patterns, practical know-how and your own data to:" and three bullets (Identify where your business can improve. Prioritise the changes that matter. Help you put them into practice.). The question makes no claim about those firms' prices, timelines or results, and none may be added.
+
+**Positioning, not sourced fact.** "Leading independent global martech research" is Neil's approved marketing description of MartechTribe's research. It is not a ranking from an independent source. What is sourced: 1,634 benchmarked stacks and research since 2017 (martechtribe.com), shown in the map caption. Confirm the wording with MartechTribe before launch (see `PRELAUNCH.md`). The heading "Your next move shouldn’t take months. Or millions." speaks about the visitor's next move, not about those firms.
 
 The map caption repeats the research sentence and is followed by the credit "Research: MartechTribe. MartechMap © chiefmartec and MartechTribe." The map is MartechMap 2026, a vendor landscape; it is not a chart of the 1,634 benchmarked stacks.
 
@@ -62,8 +64,8 @@ Not on the page since version 2.4 (Neil's refinement removed the retail example 
 
 | Person | Role | Line on the page | Source |
 | --- | --- | --- | --- |
-| Neil Botha | Founder and Strategy Director, Growth Lab | More than 20 years turning customer strategy, data and martech into measurable growth for South African financial services. | Life Insurer Lens v10, About the authors |
-| Frans Riemersma | Founder, MartechTribe | Produces the MartechMap and writes the annual State of Martech report with Scott Brinker. More than 30 years in consulting. | Life Insurer Lens v10, About the authors |
+| Neil Botha | Founder and Strategy Director, Growth Lab | More than 20 years turning customer experience strategy, data and martech into measurable growth for South African organisations. | Neil's own wording, 14 October 2026 (updated from the Life Insurer Lens v10 line, which said customer strategy and South African financial services) |
+| Frans Riemersma | Founder, MartechTribe | One of the leading international thinkers in martech. Produces the MartechMap and co-authors the annual State of Martech report with Scott Brinker, drawing on more than 30 years of consulting experience. | Approved by Neil, 14 October 2026. Sourced facts: produces the MartechMap and co-authors State of Martech with Scott Brinker (State of Martech 2026, Brinker and Riemersma), more than 30 years in consulting (Life Insurer Lens v10). "One of the leading international thinkers in martech" is positioning, not an independently sourced ranking; Frans should confirm it before launch |
 
 Section line since version 2.7, Neil's wording: "Neil and Frans combine customer experience strategy, martech research and hands-on implementation to help you turn insights into results." It describes what they bring together; it does not claim that both attend every engagement.
 
