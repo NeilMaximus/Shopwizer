@@ -10,18 +10,22 @@ These are MartechTribe's own figures. They describe MartechTribe's research and 
 
 | On the page | Where | Source | Notes |
 | --- | --- | --- | --- |
-| MartechTribe has benchmarked 1,634 martech stacks. | Main view, the one quiet proof point | https://martechtribe.com/, checked 14 October 2026 | Attributed to MartechTribe in the sentence itself |
-| Martech research across industries since 2017 | Main view, the sentence under the heading | https://martechtribe.com/, checked 14 October 2026 | The site also says 9 years. Use "since 2017" so the page does not age |
-| MartechMap 2026 by chiefmartec and MartechTribe: 15,505 solutions | Sources note | https://martechtribe.com/ (15,505 solutions), checked 14 October 2026, and State of Martech 2026, Brinker and Riemersma | The figure is 15,505. Never 1,500,505, which was a typo in a draft brief |
-| 1,345 features indexed daily across 49 martech categories | Sources note | https://martechtribe.com/ (1,345 features across 49 categories), checked 14 October 2026 | "Indexed daily" is the wording of Neil's brief of 14 October 2026; confirm it with MartechTribe before launch. Never attached to the map: equivalence with the map's categories is not verified |
-| Advised 200+ global brands | Sources note | https://martechtribe.com/ (200+ brands), checked 14 October 2026 | "Advised" is the wording of Neil's approved copy, from the Life Insurer Lens v10 |
+| 1,634 benchmarked martech stacks | The research paragraph, and again in the map caption (in bold), on purpose | https://martechtribe.com/, checked 14 October 2026 | Introduced as "Through MartechTribe, Growth Lab draws on…", so the benchmark is MartechTribe's |
+| Research across industries since 2017 | The same two sentences | https://martechtribe.com/, checked 14 October 2026 | The site also says 9 years. Use "since 2017" so the page does not age |
 
-The Sources note on the page reads: "MartechMap 2026 by chiefmartec and MartechTribe: 15,505 solutions. MartechTribe also indexes 1,345 features daily across 49 martech categories and has advised 200+ global brands. Figures from martechtribe.com, as at 14 October 2026." The link opens martechtribe.com in a new tab.
+Since version 2.5 the page shows no other figures. The Sources dropdown is gone; these stay on record for provenance and for any future use:
 
-## Wording to confirm
+| Figure | Source | Notes |
+| --- | --- | --- |
+| MartechMap 2026 by chiefmartec and MartechTribe: 15,505 solutions | https://martechtribe.com/ (15,505 solutions), checked 14 October 2026, and State of Martech 2026, Brinker and Riemersma | The figure is 15,505. Never 1,500,505, which was a typo in a draft brief |
+| 1,345 features across 49 martech categories | https://martechtribe.com/, checked 14 October 2026 | "Indexed daily" was the wording of Neil's brief; confirm it with MartechTribe before any reuse. Never attach the 49 categories to the map |
+| 200+ global brands advised | https://martechtribe.com/ (200+ brands), checked 14 October 2026 | "Advised" is the wording of Neil's approved copy, from the Life Insurer Lens v10 |
 
-- **"Put independent research to work."** Neil's heading of 14 October 2026. "Independent" describes MartechTribe's research. Confirm with Frans Riemersma that MartechTribe is comfortable with the word before launch (see `PRELAUNCH.md`).
-- **"Indexed daily"**, as above.
+## Research copy and the named comparison
+
+The research section is Neil's approved copy of 14 October 2026, word for word. Neil explicitly chose to name Deloitte and Accenture. The line is a question ("Considering Deloitte or Accenture for your martech strategy?") followed by an invitation; it makes no claim about their prices, timelines or results, and none may be added. The heading "Your next move shouldn’t take months. Or millions." speaks about the visitor's next move, not about those firms.
+
+The map caption repeats the research sentence and is followed by the credit "Research: MartechTribe. MartechMap © chiefmartec and MartechTribe." The map is MartechMap 2026, a vendor landscape; it is not a chart of the 1,634 benchmarked stacks.
 
 ## Relationship wording
 
@@ -75,9 +79,33 @@ All taken from the media of the private Life Insurer Lens v10 artifact (https://
 
 The 4096 px full map was removed in version 2.4 with the "View the full map" link.
 
+## Client logos
+
+Approved by Neil for version 2.5. Each logo must be the genuine artwork from the source below, prepared as a clean black variant on transparent without changing its geometry, and saved in `site/assets/clients/` under the file name in `config/client-logos.json`. `scripts/build.py` shows only the files that are present and names the rest.
+
+Neil's folder `/Users/neilbotha/Desktop/Client logos/client-logos` holds black and white SVG and PNG variants of the first ten, with its own `SOURCES.txt` and `contact-sheet.png`. That package has not reached this project yet.
+
+| Brand | Source | Status, 14 October 2026 |
+| --- | --- | --- |
+| Sanlam | https://upload.wikimedia.org/wikipedia/en/6/67/Sanlam_logo.svg | Missing: host blocked by this environment's network policy; awaiting Neil's package |
+| KFC | https://upload.wikimedia.org/wikipedia/commons/2/26/KFC_Logo_2026.svg (or the original https://upload.wikimedia.org/wikipedia/commons/b/bf/KFC_logo.svg; confirm which is current) | Missing: as above |
+| Old Mutual | https://upload.wikimedia.org/wikipedia/en/5/5c/Old_Mutual.svg | Missing: as above |
+| Philips | https://upload.wikimedia.org/wikipedia/commons/5/52/Philips_logo_new.svg | Missing: as above |
+| Santam | https://upload.wikimedia.org/wikipedia/en/7/75/Santam_logo.svg | Missing: as above |
+| Sportsmans Warehouse | Official site, https://www.sportsmanswarehouse.co.za/ (not in Neil's folder) | Missing: host blocked; needs sourcing from the official site |
+| Momentum | Inline header SVG `#mom-logo-svg` on https://www.momentum.co.za | Missing: host blocked; awaiting Neil's package |
+| Famous Brands | Official site, https://famousbrands.co.za/ (not in Neil's folder) | Missing: host blocked; needs sourcing from the official site |
+| Telesure | https://tihsa.co.za/wp-content/uploads/2024/06/TIH-logo_without-descriptor.png | Missing: host blocked; awaiting Neil's package |
+| Multiply | https://www.multiply.co.za/static-assets/images/multiply-logo.svg | Missing: as above |
+| Budget Insurance | https://blobs.digitalcdn.co.za/production-budget-marketing/Angular/assets/Images/logo.svg | Missing: as above |
+| First for Women | https://www.firstforwomen.co.za/img/logo.png | Missing: as above |
+
+Neil's Google Drive holds older logo files (a 2019 "Client Logos" folder with Illustrator and EPS files, one from a logo aggregator site, and some single files). They were not used: their sources and currency do not match the inventory above.
+
 ## Not used, and why
 
 - "The world's richest martech benchmark dataset across every industry": no source ranks the dataset against others or shows coverage of every industry.
 - The Lens v10 heading "Martech audits in numbers": it presented MartechTribe's figures as audit counts.
-- Five large statistic tiles, and the "MartechTribe indexes..." paragraph in the main view: client benefits lead, and the figures support them from the Sources note.
-- Pricing from older plans, testimonials and client logos: not approved for this page.
+- Five large statistic tiles, a Sources dropdown and a separate proof sentence: removed in favour of Neil's research copy and the map caption.
+- Prices, timelines or results attributed to Deloitte, Accenture or any other firm: not verified, and not part of Neil's approved question.
+- Pricing from older plans and testimonials: not approved for this page.

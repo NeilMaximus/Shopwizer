@@ -87,6 +87,33 @@ a { color: inherit; }
 
 /* Hero */
 .hero { background: var(--gl-white); padding-block: clamp(32px, 5vw, 72px) var(--gl-section); }
+/* Client logo strip at the foot of the hero: quiet credibility with room around it. Logos share one
+   row height (scaled per logo in config/client-logos.json for equal optical weight), never stretched
+   or cropped. Moving: one row drifting left to right under soft edge fades. Still (reduced motion or
+   no script): the same logos centred and wrapping. */
+.hero:has(.clients) { padding-bottom: clamp(56px, 7vw, 96px); }
+.clients { --logo-h: 30px; --clients-gap: clamp(48px, 5.5vw, 80px); display: flex; flex-direction: column; margin-top: clamp(64px, 8vw, 112px); }
+.clients-set { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 24px var(--clients-gap); }
+.clients-set li { flex: none; display: flex; align-items: center; justify-content: center; height: calc(var(--logo-h) * 1.6); }
+.clients-set img { display: block; width: auto; max-width: none; height: calc(var(--logo-h) * var(--logo-scale, 1)); }
+.clients.is-moving .clients-viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.clients.is-moving .clients-track { display: flex; gap: var(--clients-gap); width: max-content; will-change: transform; }
+.clients.is-moving .clients-set { flex-wrap: nowrap; justify-content: flex-start; }
+.clients-toggle {
+  align-self: flex-end; display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+  min-height: 32px; padding: 4px 12px 4px 10px; border: 0; border-radius: var(--gl-radius-pill);
+  background: transparent; color: var(--gl-ink-3); font-size: var(--gl-text-small); font-weight: var(--gl-weight-medium); cursor: pointer;
+}
+.clients-toggle[hidden] { display: none; }
+.clients-toggle:hover { background: var(--gl-panel); color: var(--gl-ink); }
+.clients-toggle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.clients-toggle .i-play { display: none; fill: currentColor; stroke: none; }
+.clients.is-paused .clients-toggle .i-pause { display: none; }
+.clients.is-paused .clients-toggle .i-play { display: block; }
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
@@ -172,18 +199,16 @@ h1 {
 
 /* Evidence: client benefits first; MartechTribe's figures support them, quietly */
 .evidence-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: clamp(40px, 5vw, 80px); align-items: center; }
-.benefits { margin-top: 24px; display: grid; gap: 12px; }
+.benefits { margin-top: 22px; display: grid; gap: 12px; }
 .benefits li { position: relative; padding-left: 24px; font-size: 18px; line-height: 1.45; font-weight: var(--gl-weight-medium); color: var(--gl-ink); text-wrap: pretty; }
 .benefits li::before {
   content: ""; position: absolute; left: 1px; top: calc(0.725em - 4px);
   width: 8px; height: 8px; border-radius: 2px; background: var(--gl-purple);
 }
-.proof { margin-top: 24px; font-size: var(--gl-text-ui); line-height: 1.5; color: var(--gl-ink-3); }
-.sources { margin-top: 4px; font-size: var(--gl-text-small); line-height: 1.55; color: var(--gl-ink-3); }
-.sources summary { cursor: pointer; width: fit-content; padding-block: 4px; }
-.sources summary:hover { color: var(--gl-ink); }
-.sources p { margin-top: 4px; max-width: 46em; text-wrap: pretty; }
-.sources a { color: inherit; text-decoration: underline; text-underline-offset: 3px; display: inline-block; padding-block: 2px; }
+/* The question is long: plain wrapping reads better here than the ragged lines of text-wrap: pretty */
+.evidence-copy .lede { text-wrap: wrap; }
+.evidence-copy .body { margin-top: 16px; max-width: 36em; font-size: var(--gl-text-body); line-height: 1.6; color: var(--gl-ink-2); text-wrap: pretty; }
+.evidence-copy .closing { margin-top: 24px; max-width: 34em; font-size: var(--gl-text-body); line-height: 1.5; font-weight: var(--gl-weight-medium); color: var(--gl-ink); text-wrap: pretty; }
 .map { min-width: 0; }
 /* Vendor artwork: shown whole at its own 16 by 9 with the credit band it carries, never cropped or
    recoloured. The ring is a box shadow so it adds no size and the image keeps its exact ratio */
@@ -191,6 +216,12 @@ h1 {
   display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
   border-radius: var(--gl-radius-image); box-shadow: 0 0 0 1px var(--gl-line); background: var(--gl-panel);
 }
+/* The caption repeats the research sentence on purpose (Neil, version 2.5): readable body size, the
+   benchmark in bold. The credit below it is small print */
+.map figcaption { margin-top: 16px; }
+.map-caption { max-width: 40em; font-size: 16px; line-height: 1.55; color: var(--gl-ink-2); text-wrap: pretty; }
+.map-caption strong { font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
+.map-credit { margin-top: 6px; font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3); }
 
 /* Workshops: two equal open columns split by one hairline, each with a small coloured line icon
    that matches its duration and value bullets. Value lists sit in native details */
@@ -277,9 +308,11 @@ h1 {
 /* Contact view: heading and direct details on the left, the form on a light grey panel on the right */
 .contact { padding-block: clamp(32px, 5vw, 72px) clamp(64px, 8vw, 112px); }
 .contact-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: clamp(40px, 5vw, 80px); align-items: start; }
-/* Scales with the screen so the stacked tablet layout keeps a confident heading; never above the
-   homepage hero's desktop size or below 36 px */
+/* "Where could your business perform better?" Stacked (under 1000 px) it scales with the screen: two
+   lines on tablets, three on phones. Beside the form it is sized to three balanced lines in its
+   column: 56 px at 1440, 48 px at 1024. Never a small subheading */
 .contact h1 { font-size: clamp(36px, 6.8vw, 60px); line-height: 1.04; text-wrap: balance; }
+@media (min-width: 1000px) { .contact h1 { font-size: clamp(48px, calc(1.92vw + 28.3px), 56px); } }
 .contact .lead { margin-top: 20px; max-width: 26em; }
 /* Email and phone side by side where they fit, stacked on phones */
 .contact-details { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--gl-line); display: flex; flex-wrap: wrap; gap: 16px 48px; }
@@ -370,6 +403,7 @@ h1 {
   .foot-row { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 640px) {
+  .clients { --logo-h: 24px; --clients-gap: 40px; }
   .fields { grid-template-columns: minmax(0, 1fr); }
   .form-actions .btn-coral { width: 100%; }
 }

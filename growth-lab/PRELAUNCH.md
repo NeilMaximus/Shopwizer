@@ -16,7 +16,9 @@ The site is ready to preview, not to publish. Clear every item below, with legal
 - [ ] Copyright line reads "© 2026 Growth Lab". Change it if the approved entity name should appear instead.
 - [ ] Logo: the inline SVG is the verified live growthlab.co.za artwork (confirmed 14 October 2026). Re-check if the brand team issues a newer master.
 - [ ] MartechTribe figures: re-check them on martechtribe.com shortly before launch and update the page, its as at date and `SOURCES.md` together.
-- [ ] Frans Riemersma and MartechTribe confirm the wording about them, including the heading "Put independent research to work." and "indexes 1,345 features daily", his portrait, the workshop descriptions and the use of the MartechMap image on Growth Lab's own site.
+- [ ] Frans Riemersma and MartechTribe confirm the wording about them, including the research paragraph and map caption ("Through MartechTribe, Growth Lab draws on 1,634 benchmarked martech stacks…") and the credit line, his portrait, the workshop descriptions and the use of the MartechMap image on Growth Lab's own site.
+- [ ] The research heading names Deloitte and Accenture in a question, as Neil chose. Consider a quick legal read of the comparison before launch.
+- [ ] **Client logos.** Add the twelve genuine logos to `site/assets/clients/` (black variants on transparent, names in `config/client-logos.json`), run `python3 scripts/build.py` and check the strip on desktop and a phone, adjusting each logo's `scale` for even weight and the speed if needed. Ten are in Neil's folder; Sportsmans Warehouse and Famous Brands must come from their official sites. Confirm Growth Lab may show each client's logo.
 - [x] Phone number: Neil confirmed +27 84 504 0505 on 14 October 2026. It shows on the contact view beside the email.
 
 ## Contact form (blocking for online enquiries)

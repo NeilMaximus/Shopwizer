@@ -1,6 +1,6 @@
 # Growth Lab website design system
 
-Version 2.4, 14 October 2026. Owner: Neil Botha.
+Version 2.5, 14 October 2026. Owner: Neil Botha.
 
 These rules govern every page of the Growth Lab website, starting with Make Your Martech Pay and its contact view. They are durable: follow them by default in every new page, edit and review. Neil requested and approved the changes recorded here. Change a rule only when he asks for it, and record the change in the change log at the end.
 
@@ -27,7 +27,7 @@ The presentation system for decks keeps its own rules. This document covers the 
 
 1. Concise copy. Every word earns its place. Do not pad, add slogans or invent claims.
 2. A white hero and page with generous space and a clear hierarchy, inspired by the restraint of x.ai/bot, plus one deliberate black section for the four stages. The contact view takes its directness from Isoflow's contact page: a clear heading, a few large labelled fields and one button. Draw inspiration only. Never copy either site's layout, typeface, assets, keys or contact details.
-3. One bold device per section: the value cube in the hero, the line of stage nodes, the MartechMap beside the evidence, the rune above the footer. Everything around them stays quiet.
+3. One bold device per section: the value cube in the hero, the line of stage nodes, the MartechMap beside the research, the rune above the footer. Everything around them stays quiet, including the client logo strip at the foot of the hero.
 4. Solid surfaces only. Panels are opaque. No translucency, frosted glass, blur, glows or heavy shadows.
 5. Motion with a purpose, slow and controlled. Never spinning, bouncing or decorative noise.
 6. One kind of action. Every action on the homepage leads to the contact view.
@@ -44,7 +44,7 @@ The presentation system for decks keeps its own rules. This document covers the 
 | Role | Size | Weight | Tracking | Notes |
 | --- | --- | --- | --- | --- |
 | Display (H1, hero) | sized to its column, about 60 px on desktop, 34 px minimum | 600 | minus 0.035em | Two lines on desktop, `text-wrap: balance` |
-| Contact heading (H1) | 36 to 60 px, scaling with the screen | 600 | minus 0.035em | `text-wrap: balance` |
+| Contact heading (H1) | 48 to 56 px beside the form (three lines), 36 to 60 px stacked | 600 | minus 0.035em | `text-wrap: balance`. Never shrunk to a subheading |
 | Stage name (H2) | 28 to 34 px | 600 | minus 0.02em | Brand coral |
 | Section heading (H2, white sections) | 30 to 40 px | 600 | minus 0.02em | Ink, `text-wrap: balance` |
 | Workshop name (H3) | 22 to 26 px | 600 | minus 0.02em | Ink |
@@ -57,7 +57,8 @@ The presentation system for decks keeps its own rules. This document covers the 
 | Coral action label | 19 px | 700 | minus 0.005em | White on coral. Large text by WCAG only at this size and weight |
 | Form fields | 16 px | 400 | 0 | 16 px so phones do not zoom on focus |
 | Field errors | 14 px | 500 | 0 | `--gl-error` |
-| Small print | 13 px | 400 | 0 | Footer legal line, the Sources note, contact detail labels |
+| Map caption | 16 px | 400, the benchmark 600 | 0 | Ink 2, the bold phrase in ink |
+| Small print | 13 px | 400 | 0 | Footer legal line, the map credit, contact detail labels, the logo strip control |
 
 ## 4. Colour
 
@@ -115,7 +116,7 @@ Measured contrast (WCAG 2.2):
 | Section | Ground |
 | --- | --- |
 | Header | White |
-| Hero ("Make your martech investment pay.") | White. The value cube sits on a light grey panel inside it |
+| Hero ("Make your martech investment pay.") | White. The value cube sits on a light grey panel inside it, and the client logo strip runs along its foot, on white |
 | Four stages (Diagnose, Prioritise, Unlock, Optimise) | **Black `#111111`, full width.** Purple icon tiles and connecting arrows, coral headings, white semibold taglines, light grey body text, no numbers. All Geist Sans |
 | Evidence, workshops and getting going (after the stages) | White, separated by hairlines inside the content width. No cards, tiles or grey panels. See section 11 |
 | Rune band | White, with the faint grey rune cropped by the hairline |
@@ -140,7 +141,7 @@ Measured contrast (WCAG 2.2):
 | Logo | 30 px high, 127 px wide | 30 px | 26 px high, 110 px wide |
 | Content width | 1,104 px | 767 px | 350 px, 280 px |
 | Hero H1 | about 60 px | 72 px (stacked) | 38 px, 34 px |
-| Contact H1 | 60 px | about 57 px (stacked) | 36 px |
+| Contact H1 | 56 px at 1440, 53 px at 1280 (three lines) | about 57 px (stacked, two lines) | 36 px (three lines) |
 | Body | 17 px | 17 px | 17 px |
 
 The header keeps one height on every page so the logo does not shift between the homepage and the contact view, and the 44 px header button has even 16 px clearance (12 px on phones).
@@ -179,6 +180,14 @@ The header keeps one height on every page so the logo does not shift between the
   - Coral pill (`--gl-coral`, white 19 px 700 text, 52 px high, `--gl-coral-hover` on hover) for "Let’s Talk", in the getting going section and as the contact form's submit, where it runs full width under 640 px. White on coral is 3.25:1, so the label must stay 19 px bold or larger. Never put smaller or lighter text on coral.
   - Every link, button and summary is at least 24 px each way, and both pills at least 44 px high.
 - **Four stage section:** black `#111111`, full width, `--gl-section` padding top and bottom. Coral heading, white tagline (Geist 600, two sentence taglines break between sentences), body in `--gl-on-black`. No numbers.
+- **Client logo strip:** at the foot of the white hero, before the black stages, as quiet credibility rather than an extra panel. Rules:
+  - **Logos:** the twelve brands in `config/client-logos.json` (Sanlam, KFC, Old Mutual, Philips, Santam, Sportsmans Warehouse, Momentum, Famous Brands, Telesure, Multiply, Budget Insurance, First for Women). Each is a genuine logo from the source recorded in `SOURCES.md`, as a clean black variant on transparent, in `site/assets/clients/`. Never redraw, retype, stretch, crop or substitute a sub brand. A brand without a genuine file is left out and named as missing by the build and in the page source.
+  - **Size:** one stable row height (30 px logos on desktop, 24 px on phones, in a row 1.6 times that), with a per logo `scale` in the manifest to even out optical weight. Gaps of 48 to 80 px (40 px on phones). No cards, labels or claims.
+  - **Space:** 64 to 112 px above the strip; the hero's bottom padding drops to 56 to 96 px when it is there.
+  - **Motion:** one row drifting left to right, slow and constant: 20 CSS px a second on desktop, 18 under 640 px, linear, endlessly. The duration is calculated from the measured width of one set, and the track holds enough identical copies that travelling exactly one set returns to an identical picture, so there is no acceleration or visible reset. Soft 7 percent edge fades. It rests while off screen.
+  - **Control:** a small "Pause" button (13 px, ink 3, 32 px high) below the strip on the right, which becomes "Play"; its accessible name is "Pause the client logos" or "Play the client logos". The strip also holds still on hover and while the control has focus.
+  - **Still version:** with reduced motion or without the script, there are no copies and no control, and the logos stand still, centred and wrapping.
+  - **Screen readers:** one list labelled "Clients", one image per brand with the brand name as alt text. Copies are `aria-hidden`, `inert` and have empty alt text.
 - **Footer:** white, restrained. The logo, then the legal line: copyright, Privacy, Website terms and the "Drafts, pending approval" note. No section links, email pill or copy button. On the homepage it sits under the rune band; on the contact view it starts with a hairline.
 - **Offline copies:** the private Claude preview and the browser files cannot send email. Their contact view runs in preview mode (section 12). The Claude preview also shows the email address and phone number as plain text, because the artifact viewer can go blank after an email or phone link, and points links home to `index.html`. The browser files keep working email and phone links. `scripts/build.py` makes these changes and fails if they stop matching.
 - **Draft legal pages:** generated from `legal/*.md`, marked "Draft for review. Not approved and not yet in force", `noindex`, with CONFIRM placeholders highlighted.
@@ -187,17 +196,20 @@ The header keeps one height on every page so the logo does not shift between the
 
 Three white sections sit between the black stages and the rune band, in this order. Each has one job and one H2, with no eyebrow, tiles, counters or scroll effects. Hairlines inside the content width separate them. Every figure, link and image is recorded in `SOURCES.md` with its as at date.
 
-**Evidence (`#evidence`).** Client benefits first. MartechTribe's figures support them, quietly.
+**Research (`#evidence`).** Neil's approved copy, word for word (version 2.5).
 
-- Desktop: copy on the left (about 40 percent), map on the right (about 60 percent), vertically centred. Under 1000 px: copy first, then the map.
-- Heading "Put independent research to work." Then "Growth Lab works with MartechTribe, drawing on martech research across industries since 2017." Write "since 2017", never a count of years that ages.
-- Three benefits as short bullets with small purple square markers: "See where your stack underperforms.", "Prioritise the investments that matter.", "Build a clearer case for change."
-- One quiet proof point in ink 3: "MartechTribe has benchmarked 1,634 martech stacks."
-- Everything else sits in a closed native `details` note, "Sources", in small print: MartechMap 2026 by chiefmartec and MartechTribe with 15,505 solutions; 1,345 features indexed daily across 49 martech categories; 200+ global brands advised; the link to martechtribe.com and the as at date. The solutions figure is 15,505.
-- The MartechMap is vendor artwork. Show it whole at 16:9 with the chiefmartec and MartechTribe credits in the artwork visible: never crop, recolour or stretch it. Hairline ring, 10 px radius (`--gl-radius-image`). No caption and no "View the full map" link; the attribution sits in the Sources note and the image's alt text.
-- Never attach the 49 categories to the map, and never present the map or MartechTribe's figures as Growth Lab audits. No stat tiles, and no superlatives such as "the world's richest".
+- Desktop: copy on the left (about 40 percent), map on the right (about 60 percent), vertically centred. Under 1000 px: copy first, then the map and its caption.
+- Heading: "Your next move shouldn’t take months. Or millions."
+- Lead, the question as worded: "Considering Deloitte or Accenture for your martech strategy? See what years of benchmark research can tell you before committing to a large consulting engagement." Neil chose the named comparison. Keep it a question: never turn it into a claim that those firms always cost millions or take months, and add no prices, timelines, revenue guarantees or predictions.
+- Paragraph: "Through MartechTribe, Growth Lab draws on 1,634 benchmarked martech stacks and research across industries since 2017. We bring those patterns into your business to focus the investigation, challenge assumptions and prioritise where to act." Write "since 2017", never a count of years that ages.
+- Three bullets with small purple square markers: "Find the gaps worth investigating.", "Challenge spend that isn’t earning its place.", "Prioritise opportunities to grow revenue."
+- Closing line in ink, weight 500: "Less time establishing the landscape. More time improving your business."
+- The MartechMap is vendor artwork. Show it whole at 16:9 with the chiefmartec and MartechTribe credits in the artwork visible: never crop, recolour or stretch it. Hairline ring, 10 px radius (`--gl-radius-image`). No "View the full map" link.
+- Caption below the map, repeating the research sentence on purpose (Neil reversed the earlier removal): "Through MartechTribe, Growth Lab draws on **1,634 benchmarked martech stacks** and research across industries since 2017." 16 px, ink 2, the phrase in bold ink. A readable caption, not small print. Below it, in 13 px ink 3: "Research: MartechTribe. MartechMap © chiefmartec and MartechTribe."
+- The map is a vendor landscape, not a chart of the 1,634 benchmarked stacks: never label it as one.
+- No Sources dropdown, separate proof sentence, stat tiles or superlatives on the page. Provenance for every figure lives in `SOURCES.md`. Never attach the 49 categories to the map, and never present MartechTribe's figures as Growth Lab audits.
 
-**Workshops (`#workshops`).** Heading "Start creating value." with the quiet attribution "Two workshops with MartechTribe." in ink 3.
+**Workshops (`#workshops`).** Heading "Build the case. Set the priorities." with the quiet attribution "Two workshops with MartechTribe." in ink 3.
 
 - Two equal open columns split by one vertical hairline, stacked with a horizontal hairline at 760 px and under. No cards, panels or images.
 - Each workshop has one accent: Value Engineering purple, Technology Strategy coral. The accent colours only small graphics: the 28 px line icon beside the name (section 9), the 8 px dot before the duration, the summary marker and the 6 px dots in the value list. Text stays ink.
@@ -206,7 +218,7 @@ Three white sections sit between the black stages and the rune band, in this ord
   - Technology Strategy: A benchmark against high performing peers. Prioritised technology investments. An investment roadmap. Executive recommendations.
 - No retail benchmark example, Apex Martech Matrix link or caption on the page.
 
-**Getting going (`#start`).** Heading "Let’s get going today." Then the approved Diagnose line: "We examine your martech, data and customer journeys to find where value is being lost."
+**Getting going (`#start`).** Heading "Experience that moves you forward." Then the approved Diagnose line: "We examine your martech, data and customer journeys to find where value is being lost."
 
 - Neil Botha and Frans Riemersma get identical treatment: 96 px black and white portraits with a 14 px radius and hairline ring, then the name, their own separate role and one short credibility line.
 - Desktop: profiles on the right of the heading and button. Under 1000 px: heading, profiles, then the button. At 380 px and under, each portrait sits above its text.
@@ -221,7 +233,7 @@ Three white sections sit between the black stages and the rune band, in this ord
 
 - Header with the logo only; the restrained footer after a hairline.
 - Desktop: the introduction on the left (about 40 percent), the form on one light grey panel on the right. Under 1000 px the introduction stacks above the form.
-- Heading "Unlock value fast", then the support line "Make your martech, customer data and AI work harder for your business."
+- Heading "Where could your business perform better?", sized to three balanced lines beside the form (56 px at 1440, 48 px at 1024), two lines stacked on tablets and three on phones; never a small subheading. Then the support line "Make your martech, customer data and AI work harder for your business."
 - Under a hairline, the direct details side by side where they fit (stacked on phones): Email, hello@growthlab.co.za, linked as `mailto:hello@growthlab.co.za`, and Phone, +27 84 504 0505, linked as `tel:+27845040505`. Each has a small ink 3 label above it.
 
 **Fields.** Five, each with a visible label, in this order:
@@ -263,7 +275,8 @@ Three white sections sit between the black stages and the rune band, in this ord
 
 - **Cube build:** on load, after 0.5 s, the cube grows from the core along one axis at a time (0.72 s each, cubic ease in and out), lighting each outcome label and arrow as its axis grows. It then rests.
 - **Rune breathing:** the two chevrons drift apart diagonally by 1.3 units, about 4 percent of the rune's width (31 px at full size, 13 px on a phone), and back, 8 s each way (`--gl-rune-cycle`). Smaller drifts could not be seen on a phone. It runs by default and pauses only while the band is known to be off screen. Its rest position is the true logo geometry, and the 5 percent headroom above the rune keeps the drift uncropped at the top.
-- **Reduced motion:** with `prefers-reduced-motion: reduce`, the cube shows its finished state at once and the rune stays still. Smooth scrolling is off.
+- **Client logo strip:** a slow, constant drift from left to right, approved by Neil for version 2.5. Details in section 10.
+- **Reduced motion:** with `prefers-reduced-motion: reduce`, the cube shows its finished state at once, the rune stays still and the client logos stand still and wrap. Smooth scrolling is off.
 - No other animation without Neil's approval. Never spin, bounce or loop attention grabbing effects.
 
 ## 14. Accessibility
@@ -271,6 +284,7 @@ Three white sections sit between the black stages and the rune band, in this ord
 - Contrast as in section 4. Text below large size uses ink, ink 2, ink 3, purple strong or the error red only.
 - Visible focus on every interactive element: 2 px `--gl-purple-strong` outline, 3 px offset. Inside the black section the ring switches to `--gl-purple-soft`.
 - A skip link, landmarks (header, main, footer), one H1 per page, decorative SVG marked `aria-hidden`.
+- Moving content can be paused: the logo strip's Pause control, plus pausing on hover and focus (WCAG 2.2.2). Its copies are hidden from assistive technology so each client is announced once.
 - Expandable detail uses native `details` and `summary`, reachable and operable with the keyboard (Enter and Space), with the same focus ring.
 - Forms: visible labels, autocomplete, required fields marked for assistive technology, readable errors linked to their fields, status messages in live regions, and focus moved to the first error or to the confirmation.
 - Portraits next to a visible name use empty alt text. The map has descriptive alt text. Links that open a new tab say so to screen readers.
@@ -297,6 +311,7 @@ Three white sections sit between the black stages and the rune band, in this ord
 | `site/contact.html`, `site/assets/js/contact.js` | The contact view and its form script |
 | `site/api/contact.mjs` | The serverless function that verifies reCAPTCHA and sends the email |
 | `config/contact.json` | The contact email and Neil's phone number |
+| `config/client-logos.json`, `site/assets/clients/` | The client logo strip: brands, order, scale, speed and sources; the genuine logo files |
 | `.env.example` | The environment variables the function needs, without values |
 | `site/assets/fonts/geist/` | Geist woff2 and its OFL licence (fallback metrics in `scripts/geist-metrics.json`) |
 | `site/assets/brand/` | Logo, rune and mark SVGs |
@@ -308,6 +323,7 @@ Three white sections sit between the black stages and the rune band, in this ord
 
 ## Change log
 
+- **2.5, 14 October 2026.** Neil's consolidated changes to version 7. Research section rewritten word for word: "Your next move shouldn’t take months. Or millions.", the Deloitte or Accenture question, the MartechTribe paragraph, three new bullets and a closing line. The Sources dropdown and the separate proof sentence are gone; the map gets a readable caption repeating the research sentence with "1,634 benchmarked martech stacks" in bold, and a small credit. New headings: "Build the case. Set the priorities.", "Experience that moves you forward." and, on the contact view, "Where could your business perform better?" New client logo strip at the foot of the hero, drifting left to right with a pause control and a still version for reduced motion; it shows only genuine logo files.
 - **2.4, 14 October 2026.** Neil's refinement of 2.3. Header: logo and one "Book an audit" action, no menu. Footer: logo and legal line only. The 01 to 04 stage numbers removed. Evidence: "Put independent research to work.", three client benefits, one quiet proof point, the other figures in a closed Sources note, the map without caption or full map link. Workshops: "Start creating value.", small coloured line icons with matching duration and value bullets, "The value you get", the retail example removed. "Let’s get going today." with a coral "Let’s Talk" button. New contact view with the email and Neil's phone (+27 84 504 0505) side by side, five labelled fields, Google reCAPTCHA v2 and a serverless function that sends through Resend and fails closed. Sizing review: one 76 px header on every page (68 px on phones), the contact heading scaled for tablets. New tokens: coral hover, error, field line, bold weight and the 19 px action size.
 - **2.3, 14 October 2026.** Three white sections after the black stages: the benchmark evidence with the MartechMap (40 / 60 split), two workshops with MartechTribe in open columns with native details, and the audit action with Neil and Frans at identical size. One action, "Book an audit", in the header and the audit section; the footer "Talk to us" goes quiet. Apex Martech Matrix linked as a retail example, not embedded. New `SOURCES.md`.
 - **2.2, 14 October 2026.** Rune drift raised to 1.3 units over 8 s each way so it can be seen on a phone, and it now runs by default. Private preview: no email links (the viewer could go blank), "Talk to us" copies the address. New browser files in `dist/browser/` open straight from a folder.

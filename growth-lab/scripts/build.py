@@ -1,12 +1,14 @@
 """Build steps for the Growth Lab website. Standard library only.
 
-  python3 scripts/build.py            sync tokens, render the draft legal pages and the contact phone line into site/
+  python3 scripts/build.py            sync tokens, render the draft legal pages, the contact phone line and the
+                                      client logo strip into site/
   python3 scripts/build.py preview    also write dist/preview/ (pages for the private Claude artifact)
                                       and dist/browser/ (the same pages to open straight from a folder)
   python3 scripts/build.py package    also write dist/growth-lab-site.zip (the Vercel ready folder, with api/)
 
 site/ stays deployable as it is, with no build step on Vercel. Run this after editing
-tokens/tokens.css, anything in legal/, or config/contact.json.
+tokens/tokens.css, anything in legal/, config/contact.json, config/client-logos.json or the
+files in site/assets/clients/.
 """
 import base64
 import html
@@ -14,12 +16,14 @@ import json
 import pathlib
 import re
 import shutil
+import struct
 import sys
 import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 DIST = ROOT / "dist"
+CLIENTS = SITE / "assets" / "clients"
 
 
 def sync_tokens():
@@ -171,6 +175,79 @@ def render_contact_phone():
     return bool(tel)
 
 
+def logo_ratio(path):
+    """Width to height of a client logo: an SVG's viewBox (or width and height), or a PNG's header.
+    SVGs with scripts or external references are refused."""
+    if path.suffix == ".png":
+        data = path.read_bytes()
+        assert data[:8] == b"\x89PNG\r\n\x1a\n", f"{path.name} is not a PNG"
+        w, h = struct.unpack(">II", data[16:24])
+        return w / h
+    text = path.read_text(encoding="utf8")
+    assert not re.search(r"<script|<foreignObject|\son\w+=|(?:xlink:)?href=\"(?!#|data:)", text, re.I), \
+        f"{path.name}: scripts, event handlers or external references are not allowed"
+    m = re.search(r'viewBox="\s*[-\d.]+[\s,]+[-\d.]+[\s,]+([\d.]+)[\s,]+([\d.]+)', text)
+    if m:
+        return float(m.group(1)) / float(m.group(2))
+    w = re.search(r'<svg[^>]*\swidth="([\d.]+)', text)
+    h = re.search(r'<svg[^>]*\sheight="([\d.]+)', text)
+    assert w and h, f"{path.name}: needs a viewBox, or width and height"
+    return float(w.group(1)) / float(h.group(1))
+
+
+def client_strip(manifest=ROOT / "config" / "client-logos.json", folder=CLIENTS, prefix="assets/clients/"):
+    """Markup for the client logo strip from the manifest and the genuine files present, in manifest
+    order. Returns (markup, missing names). With no files it returns a comment naming every brand, so
+    the page never shows an empty, partial placeholder or invented logo."""
+    cfg = json.loads(manifest.read_text(encoding="utf8"))
+    items, missing = [], []
+    for logo in cfg["logos"]:
+        name, stem = logo["name"].strip(), logo["file"]
+        assert name and re.fullmatch(r"[a-z0-9-]+", stem), f"client-logos.json: bad entry {logo}"
+        found = next((folder / f"{stem}{ext}" for ext in (".svg", ".png") if (folder / f"{stem}{ext}").is_file()), None)
+        if not found:
+            missing.append(name)
+            continue
+        scale = float(logo.get("scale", 1))
+        assert 0.5 <= scale <= 1.6, f"client-logos.json: scale for {name} must be between 0.5 and 1.6"
+        style = f' style="--logo-scale: {scale:g}"' if scale != 1 else ""
+        items.append(f'            <li><img src="{prefix}{found.name}" width="{round(1000 * logo_ratio(found))}" height="1000" '
+                     f'alt="{html.escape(name)}"{style} decoding="async"></li>\n')
+    if not items:
+        return (f"    <!-- Client logos pending: no genuine files in site/assets/clients yet. Missing: "
+                f"{', '.join(missing)}. See config/client-logos.json -->\n"), missing
+    note = f"    <!-- Still missing: {', '.join(missing)} -->\n" if missing else ""
+    speed = cfg.get("speed", {})
+    markup = (note +
+        f'    <div class="wrap clients" data-speed="{float(speed.get("wide", 20)):g}" data-speed-narrow="{float(speed.get("narrow", 18)):g}">\n'
+        '      <div class="clients-viewport">\n'
+        '        <div class="clients-track">\n'
+        '          <ul class="clients-set" role="list" aria-label="Clients">\n'
+        + "".join(items) +
+        '          </ul>\n'
+        '        </div>\n'
+        '      </div>\n'
+        '      <button class="clients-toggle" type="button" aria-label="Pause the client logos" hidden>\n'
+        '        <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg>\n'
+        '        <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.4v9.2L12.6 8z"/></svg>\n'
+        '        <span class="clients-toggle-text">Pause</span>\n'
+        '      </button>\n'
+        '    </div>\n')
+    return markup, missing
+
+
+def render_client_logos():
+    """Writes the client logo strip into site/index.html between its markers."""
+    markup, missing = client_strip()
+    path = SITE / "index.html"
+    page = path.read_text(encoding="utf8")
+    page, n = re.subn(r"(    <!-- client-logos:start -->\n).*?(    <!-- client-logos:end -->)",
+                      lambda m: m.group(1) + markup + m.group(2), page, flags=re.S)
+    assert n == 1, "index.html lost its client-logos markers"
+    path.write_text(page, encoding="utf8")
+    return missing
+
+
 def offline_contact(page_html):
     """The Claude preview and the browser files have no server behind them, so their contact form
     runs in preview mode: it validates but never sends, and says so on the page."""
@@ -200,6 +277,8 @@ def build_preview():
     # Images stay separate files, published beside the page with the artifact
     shutil.rmtree(out / "assets", ignore_errors=True)
     shutil.copytree(SITE / "assets" / "media", out / "assets" / "media")
+    if any(CLIENTS.glob("*.*")):
+        shutil.copytree(CLIENTS, out / "assets" / "clients")
     for f in out.glob("*.html"):
         text = f.read_text(encoding="utf8")
         assert "mailto:" not in text and "tel:" not in text, f"email or phone link left in preview {f.name}"
@@ -216,7 +295,12 @@ def inline_images(page_html):
     def data_uri(match):
         data = (SITE / "assets" / "media" / match.group(1)).read_bytes()
         return 'src="data:image/jpeg;base64,' + base64.b64encode(data).decode() + '"'
+    def client_uri(match):
+        f = CLIENTS / match.group(1)
+        kind = "image/svg+xml" if f.suffix == ".svg" else "image/png"
+        return f'src="data:{kind};base64,' + base64.b64encode(f.read_bytes()).decode() + '"'
     page_html = re.sub(r'\s(srcset|sizes)="[^"]*"', "", page_html)
+    page_html = re.sub(r'src="assets/clients/([\w.-]+\.(?:svg|png))"', client_uri, page_html)
     return re.sub(r'src="assets/media/([\w.-]+\.jpg)"', data_uri, page_html)
 
 
@@ -259,8 +343,14 @@ def build_package():
 
 
 def main(args):
+    if args[:1] == ["client-strip"]:  # used by tests/verify.cjs to render the strip from test files
+        print(client_strip(pathlib.Path(args[1]), pathlib.Path(args[2]))[0], end="")
+        return
     sync_tokens()
     print("contact phone:", "set" if render_contact_phone() else "pending (config/contact.json)")
+    missing = render_client_logos()
+    total = len(json.loads((ROOT / "config" / "client-logos.json").read_text(encoding="utf8"))["logos"])
+    print(f"client logos: {total - len(missing)} of {total} present" + (f"; MISSING: {', '.join(missing)}" if missing else ""))
     legal_page("DRAFT_PRIVACY_NOTICE.md", "privacy.html", "Privacy notice")
     legal_page("DRAFT_WEBSITE_TERMS.md", "terms.html", "Website terms")
     print("site/ updated")

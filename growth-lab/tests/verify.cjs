@@ -11,6 +11,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { Readable } = require('stream');
+const { execFileSync } = require('child_process');
 const { chromium } = require('playwright');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -37,13 +38,16 @@ const PHONE = { display: '+27 84 504 0505', href: 'tel:+27845040505' }; // confi
 
 // Approved copy. It must match DESIGN_SYSTEM.md and SOURCES.md
 const HOME = {
-  evidenceH2: 'Put independent research to work.',
-  evidenceLede: 'Growth Lab works with MartechTribe, drawing on martech research across industries since 2017.',
-  benefits: ['See where your stack underperforms.', 'Prioritise the investments that matter.', 'Build a clearer case for change.'],
-  proof: 'MartechTribe has benchmarked 1,634 martech stacks.',
-  workshopsH2: 'Start creating value.',
+  evidenceH2: 'Your next move shouldn’t take months. Or millions.',
+  evidenceLede: 'Considering Deloitte or Accenture for your martech strategy? See what years of benchmark research can tell you before committing to a large consulting engagement.',
+  evidenceBody: 'Through MartechTribe, Growth Lab draws on 1,634 benchmarked martech stacks and research across industries since 2017. We bring those patterns into your business to focus the investigation, challenge assumptions and prioritise where to act.',
+  benefits: ['Find the gaps worth investigating.', 'Challenge spend that isn’t earning its place.', 'Prioritise opportunities to grow revenue.'],
+  closing: 'Less time establishing the landscape. More time improving your business.',
+  caption: 'Through MartechTribe, Growth Lab draws on 1,634 benchmarked martech stacks and research across industries since 2017.',
+  credit: 'Research: MartechTribe. MartechMap © chiefmartec and MartechTribe.',
+  workshopsH2: 'Build the case. Set the priorities.',
   attribution: 'Two workshops with MartechTribe.',
-  startH2: 'Let’s get going today.',
+  startH2: 'Experience that moves you forward.',
   startLede: 'We examine your martech, data and customer journeys to find where value is being lost.',
 };
 const WORKSHOPS = [
@@ -57,7 +61,7 @@ const WORKSHOPS = [
 ];
 const PEOPLE = [['Neil Botha', 'Founder and Strategy Director, Growth Lab'], ['Frans Riemersma', 'Founder, MartechTribe']];
 const CONTACT = {
-  h1: 'Unlock value fast',
+  h1: 'Where could your business perform better?',
   lead: 'Make your martech, customer data and AI work harder for your business.',
   placeholder: 'Can you tell us more about your requirements?',
   fields: [
@@ -111,10 +115,41 @@ function handlerFor(env, behaviour) {
     log: (level, code, detail) => api.logs.push(`${level} ${code} ${detail || ''}`) });
 }
 
+/* Logo strip mechanics. Genuine client logos are not in this sandbox, so the strip is checked with
+   neutral test shapes rendered through the real template in scripts/build.py and served only on the
+   test path /__strip/. Nothing here reaches site/. */
+const STRIP_DIR = path.join(ROOT, 'dist', 'strip-fixture');
+const CLIENT_MANIFEST = JSON.parse(fs.readFileSync(path.join(ROOT, 'config', 'client-logos.json'), 'utf8'));
+function stripFixturePage() {
+  fs.rmSync(STRIP_DIR, { recursive: true, force: true });
+  fs.mkdirSync(path.join(STRIP_DIR, 'clients'), { recursive: true });
+  const ratios = [3.2, 2.1, 4.4, 3.6, 2.8, 4.9, 3.9, 2.4, 3.0, 4.1, 3.4, 2.6];
+  CLIENT_MANIFEST.logos.forEach((l, i) => {
+    const w = Math.round(100 * ratios[i]);
+    fs.writeFileSync(path.join(STRIP_DIR, 'clients', `${l.file}.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} 100">` +
+      `<rect x="1" y="1" width="${w - 2}" height="98" rx="12" fill="#111"/><rect x="${w / 2 - 6}" y="40" width="12" height="20" fill="#fff"/></svg>`);
+  });
+  const manifest = path.join(STRIP_DIR, 'manifest.json');
+  fs.writeFileSync(manifest, JSON.stringify(CLIENT_MANIFEST));
+  const strip = execFileSync('python3', [path.join(ROOT, 'scripts', 'build.py'), 'client-strip', manifest, path.join(STRIP_DIR, 'clients')], { encoding: 'utf8' });
+  return fs.readFileSync(path.join(SITE, 'index.html'), 'utf8')
+    .replace(/(<!-- client-logos:start -->\n)[\s\S]*?( {4}<!-- client-logos:end -->)/, (m, a, b) => a + strip + b);
+}
+let stripPage = '';
+
 function serve() {
   return new Promise((resolve) => {
     const server = http.createServer((req, res) => {
       const url = decodeURIComponent(req.url.split('?')[0]);
+      if (url.startsWith('/__strip/')) {
+        const rest = url.slice('/__strip/'.length);
+        if (!rest) { res.writeHead(200, { 'Content-Type': TYPES['.html'] }); res.end(stripPage); return; }
+        const f = rest.startsWith('assets/clients/') ? path.join(STRIP_DIR, 'clients', rest.slice(15)) : path.join(SITE, rest);
+        if (!fs.existsSync(f)) { res.writeHead(404); res.end(); return; }
+        res.writeHead(200, { 'Content-Type': TYPES[path.extname(f)] || 'application/octet-stream' });
+        fs.createReadStream(f).pipe(res);
+        return;
+      }
       if (url === '/api/contact') {
         if (req.method === 'POST') api.posts += 1;
         handlerFor(api.env, api.behaviour)(req, res);
@@ -238,7 +273,6 @@ async function homeChecks(page, vp) {
     const order = ['.approach', '#evidence', '#workshops', '#start', '.rune-stage'].map((s) => document.querySelector(s));
     const colour = (sel, prop) => cs(document.querySelector(sel))[prop];
     const map = document.querySelector('#evidence .map img');
-    const sources = document.querySelector('#evidence details.sources');
     const small = [];
     for (const el of document.querySelectorAll('a[href], button, summary')) {
       const r = el.getBoundingClientRect();
@@ -255,11 +289,15 @@ async function homeChecks(page, vp) {
       numbering: document.querySelectorAll('.stage .num').length + [...document.querySelectorAll('.stage *')].filter((e) => /^0[1-4]$/.test(e.textContent.trim())).length,
       header: { links: [...document.querySelectorAll('.site-header a')].map((a) => `${a.textContent.trim() || a.getAttribute('aria-label')}|${a.getAttribute('href')}|${a.className}`),
         navs: document.querySelectorAll('.site-header nav, .site-header ul').length },
-      evidence: { h2: t('#evidence h2'), lede: t('#evidence .lede'), benefits: [...document.querySelectorAll('#evidence .benefits li')].map((l) => l.textContent.trim()),
-        proof: t('#evidence .proof'), captions: document.querySelectorAll('#evidence figcaption').length,
-        visibleText: document.querySelector('#evidence').innerText,
-        sources: { open: sources.open, summary: t('summary', sources), text: sources.querySelector('p').textContent.replace(/\s+/g, ' ').trim(),
-          href: sources.querySelector('a').getAttribute('href'), shown: visible(sources.querySelector('p')) },
+      evidence: { h2: t('#evidence h2'), lede: t('#evidence .lede'), body: t('#evidence .body'), closing: t('#evidence .closing'),
+        benefits: [...document.querySelectorAll('#evidence .benefits li')].map((l) => l.textContent.trim()),
+        details: document.querySelectorAll('#evidence details, #evidence summary, #evidence .sources, #evidence .proof').length,
+        links: document.querySelectorAll('#evidence a').length, visibleText: document.querySelector('#evidence').innerText,
+        caption: t('#evidence figcaption .map-caption'), bold: [...document.querySelectorAll('#evidence figcaption strong')].map((b) => b.textContent),
+        boldWeight: Number(cs(document.querySelector('#evidence figcaption strong')).fontWeight),
+        captionSize: parseFloat(cs(document.querySelector('#evidence .map-caption')).fontSize), captionColour: cs(document.querySelector('#evidence .map-caption')).color,
+        captionShown: visible(document.querySelector('#evidence .map-caption')), credit: t('#evidence .map-credit'),
+        figBelow: document.querySelector('#evidence figcaption').getBoundingClientRect().top >= map.getBoundingClientRect().bottom,
         map: { ok: map.complete && map.naturalWidth > 0, ratio: map.naturalWidth / map.naturalHeight, boxRatio: map.getBoundingClientRect().width / map.getBoundingClientRect().height,
           fit: cs(map).objectFit, alt: map.alt, box: box(map) }, copyBox: box(document.querySelector('.evidence-copy')) },
       workshops: { h2: t('#workshops h2'), attribution: t('#workshops .attribution'),
@@ -311,13 +349,17 @@ async function homeChecks(page, vp) {
     x.header.links[1] === 'Book an audit|contact.html|btn btn-dark', x.header.links.join(' ; '));
 
   const e = x.evidence;
-  check(`${tag} evidence copy: heading, sentence, three benefits, one quiet proof point`, e.h2 === HOME.evidenceH2 && e.lede === HOME.evidenceLede &&
-    JSON.stringify(e.benefits) === JSON.stringify(HOME.benefits) && e.proof === HOME.proof, JSON.stringify([e.h2, e.lede, e.benefits, e.proof]));
-  check(`${tag} other figures sit in a closed sources note`, !e.sources.open && !e.sources.shown && e.sources.summary === 'Sources' &&
-    /15,505 solutions/.test(e.sources.text) && /1,345 features daily across 49 martech categories/.test(e.sources.text) &&
-    /200\+ global brands/.test(e.sources.text) && /as at 14 October 2026\.$/.test(e.sources.text) && e.sources.href === 'https://martechtribe.com/' &&
-    !/1,345|15,505|200\+/.test(e.visibleText), e.sources.text);
-  check(`${tag} map stays whole at 16:9 with no caption or full map link`, e.captions === 0 && !/View the full map/.test(e.visibleText) &&
+  check(`${tag} research copy word for word: heading, question, paragraph, three bullets, closing line`, e.h2 === HOME.evidenceH2 &&
+    e.lede === HOME.evidenceLede && e.body === HOME.evidenceBody && JSON.stringify(e.benefits) === JSON.stringify(HOME.benefits) && e.closing === HOME.closing,
+    JSON.stringify([e.h2, e.lede, e.body, e.benefits, e.closing]));
+  check(`${tag} no Sources dropdown, separate proof line or links in the research section`, e.details === 0 && e.links === 0 &&
+    !/Sources|15,505|1,345|200\+|has benchmarked/.test(e.visibleText), e.details);
+  check(`${tag} caption repeats the research sentence, 1,634 benchmarked martech stacks in bold`, e.caption === HOME.caption &&
+    JSON.stringify(e.bold) === JSON.stringify(['1,634 benchmarked martech stacks']) && e.boldWeight >= 600 && e.captionShown && e.figBelow &&
+    e.captionSize >= 16 && contrast(e.captionColour, 'rgb(255, 255, 255)') >= 7 && (e.visibleText.match(/draws on 1,634 benchmarked martech stacks/g) || []).length === 2,
+    `${e.caption} (${e.captionSize}px)`);
+  check(`${tag} smaller credit under the caption`, e.credit === HOME.credit, e.credit);
+  check(`${tag} map stays whole at 16:9 with no full map link`, !/View the full map/.test(e.visibleText) &&
     e.map.ok && Math.abs(e.map.ratio - 16 / 9) < 0.01 && Math.abs(e.map.boxRatio - 16 / 9) < 0.01 && e.map.fit !== 'cover' &&
     /chiefmartec and MartechTribe/.test(e.map.alt), `${Math.round(e.map.box.w)}x${Math.round(e.map.box.h)}`);
   if (vp.width >= 1000) {
@@ -328,7 +370,7 @@ async function homeChecks(page, vp) {
   }
 
   const w = x.workshops;
-  check(`${tag} workshops: Start creating value, quiet MartechTribe attribution`, w.h2 === HOME.workshopsH2 && w.attribution === HOME.attribution);
+  check(`${tag} workshops: Build the case. Set the priorities., quiet MartechTribe attribution`, w.h2 === HOME.workshopsH2 && w.attribution === HOME.attribution);
   check(`${tag} workshop names, lines and durations`, w.items.length === 2 && w.items.every((it, i) => it.name === WORKSHOPS[i].name &&
     it.outcome === WORKSHOPS[i].outcome && it.duration === WORKSHOPS[i].duration), w.items.map((it) => `${it.name} / ${it.duration}`).join(' | '));
   check(`${tag} small coloured line icons match their duration and value bullets`, w.items.every((it, i) => it.icon === WORKSHOPS[i].icon &&
@@ -347,7 +389,7 @@ async function homeChecks(page, vp) {
   }
 
   const s = x.start;
-  check(`${tag} Let’s get going today with the approved Diagnose line`, s.h2 === HOME.startH2 && s.lede === HOME.startLede);
+  check(`${tag} Experience that moves you forward. with the approved Diagnose line`, s.h2 === HOME.startH2 && s.lede === HOME.startLede);
   check(`${tag} Neil and Frans: genuine portraits, identical 96px, separate roles`, s.people.length === 2 && s.people.every((p, i) => p.ok &&
     Math.round(p.w) === 96 && Math.round(p.h) === 96 && p.name === PEOPLE[i][0] && p.role === PEOPLE[i][1]) && s.people[0].style === s.people[1].style &&
     s.people.every((p) => !/audit|jointly|together|attend|every /i.test(p.bio)));
@@ -368,27 +410,23 @@ async function homeChecks(page, vp) {
   check(`${tag} no new animation: only the rune moves after the cube`, x.anims.length === 2 && x.anims.every((n) => /^rune-[ab]$/.test(n)), x.anims.join(', '));
 }
 
-// Keyboard only: open and close details with Enter and Space, reach the link inside the sources note
+// Keyboard only: open and close the workshop details with Enter and Space
 async function detailsKeyboard(page, tag) {
   await page.evaluate(() => { document.activeElement && document.activeElement.blur(); window.scrollTo({ top: 0, behavior: 'instant' }); });
   await page.focus('.site-header .btn-dark');
-  await page.keyboard.press('Tab');
-  const sources = await page.evaluate(() => ({ text: document.activeElement.textContent.trim(), ring: getComputedStyle(document.activeElement).outlineStyle }));
-  await page.keyboard.press('Enter');
-  await page.keyboard.press('Tab');
-  const sourceLink = await page.evaluate(() => document.activeElement.getAttribute('href'));
-  await page.keyboard.press('Shift+Tab');
-  await page.keyboard.press('Enter');
-  await page.keyboard.press('Tab');
-  await page.keyboard.press('Tab');
-  const second = await page.evaluate(() => ({ tag: document.activeElement.tagName, text: document.activeElement.textContent.trim(),
-    ring: getComputedStyle(document.activeElement).outlineStyle }));
-  await page.keyboard.press('Enter');
-  const opened = await page.evaluate(() => { const d = document.querySelectorAll('.workshop details')[1]; return d.open && d.querySelector('li').checkVisibility(); });
-  await page.keyboard.press('Space');
-  const closed = await page.evaluate(() => [...document.querySelectorAll('details')].every((d) => !d.open));
-  check(`${tag} details open and close from the keyboard`, sources.text === 'Sources' && sources.ring !== 'none' && sourceLink === 'https://martechtribe.com/' &&
-    second.tag === 'SUMMARY' && second.text === 'The value you get' && second.ring !== 'none' && opened && closed, JSON.stringify({ sources, sourceLink, second, opened, closed }));
+  const stops = [];
+  for (let i = 0; i < 2; i++) {
+    await page.keyboard.press('Tab');
+    const here = await page.evaluate(() => ({ tag: document.activeElement.tagName, text: document.activeElement.textContent.trim(),
+      ring: getComputedStyle(document.activeElement).outlineStyle }));
+    await page.keyboard.press('Enter');
+    const opened = await page.evaluate((n) => { const d = document.querySelectorAll('.workshop details')[n]; return d.open && d.querySelector('li').checkVisibility(); }, i);
+    await page.keyboard.press('Space');
+    const closed = await page.evaluate(() => [...document.querySelectorAll('details')].every((d) => !d.open));
+    stops.push({ ...here, opened, closed });
+  }
+  check(`${tag} workshop details open and close from the keyboard`, stops.every((st) => st.tag === 'SUMMARY' && st.text === 'The value you get' &&
+    st.ring !== 'none' && st.opened && st.closed), JSON.stringify(stops));
 }
 
 async function fillContact(page, entry) {
@@ -407,12 +445,20 @@ async function contactLayout(page, tag, width) {
     const targets = [...document.querySelectorAll('a[href], button, input:not([tabindex="-1"]), textarea')].filter((el) => el.checkVisibility() && !el.classList.contains('skip'))
       .map((el) => ({ id: el.id || el.textContent.trim().slice(0, 20), h: el.getBoundingClientRect().height, w: el.getBoundingClientRect().width }));
     const details = [...document.querySelectorAll('.contact-details > div')].map(box);
-    return { panel, intro: box(document.querySelector('.contact-intro')), panelBox: box(document.querySelector('.contact-panel')), inputs, details,
+    const h = document.querySelector('h1'), range = document.createRange();
+    range.selectNodeContents(h);
+    const lineBoxes = [...range.getClientRects()];
+    const h1 = { size: parseFloat(getComputedStyle(h).fontSize), lines: Math.round(h.getBoundingClientRect().height / parseFloat(getComputedStyle(h).lineHeight)),
+      widest: Math.max(...lineBoxes.map((b) => b.width)), box: h.getBoundingClientRect().width };
+    return { h1, panel, intro: box(document.querySelector('.contact-intro')), panelBox: box(document.querySelector('.contact-panel')), inputs, details,
       submit: box(document.querySelector('.form-actions .btn-coral')), targets,
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
   });
   check(`${tag} no horizontal overflow`, x.overflow <= 0, `${x.overflow}px`);
   check(`${tag} form on a light grey quiet panel`, x.panel === 'rgb(245, 245, 245)', x.panel);
+  const lines = width >= 1000 ? 3 : width >= 600 ? 2 : 3;
+  check(`${tag} heading wraps to ${lines} balanced lines and stays a headline`, x.h1.lines === lines && x.h1.size >= 36 && x.h1.widest <= x.h1.box + 1,
+    `${x.h1.lines} lines at ${x.h1.size}px`);
   const [name, company] = x.inputs;
   const [mail, phone] = x.details;
   const sameRow = Math.abs(phone.t - mail.t) < 1 && phone.l >= mail.r;
@@ -562,7 +608,7 @@ async function apiChecks() {
     if (vp.name === 'desktop') {
       await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { d.open = true; }));
       await page.locator('#workshops').screenshot({ path: path.join(SHOTS, 'workshops-details-open.png') });
-      await page.locator('#evidence').screenshot({ path: path.join(SHOTS, 'evidence-sources-open.png') });
+      await page.locator('#evidence').screenshot({ path: path.join(SHOTS, 'research-and-map.png') });
       await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { d.open = false; }));
       await page.locator('.device-card').screenshot({ path: path.join(SHOTS, 'cube-rest.png') });
       // Rune motion and its range
@@ -597,7 +643,7 @@ async function apiChecks() {
           await page.screenshot({ path: path.join(SHOTS, 'focus-header.png'), clip: { x: 0, y: 0, width: 1440, height: 110 } });
         }
       }
-      const expected = ['Skip to content', 'Growth Lab', 'Book an audit', 'Sources', 'The value you get', 'The value you get', 'Let’s Talk',
+      const expected = ['Skip to content', 'Growth Lab', 'Book an audit', 'The value you get', 'The value you get', 'Let’s Talk',
         'Growth Lab, back to top', 'Privacy', 'Website terms'];
       check('[home desktop] keyboard order follows the page and every stop shows a ring', stops.every((s) => s.ring) &&
         JSON.stringify(stops.map((s) => s.label)) === JSON.stringify(expected), stops.map((s) => s.label + (s.ring ? '' : ' (no ring)')).join(' > '));
@@ -768,6 +814,132 @@ async function apiChecks() {
     await ctx.close();
   }
 
+  // Client logos on the real page: genuine files only, and every missing brand named in the page source
+  {
+    const present = CLIENT_MANIFEST.logos.filter((l) => ['.svg', '.png'].some((x) => fs.existsSync(path.join(SITE, 'assets', 'clients', l.file + x))));
+    const missing = CLIENT_MANIFEST.logos.filter((l) => !present.includes(l)).map((l) => l.name);
+    const html = fs.readFileSync(path.join(SITE, 'index.html'), 'utf8');
+    const block = /<!-- client-logos:start -->([\s\S]*?)<!-- client-logos:end -->/.exec(html)[1];
+    const shown = (block.match(/<img /g) || []).length;
+    check(`[logos] ${present.length} of ${CLIENT_MANIFEST.logos.length} genuine files present; the page shows exactly those and names the rest`,
+      CLIENT_MANIFEST.logos.length === 12 && shown === present.length && missing.every((n) => block.includes(n)) && (present.length > 0 || !/<div class="wrap clients"/.test(block)),
+      missing.length ? `missing: ${missing.join(', ')}` : 'all present');
+  }
+
+  // Logo strip mechanics with neutral test shapes (see stripFixturePage)
+  stripPage = stripFixturePage();
+  for (const vp of [{ name: 'desktop', width: 1440, height: 900, speed: CLIENT_MANIFEST.speed.wide },
+    { name: 'mobile', width: 390, height: 844, speed: CLIENT_MANIFEST.speed.narrow }, { name: '320px', width: 320, height: 640, speed: CLIENT_MANIFEST.speed.narrow }]) {
+    const tag = `[strip ${vp.name}]`;
+    const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: vp.width < 500 ? 2 : 1 });
+    const page = await ctx.newPage();
+    const errors = [];
+    page.on('pageerror', (e) => errors.push(String(e)));
+    await page.goto(base + '__strip/', { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    await page.locator('.clients').scrollIntoViewIfNeeded();  // it rests while off screen
+    await page.waitForTimeout(400);
+    const m = await page.evaluate(async () => {
+      const strip = document.querySelector('.clients'), track = strip.querySelector('.clients-track');
+      const sets = [...track.querySelectorAll('.clients-set')], anim = track.getAnimations()[0];
+      const x = () => new DOMMatrix(getComputedStyle(track).transform).m41;
+      const x0 = x(), t0 = performance.now();
+      await new Promise((r) => setTimeout(r, 2000));
+      const speed = (x() - x0) / ((performance.now() - t0) / 1000);
+      const kf = anim.effect.getKeyframes().map((k) => new DOMMatrix(k.transform).m41);
+      const gap = parseFloat(getComputedStyle(track).columnGap);
+      const named = [...document.querySelectorAll('.clients img')].filter((i) => i.alt && !i.closest('[aria-hidden="true"]'));
+      const clones = sets.slice(1);
+      const imgs = [...sets[0].querySelectorAll('img')];
+      return {
+        moving: strip.classList.contains('is-moving'), toggle: !strip.querySelector('.clients-toggle').hidden, speed, kf, iterations: anim.effect.getTiming().iterations,
+        easing: anim.effect.getTiming().easing, period: sets[0].getBoundingClientRect().width + gap,
+        sameSets: sets.every((st) => Math.abs(st.getBoundingClientRect().width - sets[0].getBoundingClientRect().width) < 0.5 &&
+          [...st.querySelectorAll('img')].map((i) => i.getAttribute('src')).join() === imgs.map((i) => i.getAttribute('src')).join()),
+        cover: track.getBoundingClientRect().width - (sets[0].getBoundingClientRect().width + gap) - strip.querySelector('.clients-viewport').clientWidth,
+        named: named.length, list: sets[0].getAttribute('aria-label'),
+        clonesHidden: clones.length >= 1 && clones.every((c) => c.getAttribute('aria-hidden') === 'true' && c.hasAttribute('inert') && !c.hasAttribute('aria-label') &&
+          [...c.querySelectorAll('img')].every((i) => i.alt === '')),
+        rows: new Set([...sets[0].querySelectorAll('li')].map((li) => Math.round(li.getBoundingClientRect().top))).size,
+        rowHeights: new Set([...sets[0].querySelectorAll('li')].map((li) => Math.round(li.getBoundingClientRect().height))).size,
+        ratios: imgs.every((i) => Math.abs((i.getBoundingClientRect().width / i.getBoundingClientRect().height) / (i.naturalWidth / i.naturalHeight) - 1) < 0.01),
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    });
+    check(`${tag} moves left to right at about ${vp.speed} px a second, linear and endless`, m.moving && m.toggle && m.speed > vp.speed * 0.92 && m.speed < vp.speed * 1.08 &&
+      m.iterations === Infinity && m.easing === 'linear', `${m.speed.toFixed(1)} px/s`);
+    check(`${tag} seamless loop: travels exactly one identical set, copies cover the view`, Math.abs(m.kf[0] + m.period) < 0.5 && m.kf[1] === 0 && m.sameSets && m.cover >= 0,
+      `travel ${(-m.kf[0]).toFixed(1)}px, set plus gap ${m.period.toFixed(1)}px, spare ${Math.round(m.cover)}px`);
+    check(`${tag} screen readers hear each client once: one labelled list, copies hidden and inert`, m.named === 12 && m.list === 'Clients' && m.clonesHidden, `${m.named} named`);
+    check(`${tag} one stable row, logos never stretched, no page overflow`, m.rows === 1 && m.rowHeights === 1 && m.ratios && m.overflow <= 0, `overflow ${m.overflow}`);
+
+    // Pause control, hover and focus
+    const pos = () => page.evaluate(() => new DOMMatrix(getComputedStyle(document.querySelector('.clients-track')).transform).m41);
+    const state = () => page.evaluate(() => ({ play: document.querySelector('.clients-track').getAnimations()[0].playState,
+      text: document.querySelector('.clients-toggle').innerText.trim(), label: document.querySelector('.clients-toggle').getAttribute('aria-label') }));
+    await page.mouse.move(vp.width / 2, vp.height - 5);
+    await page.locator('.clients-toggle').scrollIntoViewIfNeeded();
+    await page.locator('.clients-toggle').click();
+    await page.mouse.move(2, 2);
+    await page.evaluate(() => document.activeElement.blur());
+    const p1 = await state(), a1 = await pos();
+    await page.waitForTimeout(700);
+    const a2 = await pos();
+    await page.locator('.clients-toggle').click();
+    await page.mouse.move(2, 2);
+    await page.evaluate(() => document.activeElement.blur());
+    await page.waitForTimeout(300);
+    const p2 = await state();
+    check(`${tag} pause button stops and restarts it, and says what it will do`, p1.play === 'paused' && a1 === a2 && p1.text === 'Play' && p1.label === 'Play the client logos' &&
+      p2.play === 'running' && p2.text === 'Pause' && p2.label === 'Pause the client logos', JSON.stringify([p1, p2]));
+    if (vp.name === 'desktop') {
+      await page.hover('.clients-viewport');
+      const hovered = (await state()).play;
+      await page.mouse.move(2, 2);
+      await page.waitForTimeout(100);
+      const left = (await state()).play;
+      await page.focus('.site-header .btn-dark');
+      await page.keyboard.press('Tab');
+      const focus = await page.evaluate(() => ({ cls: document.activeElement.className, ring: getComputedStyle(document.activeElement).outlineStyle,
+        h: document.activeElement.getBoundingClientRect().height }));
+      const focused = (await state()).play;
+      check('[strip] holds still on hover and on keyboard focus; the control is next in the tab order with a ring', hovered === 'paused' && left === 'running' &&
+        focus.cls === 'clients-toggle' && focus.ring !== 'none' && focus.h >= 24 && focused === 'paused', JSON.stringify({ hovered, left, focus, focused }));
+      await page.evaluate(() => document.activeElement.blur());
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(300);
+      const away = (await state()).play;
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(300);
+      check('[strip] rests while off screen', away === 'paused' && (await state()).play === 'running', away);
+    }
+    check(`${tag} no script errors`, errors.length === 0, errors.join(' | '));
+    await page.evaluate(() => { document.activeElement && document.activeElement.blur(); window.scrollTo(0, 0); });
+    await page.mouse.move(2, 2);
+    const hero = await page.evaluate(() => document.querySelector('.hero').getBoundingClientRect().bottom + scrollY);
+    await page.screenshot({ path: path.join(SHOTS, `strip-test-shapes-${vp.name}.png`), clip: { x: 0, y: Math.max(0, hero - 380), width: vp.width, height: 460 } });
+    await ctx.close();
+  }
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, reducedMotion: 'reduce' });
+    const page = await ctx.newPage();
+    await page.goto(base + '__strip/', { waitUntil: 'load' });
+    await page.waitForTimeout(400);
+    const r = await page.evaluate(() => {
+      const strip = document.querySelector('.clients'), set = strip.querySelector('.clients-set');
+      const imgs = [...set.querySelectorAll('img')];
+      return { anims: strip.querySelector('.clients-track').getAnimations().length, sets: strip.querySelectorAll('.clients-set').length, moving: strip.classList.contains('is-moving'),
+        toggle: strip.querySelector('.clients-toggle').hidden, rows: new Set(imgs.map((i) => Math.round(i.getBoundingClientRect().top))).size,
+        inside: imgs.every((i) => i.getBoundingClientRect().left >= 0 && i.getBoundingClientRect().right <= document.documentElement.clientWidth),
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+    });
+    check('[strip reduced motion] logos stand still and wrap, no copies, no control, nothing off screen', r.anims === 0 && r.sets === 1 && !r.moving && r.toggle &&
+      r.rows > 1 && r.inside && r.overflow <= 0, JSON.stringify(r));
+    const hero = await page.evaluate(() => document.querySelector('.hero').getBoundingClientRect().bottom + scrollY);
+    await page.screenshot({ path: path.join(SHOTS, 'strip-test-shapes-reduced-motion-mobile.png'), clip: { x: 0, y: Math.max(0, hero - 520), width: 390, height: 600 } });
+    await ctx.close();
+  }
+
   // The narrowest phones: nothing may push the homepage sideways, and the profiles stack
   {
     const sctx = await browser.newContext({ viewport: { width: 320, height: 640 }, deviceScaleFactor: 2 });
@@ -886,7 +1058,7 @@ async function apiChecks() {
     const missing = bv.files.filter((h) => !fs.existsSync(path.join(browserDir, h)));
     check('[browser file] homepage opens from a folder: Geist, cube, images built in, links resolve, no requests', bv.geist && bv.cube && bv.overflow <= 0 &&
       bv.imgs.length === 3 && bv.imgs.every(Boolean) && missing.length === 0 && requests.length === 0 && berr.length === 0 &&
-      bv.actions.every((h) => h === 'growth-lab-contact.html') && JSON.stringify(bv.external) === JSON.stringify(['https://martechtribe.com/']),
+      bv.actions.every((h) => h === 'growth-lab-contact.html') && bv.external.length === 0,
       JSON.stringify({ ...bv, imgs: bv.imgs.length, missing, requests, errors: berr }));
     await bp.goto('file://' + path.join(browserDir, 'growth-lab-contact.html'));
     await bp.waitForTimeout(300);

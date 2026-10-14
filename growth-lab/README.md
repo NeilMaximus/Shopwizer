@@ -18,6 +18,7 @@ growth-lab/
   DEPLOY.md             Vercel deployment, protection and form set up (the README inside the zip)
   .env.example          the contact function's environment variables, without values
   config/contact.json   the contact email and Neil's phone number, written into the contact view
+  config/client-logos.json  the client logo strip: brands, order, scale, speed and sources
   tokens/               tokens.css (source of truth) and tokens.json
   legal/                draft privacy notice and website terms (Markdown)
   site/                 the deployment root (Vercel Root Directory), nothing else is deployed
@@ -28,12 +29,13 @@ growth-lab/
     terms.html          generated draft, noindex
     vercel.json         headers and caching
     assets/css          tokens.css (copied) and site.css
-    assets/js/site.js   cube build and rune breathing
+    assets/js/site.js   cube build, rune breathing and the logo strip
     assets/js/contact.js  contact form behaviour
     assets/fonts/geist  Geist variable woff2 (Latin, 400 to 700) and OFL licence
     favicon.svg         the mark
     assets/brand        logo, rune and mark SVGs
     assets/media        MartechMap 2026 (800 and 1600 px) and the two portraits
+    assets/clients      genuine client logos for the strip (black on transparent), added when supplied
   scripts/              build.py, build_font.py, extract_rune.py, gen_cube_svg.py
   tests/verify.cjs      Playwright checks, the contact function's tests and screenshots
   dist/                 build output (git ignored): preview, browser files, zip, screenshots

@@ -84,11 +84,12 @@ Everything below sits in `site/`, the deployment root.
 | `vercel.json` | Headers and caching |
 | `assets/css/tokens.css` | Design tokens (edit the source copy in `tokens/`, not this one) |
 | `assets/css/site.css` | Page styles and the Geist `@font-face` |
-| `assets/js/site.js` | Cube build and rune breathing |
+| `assets/js/site.js` | Cube build, rune breathing and the client logo strip |
 | `assets/js/contact.js` | Contact form: validation, the reCAPTCHA check, sending and honest status messages |
 | `assets/fonts/geist/` | Geist variable woff2 (Latin, weights 400 to 700) and its SIL Open Font License |
 | `assets/brand/` | Verified Growth Lab logo, the rune (logo paths 1 and 2) and the mark |
 | `assets/media/` | MartechMap 2026 by chiefmartec and MartechTribe (800 and 1600 px) and the two portraits |
+| `assets/clients/` | Genuine client logos for the strip in the hero, once supplied (see `SOURCES.md`) |
 | `favicon.svg` | The mark |
 
 ## Licences
