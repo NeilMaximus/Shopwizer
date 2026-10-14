@@ -60,6 +60,7 @@
   --gl-wrap: 1200px;
   --gl-gutter: clamp(20px, 4vw, 48px);
   --gl-section: clamp(72px, 10vw, 140px);
+  --gl-space-research: 24px;     /* one gap, baseline to capitals: research heading to question, question to response */
   --gl-radius-panel: 28px;
   --gl-radius-node: 14px;        /* stage tiles and portraits */
   --gl-radius-image: 10px;       /* framed images such as the MartechMap; small enough to keep its credit clear */

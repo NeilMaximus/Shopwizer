@@ -41,7 +41,7 @@ const HOME = {
   heroLead: 'Growth Lab helps you get more from your marketing technology, customer data and AI. We find what needs to change, put the improvements in place and keep improving the results.',
   evidenceH2: 'Your next move shouldn’t take months. Or millions.',
   question: 'Considering Deloitte or Accenture?',
-  proposition: 'Leading independent global martech research, applied to your business.',
+  response: 'Move faster and smarter through leading independent global martech research, applied to your business.',
   evidenceBody: 'We combine that research with proven patterns, practical know-how and your own data to:',
   benefits: ['Identify where your business can improve.', 'Prioritise the changes that matter.', 'Help you put them into practice.'],
   caption: 'Through MartechTribe, Growth Lab draws on 1,634 benchmarked martech stacks and research across industries since 2017.',
@@ -296,11 +296,12 @@ async function homeChecks(page, vp) {
       numbering: document.querySelectorAll('.stage .num').length + [...document.querySelectorAll('.stage *')].filter((e) => /^0[1-4]$/.test(e.textContent.trim())).length,
       header: { links: [...document.querySelectorAll('.site-header a')].map((a) => `${a.textContent.trim() || a.getAttribute('aria-label')}|${a.getAttribute('href')}|${a.className}`),
         navs: document.querySelectorAll('.site-header nav, .site-header ul').length },
-      evidence: { h2: t('#evidence h2'), h2Colour: cs(document.querySelector('#evidence h2')).color, question: t('#evidence .question'), proposition: t('#evidence .proposition'),
-        coral: ['.question', '.proposition'].map((sel) => { const el = document.querySelector('#evidence ' + sel);
-          return { colour: cs(el).color, size: parseFloat(cs(el).fontSize), weight: Number(cs(el).fontWeight), tag: el.tagName }; }),
+      evidence: { h2: t('#evidence h2'), h2Colour: cs(document.querySelector('#evidence h2')).color, question: t('#evidence .question'), response: t('#evidence .response'),
+        coral: ['.question', '.response'].map((sel) => { const el = document.querySelector('#evidence ' + sel);
+          return { colour: cs(el).color, size: parseFloat(cs(el).fontSize), weight: Number(cs(el).fontWeight), lineHeight: cs(el).lineHeight, family: cs(el).fontFamily, tag: el.tagName }; }),
         dark: ['.body', '.benefits li'].map((sel) => { const el = document.querySelector('#evidence ' + sel); return { colour: cs(el).color, weight: Number(cs(el).fontWeight) }; }),
-        separation: document.querySelector('#evidence .proposition').getBoundingClientRect().top - document.querySelector('#evidence .question').getBoundingClientRect().bottom,
+        gaps: (() => { const r = (sel) => document.querySelector('#evidence ' + sel).getBoundingClientRect();
+          return [r('.question').top - r('h2').bottom, r('.response').top - r('.question').bottom]; })(),
         leftover: document.querySelectorAll('#evidence .lede, #evidence .closing').length,
         stageColour: cs(document.querySelector('.stage h2')).color, mapShadow: cs(map).boxShadow, mapFilter: cs(map).filter, mapOpacity: cs(map).opacity, body: t('#evidence .body'),
         benefits: [...document.querySelectorAll('#evidence .benefits li')].map((l) => l.textContent.trim()),
@@ -344,7 +345,7 @@ async function homeChecks(page, vp) {
       mailto: document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').length, copyButtons: document.querySelectorAll('[data-copy]').length,
       emailText: /@/.test(document.body.innerText),
       // Neil approved two positioning phrases that use "leading"; everything else is still screened
-      banned: (document.querySelector('main').innerText.replace('Leading independent global martech research', '').replace('One of the leading international thinkers in martech', '').match(/richest|world.?s|largest|leading|best in class|unrivalled|\bfees?\b|\bfree\b|\bpric|\bR\s?\d|1,500,505|booked|appointment|confirmed/gi) || []),
+      banned: (document.querySelector('main').innerText.replace('leading independent global martech research', '').replace('One of the leading international thinkers in martech', '').match(/richest|world.?s|largest|leading|best in class|unrivalled|\bfees?\b|\bfree\b|\bpric|\bR\s?\d|1,500,505|booked|appointment|confirmed/gi) || []),
       retail: document.querySelectorAll('a[href*="martechtribe.com/blog"]').length + (/retail/i.test(document.body.textContent) ? 1 : 0),
       small, primaries: [...document.querySelectorAll('.btn-dark, .btn-coral')].filter(visible).map((b) => Math.round(b.getBoundingClientRect().height)),
       anims: document.getAnimations().map((a) => (a.effect && a.effect.target && a.effect.target.classList && a.effect.target.classList.contains('clients-track')) ? 'client-strip' : (a.animationName || a.transitionProperty || 'unknown')),
@@ -373,9 +374,9 @@ async function homeChecks(page, vp) {
     x.header.links[1] === 'Let’s Talk|contact.html|btn btn-dark', x.header.links.join(' ; '));
 
   const e = x.evidence;
-  check(`${tag} research copy word for word: heading, question, proposition, sentence and three bullets; old paragraph and closing line gone`, e.h2 === HOME.evidenceH2 &&
-    e.question === HOME.question && e.proposition === HOME.proposition && e.body === HOME.evidenceBody && JSON.stringify(e.benefits) === JSON.stringify(HOME.benefits) &&
-    e.leftover === 0 && !/Less time establishing|We bring those patterns/.test(e.visibleText), JSON.stringify([e.h2, e.question, e.proposition, e.body, e.benefits]));
+  check(`${tag} research copy word for word: heading, question, response, sentence and three bullets; old paragraph and closing line gone`, e.h2 === HOME.evidenceH2 &&
+    e.question === HOME.question && e.response === HOME.response && e.body === HOME.evidenceBody && JSON.stringify(e.benefits) === JSON.stringify(HOME.benefits) &&
+    e.leftover === 0 && !/Less time establishing|We bring those patterns/.test(e.visibleText), JSON.stringify([e.h2, e.question, e.response, e.body, e.benefits]));
   check(`${tag} no Sources dropdown, separate proof line or links in the research section`, e.details === 0 && e.links === 0 &&
     !/Sources|15,505|1,345|200\+|has benchmarked/.test(e.visibleText), e.details);
   check(`${tag} caption repeats the research sentence, 1,634 benchmarked martech stacks in bold`, e.caption === HOME.caption &&
@@ -383,11 +384,12 @@ async function homeChecks(page, vp) {
     e.captionSize >= 16 && contrast(e.captionColour, 'rgb(255, 255, 255)') >= 7 && (e.visibleText.match(/draws on 1,634 benchmarked martech stacks/g) || []).length === 1,
     `${e.caption} (${e.captionSize}px)`);
   check(`${tag} smaller credit under the caption`, e.credit === HOME.credit, e.credit);
-  check(`${tag} black heading; question and proposition in the stage headings' coral as WCAG large text; sentence and bullets regular dark`,
+  check(`${tag} black heading; question and response in the stage headings' coral as WCAG large text, identical type; sentence and bullets regular dark`,
     e.h2Colour === 'rgb(17, 17, 17)' && e.coral.every((c) => c.colour === e.stageColour && c.colour === 'rgb(255, 78, 78)' && c.size >= 18.66 && c.weight >= 700) &&
-    e.coral[1].tag === 'H3' && e.coral[1].size > e.coral[0].size && e.dark.every((d) => d.colour === 'rgb(17, 17, 17)' && d.weight === 400),
-    e.coral.map((c) => `${c.tag} ${c.size}px ${c.weight}`).join(', '));
-  check(`${tag} generous space after the question`, e.separation >= 32, `${Math.round(e.separation)}px`);
+    e.coral.every((c) => c.tag === 'P' && c.size === e.coral[0].size && c.weight === e.coral[0].weight && c.lineHeight === e.coral[0].lineHeight && c.family === e.coral[0].family) && e.dark.every((d) => d.colour === 'rgb(17, 17, 17)' && d.weight === 400),
+    e.coral.map((c) => `${c.tag} ${c.size}px ${c.weight} ${c.lineHeight}`).join(', '));
+  check(`${tag} equal space, heading to question and question to response (one 24 px token, baseline to capitals)`,
+    e.gaps.every((g) => Math.abs(g - 24) <= 1) && Math.abs(e.gaps[0] - e.gaps[1]) <= 1, e.gaps.map((g) => `${Math.round(g * 10) / 10}px`).join(' / '));
   check(`${tag} a restrained coral glow behind the map, the map itself untouched`, /(rgba\(255, 78, 78, 0\.3\)|color\(srgb 1 0\.30\d* 0\.30\d* \/ 0\.3\))/.test(e.mapShadow) &&
     e.mapFilter === 'none' && e.mapOpacity === '1', e.mapShadow);
   check(`${tag} map stays whole at 16:9 with no full map link`, !/View the full map/.test(e.visibleText) &&

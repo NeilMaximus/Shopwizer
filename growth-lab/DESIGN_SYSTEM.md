@@ -1,6 +1,6 @@
 # Growth Lab website design system
 
-Version 2.8, 14 October 2026. Owner: Neil Botha.
+Version 2.9, 14 October 2026. Owner: Neil Botha.
 
 These rules govern every page of the Growth Lab website, starting with Make Your Martech Pay and its contact view. They are durable: follow them by default in every new page, edit and review. Neil requested and approved the changes recorded here. Change a rule only when he asks for it, and record the change in the change log at the end.
 
@@ -50,8 +50,7 @@ The presentation system for decks keeps its own rules. This document covers the 
 | Workshop name (H3) | 22 to 26 px | 600 | minus 0.02em | Ink |
 | Person name (H3) | 18 px | 600 | minus 0.01em | Ink, role below in ink 3 |
 | Lead | 18 to 20 px | 400 | 0 | `--gl-ink-2` |
-| Research question | 19 to 20 px | 700 | 0 | Brand coral `--gl-coral`, as WCAG large text (section 11) |
-| Research proposition (H3) | 22 to 26 px | 700 | minus 0.02em | Brand coral `--gl-coral`, as WCAG large text (section 11) |
+| Research question and response | 19 to 20 px, line height 1.4 | 700 | 0 | Brand coral `--gl-coral`, as WCAG large text; both paragraphs identical at every width (section 11) |
 | "The value you get" | 15 px | 600 | 0 | Ink, with an 18 px target icon in the workshop accent |
 | Benefit bullets | 18 px | 400 | 0 | Ink, small purple square markers |
 | Tagline | 18 px | 600 | minus 0.01em | Two sentences break between sentences |
@@ -200,21 +199,21 @@ The header keeps one height on every page so the logo does not shift between the
 
 Three white sections sit between the black stages and the rune band, in this order. Each has one job and one H2, with no eyebrow, tiles, counters or scroll effects. Hairlines inside the content width separate them. Every figure, link and image is recorded in `SOURCES.md` with its as at date.
 
-**Research (`#evidence`).** Neil's approved copy, word for word (version 2.8).
+**Research (`#evidence`).** Neil's approved copy, word for word (version 2.9).
 
 - Desktop: copy on the left (about 40 percent), map on the right (about 60 percent), vertically centred. Under 1000 px: copy first, then the map and its caption.
 - Heading: "Your next move shouldn’t take months. Or millions."
-- Then, in this order (version 2.8), with nothing else in the left column:
+- Then, in this order (version 2.9), with nothing else in the left column:
   1. The question "Considering Deloitte or Accenture?" in brand coral, bold, 19 to 20 px. Neil chose the named comparison; it stays a short question. Never turn it into a claim that those firms always cost millions or take months, and add no prices, timelines, revenue guarantees or predictions.
-  2. Generous space after it (36 to 52 px), so the question never reads as an endorsement of those firms or runs into the proposition.
-  3. The proposition as its own coral subheading (an H3, bold, 22 to 26 px): "Leading independent global martech research, applied to your business."
+  2. The response, as a paragraph in exactly the same treatment as the question (same Geist size, weight, coral and line height at every width, never a larger subheading), wrapping naturally with no forced breaks: "Move faster and smarter through leading independent global martech research, applied to your business." The two read as one conversational question and answer.
+  3. One spacing token sets both gaps: `--gl-space-research` (24 px) from the heading to the question and from the question to the response, measured baseline to capitals (`text-box` trims on the heading, question and response, so margin collapse and line height cannot make the two gaps differ). Never reintroduce a larger gap after the question.
   4. In regular dark text (ink, weight 400, 18 px): "We combine that research with proven patterns, practical know-how and your own data to:" then three bullets with small purple square markers: "Identify where your business can improve.", "Prioritise the changes that matter.", "Help you put them into practice."
-- Only the question and the proposition are coral; the heading stays black and the rest stays dark. Both coral lines use `--gl-coral` (`#FF4E4E`), never a substitute red, and must stay WCAG large text (weight 700 at 19 px or more; coral on white is 3.25:1). Plain text, no panel or box.
+- Only the question and the response are coral; the heading stays black and the rest stays dark. Both coral lines use `--gl-coral` (`#FF4E4E`), never a substitute red, and must stay WCAG large text (weight 700 at 19 px or more; coral on white is 3.25:1). Plain text, no panel or box.
 - The research credentials (1,634 benchmarked stacks, since 2017) live in the map caption, not in the left column, so they support the message rather than compete with it.
 - The MartechMap is vendor artwork. Show it whole at 16:9 with the chiefmartec and MartechTribe credits in the artwork visible: never crop, recolour or stretch it. Hairline ring, 10 px radius (`--gl-radius-image`), and one restrained glow in the same brand coral behind it (`0 10px 44px -6px`, coral at 30 percent). The glow sits outside the image: never tint, filter or fade the map itself. No "View the full map" link.
 - Caption below the map, repeating the research sentence on purpose (Neil reversed the earlier removal): "Through MartechTribe, Growth Lab draws on **1,634 benchmarked martech stacks** and research across industries since 2017." 16 px, ink 2, the phrase in bold ink. A readable caption, not small print. Below it, in 13 px ink 3: "Research: MartechTribe. MartechMap © chiefmartec and MartechTribe."
 - The map is a vendor landscape, not a chart of the 1,634 benchmarked stacks: never label it as one.
-- No Sources dropdown, separate proof sentence, stat tiles or other superlatives on the page. The only approved positioning phrases are the research proposition above and Frans's "One of the leading international thinkers in martech" (both Neil's wording, version 2.8). Provenance for every figure lives in `SOURCES.md`. Never attach the 49 categories to the map, and never present MartechTribe's figures as Growth Lab audits.
+- No Sources dropdown, separate proof sentence, stat tiles or other superlatives on the page. The only approved positioning phrases are the research response above and Frans's "One of the leading international thinkers in martech" (both Neil's wording, versions 2.8 and 2.9). Provenance for every figure lives in `SOURCES.md`. Never attach the 49 categories to the map, and never present MartechTribe's figures as Growth Lab audits.
 
 **Workshops (`#workshops`).** Heading "See the opportunity. Know where to act." Then the support line: "Use cross-industry research and your own data to identify opportunities, prioritise investment and plan the next steps." The research section already credits MartechTribe, so there is no separate attribution line. The message is accessible insight, priorities and revenue opportunity, not laborious business case work, and never that a workshop implements anything or guarantees revenue.
 
@@ -335,6 +334,7 @@ Three white sections sit between the black stages and the rune band, in this ord
 
 ## Change log
 
+- **2.9, 14 October 2026.** Research column correction (Neil). The question "Considering Deloitte or Accenture?" and the response "Move faster and smarter through leading independent global martech research, applied to your business." now share one treatment (bold brand coral, 19 to 20 px, line height 1.4) instead of a small question and a larger 22 to 26 px subheading. One token, `--gl-space-research` (24 px, baseline to capitals), sets the gap from the heading to the question and from the question to the response, replacing the 36 to 52 px gap. The sentence, the bullets (still 18 px), the map, glow, caption, credit and biographies are unchanged.
 - **2.8, 14 October 2026.** Research section restructured for scanning (Neil): black heading, the short coral question "Considering Deloitte or Accenture?", generous space, the coral subheading "Leading independent global martech research, applied to your business.", then "We combine that research with proven patterns, practical know-how and your own data to:" and three new bullets in regular dark text. The long coral paragraph, the MartechTribe paragraph and the closing line are removed from the left column; the map, glow, caption and credit stay. New biographies: Neil's names customer experience strategy and South African organisations; Frans's is Neil's approved positioning.
 - **2.7, 14 October 2026.** Three small changes approved by Neil. The coral research paragraph now reads "Considering Deloitte or Accenture for your martech strategy? We combine industry research, proven patterns and practical know-how with your own data. Then we pinpoint where your business can improve, prioritise the changes and help you put them into practice." The people section line now reads "Neil and Frans combine customer experience strategy, martech research and hands-on implementation to help you turn insights into results." The contact view's footer drops the repeated logo and keeps the copyright and legal links.
 - **2.6, 14 October 2026.** Neil's final refinement of version 9. The header action reads "Let’s Talk". The research question is set in bold brand coral as WCAG large text, with a restrained coral glow behind the map. Workshops: "See the opportunity. Know where to act." with a support line, new outcome sentences, everything always visible (no accordion), "The value you get" with a target icon, benefit worded bullets, and "Three mornings or one full day." with a clock icon as the last row in both. The people section introduces Neil and Frans instead of repeating the diagnosis line. The rune breathes 25 percent faster with about 23 percent more travel, already in motion as it enters view. Neil then approved two recommendations: the hero body now reads "Growth Lab helps you get more from your marketing technology, customer data and AI. We find what needs to change, put the improvements in place and keep improving the results." (the headline is unchanged), and the header logo is 20 percent larger, 36 px high (30 px on phones), in the same header heights.
