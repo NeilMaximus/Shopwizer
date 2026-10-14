@@ -1,0 +1,8 @@
+{
+  "name": "growth-lab-site-checks",
+  "private": true,
+  "description": "Playwright checks for the Growth Lab website. Run: NODE_PATH=tests/node_modules node tests/verify.cjs",
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}

@@ -1,0 +1,59 @@
+/* Growth Lab website tokens. Source of truth for colour, type, space, radius and motion.
+   Rules for using them: growth-lab/DESIGN_SYSTEM.md. scripts/build.py copies this file
+   into site/assets/css/tokens.css, so edit it here, never the copy.
+   Single light theme by design: white page, opaque light grey panels. */
+:root {
+  color-scheme: light;
+
+  /* Brand accents, verified from the growthlab.co.za stylesheet */
+  --gl-purple: #7761FF;          /* primary accent: cube, nodes, connectors, large display */
+  --gl-coral: #FF4E4E;           /* brand coral: large display text (24px plus, or 19px bold) and graphics only */
+  --gl-amber: #FEBC2E;           /* use very sparingly, never for text on white */
+  --gl-amber-tint: #FFF1CC;      /* only for CONFIRM placeholders in draft documents */
+
+  /* Derived shades for legibility, not new brand colours */
+  --gl-purple-strong: #644CF0;   /* purple text, links and focus ring on white or panel */
+  --gl-purple-soft: #D9D3FF;     /* cube top face, text selection */
+
+  /* Neutrals */
+  --gl-white: #FFFFFF;           /* page background */
+  --gl-panel: #F5F5F5;           /* opaque very light grey panel */
+  --gl-panel-strong: #EBEBEB;    /* hover on a panel or quiet button */
+  --gl-line: #E5E5E5;            /* hairline dividers and borders */
+  --gl-ink: #111111;             /* primary text and the logo */
+  --gl-ink-2: #404040;           /* secondary text */
+  --gl-ink-3: #666666;           /* tertiary text: numbering, meta, footer small print */
+  --gl-idle: #C4C4C4;            /* inactive strokes during the cube build */
+  --gl-rune-top: #F1F1F1;        /* rune gradient, top */
+  --gl-rune-bottom: #E3E3E3;     /* rune gradient, at the divider */
+
+  /* Value cube core (today's results) */
+  --gl-core-top: #3A3A38;
+  --gl-core-left: #222221;
+  --gl-core-right: #111111;
+
+  /* Type: Geist Sans only. No monospace face anywhere in website UI */
+  --gl-font: "Geist", "Geist Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --gl-weight-regular: 400;
+  --gl-weight-medium: 500;
+  --gl-weight-semibold: 600;
+  --gl-text-small: 13px;
+  --gl-text-ui: 15px;
+  --gl-text-body: 17px;
+  --gl-text-lead: clamp(18px, 1.5vw, 20px);
+  --gl-track-display: -0.035em;
+  --gl-track-heading: -0.02em;
+  --gl-track-ui: -0.005em;
+
+  /* Layout */
+  --gl-wrap: 1200px;
+  --gl-gutter: clamp(20px, 4vw, 48px);
+  --gl-section: clamp(72px, 10vw, 140px);
+  --gl-radius-panel: 28px;
+  --gl-radius-node: 14px;
+  --gl-radius-pill: 999px;
+
+  /* Motion */
+  --gl-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  --gl-rune-cycle: 14s;
+}
