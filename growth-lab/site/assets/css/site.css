@@ -1,7 +1,7 @@
 /* Growth Lab website. Rules: growth-lab/DESIGN_SYSTEM.md. Tokens: tokens.css.
-   Layout: white header with the real logo, a hero that pairs the headline with the value cube
-   on a light grey panel, the four stages joined by a line of icon nodes, then the oversized
-   rune cropped by a hairline above a white footer. */
+   Layout: white header with the real logo, a white hero that pairs the headline with the value
+   cube on a light grey panel, the four stages on a black section joined by a line of icon nodes,
+   then the oversized rune cropped by a hairline above a white footer. */
 
 @font-face {
   font-family: "Geist";
@@ -79,7 +79,7 @@ a { color: inherit; }
 .nav-links a:hover { color: var(--gl-ink); }
 
 /* Hero */
-.hero { padding-block: clamp(32px, 5vw, 72px) var(--gl-section); }
+.hero { background: var(--gl-white); padding-block: clamp(32px, 5vw, 72px) var(--gl-section); }
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
@@ -128,9 +128,9 @@ h1 {
 .building .out:not(.on) { color: var(--gl-ink-3); }
 .building .arrow:not(.on) { stroke: var(--gl-idle); }
 
-/* Four stages joined by a line of icon nodes */
-.approach { padding-bottom: var(--gl-section); }
-.approach .wrap > .stages { border-top: 1px solid var(--gl-line); padding-top: clamp(56px, 7vw, 96px); }
+/* Four stages joined by a line of icon nodes, on the deliberate black section. Keep it black */
+.approach { background: var(--gl-black); color: var(--gl-white); padding-block: var(--gl-section); }
+.approach :focus-visible { outline-color: var(--gl-purple-soft); }
 .stages { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--sgap); --node: 64px; --sgap: clamp(28px, 3.6vw, 48px); }
 .stage { position: relative; min-width: 0; scroll-margin-top: 24px; }
 .node { width: var(--node); height: var(--node); border-radius: var(--gl-radius-node); background: var(--gl-purple); display: grid; place-items: center; }
@@ -147,15 +147,15 @@ h1 {
 .stage .num {
   display: block; margin-top: 28px;
   font-size: 14px; font-weight: var(--gl-weight-medium); font-variant-numeric: tabular-nums;
-  color: var(--gl-ink-3); line-height: 1.4;
+  color: var(--gl-on-black-2); line-height: 1.4;
 }
 .stage h2 {
   margin-top: 6px; color: var(--gl-coral);
   font-size: clamp(28px, 2.5vw, 34px); line-height: 1.1; letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold);
 }
 .stage .tag span { display: inline-block; }
-.stage .tag { margin-top: 14px; font-size: 18px; line-height: 1.4; font-weight: var(--gl-weight-semibold); letter-spacing: -0.01em; text-wrap: balance; }
-.stage .body { margin-top: 12px; max-width: 60ch; font-size: 16px; line-height: 1.62; color: var(--gl-ink-2); text-wrap: pretty; }
+.stage .tag { margin-top: 14px; font-size: 18px; line-height: 1.4; font-weight: var(--gl-weight-semibold); letter-spacing: -0.01em; color: var(--gl-white); text-wrap: balance; }
+.stage .body { margin-top: 12px; max-width: 60ch; font-size: 16px; line-height: 1.62; color: var(--gl-on-black); text-wrap: pretty; }
 
 /* The rune: oversized, faint, cropped by the hairline above the footer */
 .rune-stage {

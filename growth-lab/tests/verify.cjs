@@ -19,7 +19,7 @@ fs.mkdirSync(SHOTS, { recursive: true });
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
   '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.json': 'application/json', '.txt': 'text/plain' };
 const EXPECTED_TOKENS = { '--gl-purple': '#7761FF', '--gl-coral': '#FF4E4E', '--gl-amber': '#FEBC2E',
-  '--gl-white': '#FFFFFF', '--gl-panel': '#F5F5F5', '--gl-ink': '#111111' };
+  '--gl-white': '#FFFFFF', '--gl-panel': '#F5F5F5', '--gl-ink': '#111111', '--gl-black': '#111111' };
 const VIEWPORTS = [
   { name: 'desktop', width: 1440, height: 900 },
   { name: 'tablet', width: 834, height: 1112 },
@@ -27,6 +27,17 @@ const VIEWPORTS = [
 ];
 
 const results = [];
+function lum(rgb) {
+  const [r, g, b] = rgb.match(/\d+(\.\d+)?/g).slice(0, 3).map((v) => {
+    const c = Number(v) / 255;
+    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+function contrast(a, b) {
+  const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+  return (x + 0.05) / (y + 0.05);
+}
 function check(name, ok, detail) {
   results.push({ name, ok: !!ok, detail: detail === undefined ? '' : detail });
 }
@@ -57,7 +68,7 @@ async function pageChecks(page, vp) {
     await document.fonts.ready;
     const rootStyle = getComputedStyle(document.documentElement);
     const tokens = {};
-    for (const k of ['--gl-purple', '--gl-coral', '--gl-amber', '--gl-white', '--gl-panel', '--gl-ink']) {
+    for (const k of ['--gl-purple', '--gl-coral', '--gl-amber', '--gl-white', '--gl-panel', '--gl-ink', '--gl-black']) {
       tokens[k] = rootStyle.getPropertyValue(k).trim().toUpperCase();
     }
     const faces = [...document.fonts].filter((f) => f.family.replace(/"/g, '') === 'Geist').map((f) => f.status);
@@ -94,8 +105,12 @@ async function pageChecks(page, vp) {
     const nav = [...document.querySelectorAll('.nav-links a')].map((a) => ({
       text: a.textContent, font: getComputedStyle(a).fontFamily, transform: getComputedStyle(a).textTransform,
       spacing: getComputedStyle(a).letterSpacing, visible: a.getBoundingClientRect().width > 0 }));
+    const colour = (sel, prop) => getComputedStyle(document.querySelector(sel))[prop];
+    const grounds = { hero: colour('.hero', 'backgroundColor'), stages: colour('.approach', 'backgroundColor'),
+      node: colour('.node', 'backgroundColor'), h2: colour('.stage h2', 'color'), tag: colour('.stage .tag', 'color'),
+      body: colour('.stage .body', 'color'), num: colour('.stage .num', 'color'), arrow: getComputedStyle(document.querySelector('.stage'), '::before').backgroundColor };
     return {
-      tokens, faces, families: [...families], offenders, monoInCss: /mono|martian/i.test(sheetText.replace(/\/\*[\s\S]*?\*\//g, '')),
+      grounds, tokens, faces, families: [...families], offenders, monoInCss: /mono|martian/i.test(sheetText.replace(/\/\*[\s\S]*?\*\//g, '')),
       geistLoaded: document.fonts.check('600 16px Geist') && document.fonts.check('400 16px Geist'),
       logos, rune: { paths: [...rune.querySelectorAll('path')].map((p) => p.getAttribute('d')), w: runeBox.width,
         h: runeBox.height, cropped: runeBox.bottom > stageBox.bottom + 1, stageH: stageBox.height },
@@ -108,6 +123,15 @@ async function pageChecks(page, vp) {
   check(`${tag} Geist loaded from self hosted woff2`, info.geistLoaded && info.faces.includes('loaded'), JSON.stringify(info.faces));
   check(`${tag} every text node renders in Geist`, info.offenders.length === 0, info.offenders.slice(0, 5).join(' | ') || info.families.join(' | '));
   check(`${tag} no monospace or Martian in stylesheets`, !info.monoInCss);
+  const g = info.grounds;
+  check(`${tag} hero background is white`, g.hero === 'rgb(255, 255, 255)', g.hero);
+  check(`${tag} four stage section is black #111111`, g.stages === 'rgb(17, 17, 17)', g.stages);
+  const ratios = { heading: contrast(g.h2, g.stages), tagline: contrast(g.tag, g.stages), body: contrast(g.body, g.stages),
+    number: contrast(g.num, g.stages), tile: contrast(g.node, g.stages), arrow: contrast(g.arrow, g.stages) };
+  check(`${tag} text on black meets AA`, ratios.heading >= 4.5 && ratios.tagline >= 7 && ratios.body >= 7 && ratios.number >= 4.5,
+    Object.entries(ratios).map(([k, v]) => `${k} ${v.toFixed(2)}`).join(', '));
+  check(`${tag} purple tiles and arrows read on black`, ratios.tile >= 3 && ratios.arrow >= 3 && g.h2 === 'rgb(255, 78, 78)' && g.tag === 'rgb(255, 255, 255)',
+    `tile ${ratios.tile.toFixed(2)}, arrow ${ratios.arrow.toFixed(2)}, heading ${g.h2}, tagline ${g.tag}`);
   for (const [k, v] of Object.entries(EXPECTED_TOKENS)) {
     check(`${tag} token ${k}`, info.tokens[k] === v, `${info.tokens[k]} expected ${v}`);
   }

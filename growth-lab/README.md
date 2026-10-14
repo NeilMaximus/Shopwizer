@@ -13,10 +13,10 @@ growth-lab/
   DESIGN_SYSTEM.md      durable design rules
   CLAUDE.md             project instructions for Claude sessions
   PRELAUNCH.md          launch checklist (legal drafts, entity, hosting)
-  DEPLOY.md             Vercel deployment notes (the README inside the zip)
+  DEPLOY.md             Vercel deployment and protection notes (the README inside the zip)
   tokens/               tokens.css (source of truth) and tokens.json
   legal/                draft privacy notice and website terms (Markdown)
-  site/                 the deployable site, Vercel output directory
+  site/                 the deployment root (Vercel Root Directory), nothing else is deployed
     index.html          Make Your Martech Pay
     privacy.html        generated draft, noindex
     terms.html          generated draft, noindex

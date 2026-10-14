@@ -1,6 +1,6 @@
 # Growth Lab website design system
 
-Version 2.0, 14 October 2026. Owner: Neil Botha.
+Version 2.1, 14 October 2026. Owner: Neil Botha.
 
 These rules govern every page of the Growth Lab website, starting with Make Your Martech Pay. They are durable: follow them by default in every new page, edit and review. Neil requested and approved the changes recorded here. Change a rule only when he asks for it, and record the change in the change log at the end.
 
@@ -8,7 +8,7 @@ Values live in `tokens/tokens.css` (with a JSON copy in `tokens/tokens.json`). N
 
 ## 1. Rules that supersede earlier ones
 
-Version 2.0 replaces the earlier website styling, which came from the Life Insurer Lens page and the presentation system. For the website, these older rules no longer apply:
+Version 2 replaces the earlier website styling, which came from the Life Insurer Lens page and the presentation system. Version 2.1 then corrects 2.0: the four stage section stays black. For the website, these older rules no longer apply:
 
 | Earlier rule | Now |
 | --- | --- |
@@ -16,8 +16,8 @@ Version 2.0 replaces the earlier website styling, which came from the Life Insur
 | Martian Mono for labels, eyebrows, numbering and navigation | No monospace face anywhere. Labels, numbering and navigation are Geist Sans |
 | Uppercase, widely tracked small labels | Sentence case, restrained tracking (0 to minus 0.005em) |
 | Black header bar with a typed "Growth Lab" lockup | White header with the real Growth Lab vector logo |
-| Off white canvas `#F2F2F0` | White page `#FFFFFF` with opaque very light grey panels `#F5F5F5` |
-| Black section bands | White sections separated by hairlines and space |
+| Off white canvas `#F2F2F0` | White page and hero `#FFFFFF`, with opaque very light grey `#F5F5F5` for supporting sections, boxes and panels |
+| Black bands throughout | One deliberate black section, the four stages, on `#111111`. Version 2.0's "make the whole page white" is withdrawn |
 | Dotted margin marks | Retired on the website |
 | Coral `#FF5F57` | Brand coral is `#FF4E4E`. `#FF5F57` is only the window control red of the live site's OS chrome and is not a brand colour |
 
@@ -26,7 +26,7 @@ The presentation system for decks keeps its own rules. This document covers the 
 ## 2. Principles
 
 1. Concise copy. Every word earns its place. Do not pad, add slogans or invent claims.
-2. A white page with generous space and a clear hierarchy, inspired by the restraint of x.ai/bot. Draw inspiration only. Never copy its layout, its X VF typeface or its assets.
+2. A white hero and page with generous space and a clear hierarchy, inspired by the restraint of x.ai/bot, plus one deliberate black section for the four stages. Draw inspiration only. Never copy x.ai's layout, its X VF typeface or its assets.
 3. One bold device per section. The value cube in the hero, the line of stage nodes, the rune above the footer. Everything around them stays quiet.
 4. Solid surfaces only. Panels are opaque. No translucency, frosted glass, blur, glows or heavy shadows.
 5. Motion with a purpose, slow and controlled. Never spinning, bouncing or decorative noise.
@@ -69,6 +69,9 @@ Brand accents are verified from the live growthlab.co.za stylesheet (`--acc-purp
 | `--gl-ink` | `#111111` | Primary text and the logo |
 | `--gl-ink-2` | `#404040` | Secondary text |
 | `--gl-ink-3` | `#666666` | Numbering, meta, small print |
+| `--gl-black` | `#111111` | Ground of the black four stage section |
+| `--gl-on-black` | `#D4D4D4` | Body text on black |
+| `--gl-on-black-2` | `#A3A3A3` | Numbering on black |
 | `--gl-rune-top`, `--gl-rune-bottom` | `#F1F1F1`, `#E3E3E3` | The rune's faint gradient |
 | `--gl-core-top`, `-left`, `-right` | `#3A3A38`, `#222221`, `#111111` | The cube's black core |
 | `--gl-amber-tint` | `#FFF1CC` | Only for CONFIRM placeholders in draft documents |
@@ -86,12 +89,33 @@ Measured contrast (WCAG 2.2):
 | Coral on panel | 2.99 | **Not for text.** Keep coral text on white |
 | White on purple | 4.25 | Icons and large text |
 | Amber on white | 1.69 | **Never text.** Small graphic accents only |
+| White on black (`#111111`) | 18.9 | All text, taglines |
+| On black (`#D4D4D4`) on black | 12.7 | Body text |
+| On black 2 (`#A3A3A3`) on black | 7.5 | Numbering, small text |
+| Coral on black | 5.8 | Stage headings, any size |
+| Purple on black | 4.4 | Icon tiles, connector lines and arrows |
+| Purple soft on black | 13.2 | Focus ring inside the black section |
 
 ## 5. Surfaces and layout
 
-- Page background white. Panels are solid `--gl-panel` with a 28 px radius (`--gl-radius-panel`). Never translucent.
+**Section grounds (fixed rule, Neil, 14 October 2026):**
+
+| Section | Ground |
+| --- | --- |
+| Header | White |
+| Hero ("Make your martech investment pay.") | White. The value cube sits on a light grey panel inside it |
+| Four stages (Diagnose, Prioritise, Unlock, Optimise) | **Black `#111111`, full width.** Purple icon tiles and connecting arrows, coral headings, white semibold taglines, light grey body text, numbers in `--gl-on-black-2`. All Geist Sans |
+| Rune band | White, with the faint grey rune cropped by the hairline |
+| Footer | White |
+| Future supporting sections | White, or light grey `--gl-panel` sections, boxes and panels |
+
+- Never turn the four stage section white or light grey, and never restore Martian Mono or uppercase mono labels in it.
+- Light grey is for supporting sections, boxes and panels only. It never replaces the black stage section.
+- Do not add other black or coloured bands without Neil's approval.
+
+- Panels are solid `--gl-panel` with a 28 px radius (`--gl-radius-panel`). Never translucent.
 - Content width 1200 px with a fluid gutter of 20 to 48 px. Sections breathe: 72 to 140 px between them (`--gl-section`).
-- Separate sections with hairlines (`--gl-line`) and space, not with coloured bands.
+- Apart from the black stage section, separate sections with space and hairlines (`--gl-line`).
 - Radii: panels 28 px, stage nodes 14 px, buttons fully rounded.
 - Every layout works from 320 px wide with no horizontal scroll.
 
@@ -119,13 +143,14 @@ Measured contrast (WCAG 2.2):
 ## 9. Icons and stage nodes
 
 - Line icons on a 1200 unit grid with a 48 unit round stroke (bars 64), in white inside 64 px purple nodes (56 px on smaller screens) with a 14 px radius.
-- Stages are joined by a 1.5 px purple line ending in a chevron. On screens under 1000 px the line runs vertically.
+- They sit on the black four stage section. Stages are joined by a 1.5 px purple line ending in a chevron. On screens under 1000 px the line runs vertically.
 - Current icons: magnifier with a falling line (Diagnose), scales (Prioritise), open padlock (Unlock), rising bars with an arrow (Optimise).
 
 ## 10. Components
 
 - **Header:** white, logo left, stage links and a dark "Talk to us" pill right. Stage links hide under 760 px. The pill stays.
 - **Buttons:** dark pill (`--gl-ink` with white text) for the main action. Quiet pill (white, hairline border) for secondary actions such as Copy. Minimum height 44 px for main actions.
+- **Four stage section:** black `#111111`, full width, `--gl-section` padding top and bottom. Number (Geist 500, `--gl-on-black-2`), coral heading, white tagline (Geist 600, two sentence taglines break between sentences), body in `--gl-on-black`.
 - **Footer:** white, under the rune band. Logo, the four section links, the "Talk to us" email button, the address as selectable text with a Copy button, then a hairline and the legal line: copyright, Privacy, Website terms.
 - **Draft legal pages:** generated from `legal/*.md`, marked "Draft for review. Not approved and not yet in force", `noindex`, with CONFIRM placeholders highlighted.
 
@@ -139,7 +164,7 @@ Measured contrast (WCAG 2.2):
 ## 12. Accessibility
 
 - Contrast as in section 4. Text below large size uses ink, ink 2, ink 3 or purple strong only.
-- Visible focus on every interactive element: 2 px `--gl-purple-strong` outline, 3 px offset.
+- Visible focus on every interactive element: 2 px `--gl-purple-strong` outline, 3 px offset. Inside the black section the ring switches to `--gl-purple-soft`.
 - A skip link, landmarks (header, main, footer), one H1 per page, decorative SVG marked `aria-hidden`.
 - The copy action announces its result through a live region.
 - Run `node tests/verify.cjs` before sharing or deploying.
@@ -170,5 +195,6 @@ Measured contrast (WCAG 2.2):
 
 ## Change log
 
+- **2.1, 14 October 2026.** Neil's correction: the four stage section is black `#111111` again, as in the original design, with purple tiles and arrows, coral headings, white taglines and light grey body text, all in Geist. The hero stays white. Light grey is for supporting sections and panels and never replaces the black section. Withdraws 2.0's instruction to remove all black bands.
 - **2.0, 14 October 2026.** Geist Sans only, no monospace. White base with opaque grey panels. Verified brand colours (purple `#7761FF`, coral `#FF4E4E`, amber `#FEBC2E`). Real vector logo. Rune band above a new footer. Draft legal pages.
 - **1.0, 13 October 2026.** First Make Your Martech Pay page in the Life Insurer Lens style (Instrument Sans, Martian Mono, black bars). Superseded.
