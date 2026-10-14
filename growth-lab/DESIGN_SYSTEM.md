@@ -152,12 +152,13 @@ Measured contrast (WCAG 2.2):
 - **Buttons:** dark pill (`--gl-ink` with white text) for the main action. Quiet pill (white, hairline border) for secondary actions such as Copy. Minimum height 44 px for main actions.
 - **Four stage section:** black `#111111`, full width, `--gl-section` padding top and bottom. Number (Geist 500, `--gl-on-black-2`), coral heading, white tagline (Geist 600, two sentence taglines break between sentences), body in `--gl-on-black`.
 - **Footer:** white, under the rune band. Logo, the four section links, the "Talk to us" email button, the address as selectable text with a Copy button, then a hairline and the legal line: copyright, Privacy, Website terms.
+- **Footer in the private Claude preview:** the artifact viewer can show a blank page after an email link, so the preview build turns "Talk to us" into a button that copies the address ("Email copied") and shows addresses on the legal pages as plain text. The site and the browser files keep working email links. `scripts/build.py` makes this swap; never remove the address shown as text.
 - **Draft legal pages:** generated from `legal/*.md`, marked "Draft for review. Not approved and not yet in force", `noindex`, with CONFIRM placeholders highlighted.
 
 ## 11. Motion
 
 - **Cube build:** on load, after 0.5 s, the cube grows from the core along one axis at a time (0.72 s each, cubic ease in and out), lighting each outcome label and arrow as its axis grows. It then rests.
-- **Rune breathing:** the two chevrons drift apart diagonally by 0.75 units (about 19 px at full size) and back over 14 s, alternating, only while the band is on screen. Its rest position is the true logo geometry.
+- **Rune breathing:** the two chevrons drift apart diagonally by 1.3 units, about 4 percent of the rune's width (31 px at full size, 13 px on a phone), and back, 8 s each way (`--gl-rune-cycle`). Smaller drifts could not be seen on a phone. It runs by default and pauses only while the band is known to be off screen. Its rest position is the true logo geometry, and the 5 percent headroom above the rune keeps the drift uncropped at the top.
 - **Reduced motion:** with `prefers-reduced-motion: reduce`, the cube shows its finished state at once and the rune stays still. Smooth scrolling is off.
 - No other animation without Neil's approval. Never spin, bounce or loop attention grabbing effects.
 
@@ -195,6 +196,7 @@ Measured contrast (WCAG 2.2):
 
 ## Change log
 
+- **2.2, 14 October 2026.** Rune drift raised to 1.3 units over 8 s each way so it can be seen on a phone, and it now runs by default. Private preview: no email links (the viewer could go blank), "Talk to us" copies the address. New browser files in `dist/browser/` open straight from a folder.
 - **2.1, 14 October 2026.** Neil's correction: the four stage section is black `#111111` again, as in the original design, with purple tiles and arrows, coral headings, white taglines and light grey body text, all in Geist. The hero stays white. Light grey is for supporting sections and panels and never replaces the black section. Withdraws 2.0's instruction to remove all black bands.
 - **2.0, 14 October 2026.** Geist Sans only, no monospace. White base with opaque grey panels. Verified brand colours (purple `#7761FF`, coral `#FF4E4E`, amber `#FEBC2E`). Real vector logo. Rune band above a new footer. Draft legal pages.
 - **1.0, 13 October 2026.** First Make Your Martech Pay page in the Life Insurer Lens style (Instrument Sans, Martian Mono, black bars). Superseded.

@@ -174,10 +174,12 @@ h1 {
 @media (prefers-reduced-motion: no-preference) {
   .rune-a { animation: rune-a var(--gl-rune-cycle) var(--gl-ease) infinite alternate; }
   .rune-b { animation: rune-b var(--gl-rune-cycle) var(--gl-ease) infinite alternate; }
-  .rune-stage:not(.rune-live) .rune path { animation-play-state: paused; }
+  .rune-stage.rune-idle .rune path { animation-play-state: paused; }
 }
-@keyframes rune-a { from { transform: translate(0, 0); } to { transform: translate(-0.75px, -0.75px); } }
-@keyframes rune-b { from { transform: translate(0, 0); } to { transform: translate(0.75px, 0.75px); } }
+/* Drift of 1.3 rune units, about 4 percent of its width, so it reads on a phone too.
+   It stays inside the 5 percent headroom above the rune */
+@keyframes rune-a { from { transform: translate(0, 0); } to { transform: translate(-1.3px, -1.3px); } }
+@keyframes rune-b { from { transform: translate(0, 0); } to { transform: translate(1.3px, 1.3px); } }
 
 /* Footer */
 .site-footer { background: var(--gl-white); }

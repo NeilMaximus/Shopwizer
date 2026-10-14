@@ -176,6 +176,23 @@ async function pageChecks(page, vp) {
     const endTop = await page.getAttribute('.f-top', 'points');
     check(`[${vp.name}] cube settles on the full cube`, endTop === finalTop);
     await pageChecks(page, vp);
+    // Rune breathing: it runs by default while on screen and drifts far enough to see at this width
+    await page.locator('.rune-stage').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+    const drift = await page.evaluate(() => {
+      const a = document.querySelector('.rune-a'), anim = a.getAnimations()[0];
+      if (!anim) return null;
+      const dur = anim.effect.getTiming().duration, was = anim.currentTime, state = anim.playState;
+      anim.pause(); anim.currentTime = 0;
+      const r0 = a.getBoundingClientRect();
+      anim.currentTime = dur - 1;
+      const r1 = a.getBoundingClientRect();
+      anim.currentTime = was; anim.play();
+      return { state, dur, dx: +(r0.left - r1.left).toFixed(1), dy: +(r0.top - r1.top).toFixed(1),
+        idle: document.querySelector('.rune-stage').classList.contains('rune-idle') };
+    });
+    check(`[${vp.name}] rune breathes on screen and drifts visibly`, !!drift && drift.state === 'running' && !drift.idle &&
+      drift.dx >= 10 && drift.dy >= 10, JSON.stringify(drift));
     check(`[${vp.name}] no script errors`, errors.length === 0, errors.join(' | '));
     await page.screenshot({ path: path.join(SHOTS, `${vp.name}-full.png`), fullPage: true });
 
@@ -189,7 +206,8 @@ async function pageChecks(page, vp) {
       const t1 = await page.evaluate(() => getComputedStyle(document.querySelector('.rune-a')).transform);
       check('[desktop] rune moves slowly while on screen', t0 !== t1, `${t0} -> ${t1}`);
       // Freeze the cycle at rest and at its widest point to show the full range of movement
-      for (const [name, ms] of [['rune-rest', 0], ['rune-peak', 14000]]) {
+      const cycle = await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('.rune-a')).animationDuration) * 1000);
+      for (const [name, ms] of [['rune-rest', 0], ['rune-peak', cycle - 1]]) {
         await page.evaluate((t) => document.getAnimations().forEach((a) => { a.pause(); a.currentTime = t; }), ms);
         await page.locator('.rune-stage').screenshot({ path: path.join(SHOTS, `${name}.png`) });
       }
@@ -272,8 +290,50 @@ async function pageChecks(page, vp) {
       geist: document.fonts.check('600 16px Geist'), overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       external: [...document.querySelectorAll('link[href], script[src]')].map((e) => e.getAttribute('href') || e.getAttribute('src')) }; });
     check('[preview] self contained, Geist loads, no overflow', pv.geist && pv.overflow <= 0 && pv.external.length === 0 && perr.length === 0, JSON.stringify(pv));
+    // The artifact viewer can blank the page on an email link, so the preview has none and its
+    // Talk to us button copies the address instead
+    await pctx.grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {});
+    const pvMail = await pp.evaluate(() => document.querySelectorAll('a[href^="mailto:"]').length);
+    await pp.locator('.site-footer button.btn-dark').click();
+    await pp.waitForTimeout(200);
+    const talk = await pp.evaluate(() => ({ text: document.querySelector('.site-footer button.btn-dark').textContent,
+      status: document.getElementById('copy-status').textContent, page: !!document.querySelector('.hero') }));
+    check('[preview] no email links; Talk to us copies the address and the page stays', pvMail === 0 &&
+      /copied|selected/i.test(talk.text) && talk.page, JSON.stringify(talk));
     await pctx.close();
     fs.unlinkSync(path.join(previewDir, '_wrapped.html'));
+    for (const n of ['privacy.html', 'terms.html']) {
+      const html = fs.readFileSync(path.join(previewDir, n), 'utf8');
+      check(`[preview] ${n} has no email links and returns to index.html`, !html.includes('mailto:') &&
+        html.includes('href="index.html"') && !html.includes('href="./"'));
+    }
+  }
+
+  // Browser files: complete pages that open straight from a folder, with no server
+  const browserDir = path.join(ROOT, 'dist', 'browser');
+  const mainFile = path.join(browserDir, 'growth-lab-martech.html');
+  if (fs.existsSync(mainFile)) {
+    const bctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+    const bp = await bctx.newPage();
+    const berr = [], requests = [];
+    bp.on('pageerror', (e) => berr.push(String(e)));
+    bp.on('request', (r) => { if (!/^(file|data):/.test(r.url())) requests.push(r.url()); });
+    await bp.goto('file://' + mainFile);
+    await bp.waitForTimeout(3600);
+    const bv = await bp.evaluate(async () => { await document.fonts.ready; return {
+      geist: document.fonts.check('600 16px Geist'), cube: !document.getElementById('device').className.includes('pre-build'),
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      mailto: document.querySelectorAll('a[href^="mailto:"]').length,
+      files: [...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => !/^(#|mailto:)/.test(h)) }; });
+    const missing = bv.files.filter((h) => !fs.existsSync(path.join(browserDir, h)));
+    check('[browser file] opens from a folder: Geist, cube, no requests, links resolve, email works',
+      bv.geist && bv.cube && bv.overflow <= 0 && requests.length === 0 && missing.length === 0 && bv.mailto > 0 && berr.length === 0,
+      JSON.stringify({ ...bv, missing, requests, errors: berr }));
+    await bctx.close();
+    for (const n of ['growth-lab-privacy-draft.html', 'growth-lab-terms-draft.html']) {
+      const html = fs.readFileSync(path.join(browserDir, n), 'utf8');
+      check(`[browser file] ${n} returns to the main page`, html.includes('href="growth-lab-martech.html"') && !html.includes('href="./"'));
+    }
   }
 
   await browser.close();

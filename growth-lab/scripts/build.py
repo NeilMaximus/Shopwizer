@@ -1,7 +1,8 @@
 """Build steps for the Growth Lab website. Standard library only.
 
   python3 scripts/build.py            sync tokens and render the draft legal pages into site/
-  python3 scripts/build.py preview    also write dist/preview/ (self contained pages for a private preview)
+  python3 scripts/build.py preview    also write dist/preview/ (self contained pages for the private artifact)
+                                      and dist/browser/ (the same pages to open straight from a folder)
   python3 scripts/build.py package    also write dist/growth-lab-site.zip (the Vercel ready folder)
 
 site/ stays deployable as it is, with no build step on Vercel. Run this after editing
@@ -142,17 +143,53 @@ def inline_assets(page_html):
     return page_html
 
 
+TALK_LINK = '<a class="btn btn-dark" href="mailto:hello@growthlab.co.za">Talk to us</a>'
+TALK_COPY = ('<button class="btn btn-dark" type="button" data-copy="hello@growthlab.co.za" '
+             'data-copied="Email copied">Talk to us</button>')
+
+
 def build_preview():
+    """Pages for the private Claude artifact. Its viewer cannot follow email links reliably and
+    can show a blank page after one, so the preview copies the address instead and shows email
+    addresses as plain selectable text. The site itself keeps its working mailto links."""
     out = DIST / "preview"
     out.mkdir(parents=True, exist_ok=True)
     # Main page: the artifact host supplies doctype, head and body, so keep only what sits inside them
     page = inline_assets((SITE / "index.html").read_text(encoding="utf8"))
+    assert page.count(TALK_LINK) == 1, "footer email button changed: update TALK_LINK in build.py"
+    page = page.replace(TALK_LINK, TALK_COPY)
     head = re.search(r"<head>(.*?)</head>", page, re.S).group(1)
     body = re.search(r"<body>(.*?)</body>", page, re.S).group(1)
     head = re.sub(r'\s*<meta (charset|name="viewport")[^>]*>', "", head)
     (out / "index.html").write_text(head.strip() + "\n" + body.strip() + "\n", encoding="utf8")
     for name in ("privacy.html", "terms.html"):
-        (out / name).write_text(inline_assets((SITE / name).read_text(encoding="utf8")), encoding="utf8")
+        legal = inline_assets((SITE / name).read_text(encoding="utf8"))
+        legal = re.sub(r'<a href="mailto:([^"]+)">([^<]+)</a>', r"\2", legal)
+        legal = legal.replace('href="./"', 'href="index.html"')  # the artifact serves the page as index.html
+        (out / name).write_text(legal, encoding="utf8")
+    for f in out.iterdir():
+        assert "mailto:" not in f.read_text(encoding="utf8"), f"email link left in preview {f.name}"
+    return out
+
+
+BROWSER_NAMES = {"index.html": "growth-lab-martech.html", "privacy.html": "growth-lab-privacy-draft.html",
+                 "terms.html": "growth-lab-terms-draft.html"}
+
+
+def build_browser():
+    """The same pages as complete, self contained files that open straight from a folder in any
+    browser (font, styles and script inlined, so no server is needed). Email links work here."""
+    out = DIST / "browser"
+    shutil.rmtree(out, ignore_errors=True)
+    out.mkdir(parents=True)
+    icon = base64.b64encode((SITE / "favicon.svg").read_bytes()).decode()
+    for name, target in BROWSER_NAMES.items():
+        page = inline_assets((SITE / name).read_text(encoding="utf8"))
+        page = page.replace("</title>", f'</title>\n<link rel="icon" href="data:image/svg+xml;base64,{icon}">', 1)
+        page = page.replace('href="./"', f'href="{BROWSER_NAMES["index.html"]}"')
+        for src, dst in BROWSER_NAMES.items():
+            page = page.replace(f'href="{src}"', f'href="{dst}"')
+        (out / target).write_text(page, encoding="utf8")
     return out
 
 
@@ -178,6 +215,7 @@ def main(args):
     print("site/ updated")
     if "preview" in args or "package" in args:
         print("preview:", build_preview())
+        print("browser:", build_browser())
     if "package" in args:
         print("package:", build_package())
 

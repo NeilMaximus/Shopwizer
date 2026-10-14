@@ -62,5 +62,5 @@
 
   /* Motion */
   --gl-ease: cubic-bezier(0.65, 0, 0.35, 1);
-  --gl-rune-cycle: 14s;
+  --gl-rune-cycle: 8s;           /* one breath out; it alternates, so a full breath is 16 s */
 }

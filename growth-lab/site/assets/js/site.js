@@ -39,21 +39,26 @@
     requestAnimationFrame(frame);
   }
 
-  /* Rune. Its slow breathing only runs while it is on screen. */
+  /* Rune. It breathes by default and pauses only while it is known to be off screen, so it
+     still moves in viewers where the observer never reports. */
   function liveRune() {
     var stage = document.querySelector('.rune-stage');
-    if (!stage || reduce) { return; }
-    if (!('IntersectionObserver' in window)) { stage.classList.add('rune-live'); return; }
+    if (!stage || reduce || !('IntersectionObserver' in window)) { return; }
     new IntersectionObserver(function (entries) {
-      for (var i = 0; i < entries.length; i++) { stage.classList.toggle('rune-live', entries[i].isIntersecting); }
+      for (var i = 0; i < entries.length; i++) { stage.classList.toggle('rune-idle', !entries[i].isIntersecting); }
     }, { rootMargin: '160px 0px' }).observe(stage);
   }
 
-  /* Copy the contact address. Falls back to selecting it where the clipboard is refused. */
-  function copyEmail() {
-    var btn = document.querySelector('[data-copy]');
-    if (!btn) { return; }
+  /* Copy buttons ([data-copy]). Fall back to selecting the address where the clipboard is refused.
+     The private preview build also turns the footer's email link into one of these, because an
+     email link inside the Claude artifact viewer can leave a blank page. */
+  function copyButtons() {
+    var buttons = document.querySelectorAll('[data-copy]');
+    for (var i = 0; i < buttons.length; i++) { copyButton(buttons[i]); }
+  }
+  function copyButton(btn) {
     var status = document.getElementById('copy-status'), label = btn.textContent, timer = null;
+    var done = btn.getAttribute('data-copied') || 'Copied';
     function say(message, buttonText) {
       if (status) { status.textContent = message; }
       btn.textContent = buttonText;
@@ -74,7 +79,7 @@
     btn.addEventListener('click', function () {
       var text = btn.getAttribute('data-copy');
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function () { say('Email address copied.', 'Copied'); }, select);
+        navigator.clipboard.writeText(text).then(function () { say('Email address copied.', done); }, select);
       } else {
         select();
       }
@@ -83,5 +88,5 @@
 
   buildCube();
   liveRune();
-  copyEmail();
+  copyButtons();
 })();

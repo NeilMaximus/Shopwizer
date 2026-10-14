@@ -34,13 +34,15 @@ growth-lab/
 ## Work on it
 
 ```
-python3 scripts/build.py preview     # sync tokens, render legal drafts, write dist/preview
+python3 scripts/build.py preview     # sync tokens, render legal drafts, write dist/preview and dist/browser
 npm install --prefix tests           # once, installs Playwright for the checks
 NODE_PATH=tests/node_modules node tests/verify.cjs
 python3 scripts/build.py package     # dist/growth-lab-site.zip for Vercel
 ```
 
-Preview locally with any static server, for example `python3 -m http.server -d site 8000`, then open http://localhost:8000.
+To look at it in a normal browser without a server, open `dist/browser/growth-lab-martech.html` (font, styles and script are inlined; keep the two legal files beside it). Or use any static server, for example `python3 -m http.server -d site 8000`, then open http://localhost:8000.
+
+`dist/preview/` is for the private Claude artifact only: its viewer can blank the page after an email link, so there "Talk to us" copies the address instead.
 
 ## Sources
 
