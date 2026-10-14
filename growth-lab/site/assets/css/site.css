@@ -1,7 +1,8 @@
 /* Growth Lab website. Rules: growth-lab/DESIGN_SYSTEM.md. Tokens: tokens.css.
    Layout: white header with the real logo, a white hero that pairs the headline with the value
    cube on a light grey panel, the four stages on a black section joined by a line of icon nodes,
-   then the oversized rune cropped by a hairline above a white footer. */
+   three white sections (evidence, workshops, the audit action), then the oversized rune cropped
+   by a hairline above a white footer. */
 
 @font-face {
   font-family: "Geist";
@@ -36,9 +37,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 button { font: inherit; color: inherit; }
-p, h1, h2, figure, ul, ol { margin: 0; }
+p, h1, h2, h3, figure, ul, ol { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
-h1, h2 { text-wrap: balance; }
+h1, h2, h3 { text-wrap: balance; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--gl-purple-strong); outline-offset: 3px; border-radius: 6px; }
 ::selection { background: var(--gl-purple-soft); color: var(--gl-ink); }
@@ -157,6 +158,79 @@ h1 {
 .stage .tag { margin-top: 14px; font-size: 18px; line-height: 1.4; font-weight: var(--gl-weight-semibold); letter-spacing: -0.01em; color: var(--gl-white); text-wrap: balance; }
 .stage .body { margin-top: 12px; max-width: 60ch; font-size: 16px; line-height: 1.62; color: var(--gl-on-black); text-wrap: pretty; }
 
+/* White sections after the black stages: evidence, workshops, then the audit action. One job
+   each, hairlines between them, and no cards, tiles, icons or counters */
+.plain { background: var(--gl-white); }
+.plain-body { padding-block: clamp(56px, 7vw, 96px); }
+.plain + .plain .plain-body { border-top: 1px solid var(--gl-line); }
+.plain h2 {
+  font-size: clamp(30px, 2.9vw, 40px); line-height: 1.1;
+  letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold); color: var(--gl-ink);
+}
+.plain .lede { margin-top: 18px; max-width: 34em; font-size: var(--gl-text-lead); line-height: 1.55; color: var(--gl-ink-2); text-wrap: pretty; }
+.text-link {
+  color: var(--gl-purple-strong); font-weight: var(--gl-weight-medium);
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
+}
+.text-link:hover { text-decoration-thickness: 2px; }
+
+/* Evidence: the benchmark number is the evidence, the map is supporting material */
+.evidence-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: clamp(40px, 5vw, 80px); align-items: center; }
+.evidence .quiet { margin-top: 22px; max-width: 34em; font-size: var(--gl-text-ui); line-height: 1.55; color: var(--gl-ink-3); text-wrap: pretty; }
+.source { margin-top: 10px; font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3); }
+.source a { color: inherit; text-decoration: underline; text-underline-offset: 3px; display: inline-block; padding-block: 4px; }
+.source a:hover { color: var(--gl-ink); }
+.map { min-width: 0; }
+/* Vendor artwork: shown whole at its own 16 by 9, never cropped or recoloured. The ring is a box
+   shadow so it adds no size and the image keeps its exact ratio */
+.map img {
+  display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
+  border-radius: var(--gl-radius-image); box-shadow: 0 0 0 1px var(--gl-line); background: var(--gl-panel);
+}
+.map figcaption {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 20px;
+  margin-top: 8px; font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3);
+}
+.map .text-link { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--gl-text-ui); }
+
+/* Workshops: two equal open columns split by one hairline. Extra detail sits in native details */
+.workshop-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: clamp(36px, 4.5vw, 56px); }
+.workshop { min-width: 0; padding-right: clamp(28px, 4vw, 64px); }
+.workshop + .workshop { padding-right: 0; padding-left: clamp(28px, 4vw, 64px); border-left: 1px solid var(--gl-line); }
+.workshop h3 { font-size: clamp(22px, 2vw, 26px); line-height: 1.2; letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold); }
+.workshop .outcome { margin-top: 12px; max-width: 34em; font-size: 18px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
+.workshop .duration { margin-top: 14px; font-size: var(--gl-text-ui); font-weight: var(--gl-weight-medium); color: var(--gl-ink); }
+.workshop details { margin-top: 14px; }
+.workshop summary {
+  cursor: pointer; padding-block: 10px; min-height: 44px; width: fit-content;
+  font-size: var(--gl-text-ui); font-weight: var(--gl-weight-medium); color: var(--gl-ink);
+}
+.workshop summary::marker { color: var(--gl-purple-strong); }
+.workshop summary:hover { color: var(--gl-ink-2); }
+.details-body p { margin-top: 10px; max-width: 40em; font-size: var(--gl-text-ui); line-height: 1.6; color: var(--gl-ink-2); text-wrap: pretty; }
+.details-body p:first-child { margin-top: 2px; }
+.example .text-link { display: inline-flex; align-items: center; min-height: 32px; }
+.example-label { display: block; font-size: var(--gl-text-small); color: var(--gl-ink-3); }
+
+/* The audit action: what an audit does, who the two people are, one enquiry button */
+.start-grid {
+  display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); grid-template-rows: auto 1fr;
+  grid-template-areas: "intro people" "action people"; column-gap: clamp(40px, 5vw, 80px);
+}
+.start-intro { grid-area: intro; }
+.people { grid-area: people; display: grid; gap: 28px; align-content: start; }
+.start-action { grid-area: action; margin-top: 32px; }
+.person { display: grid; grid-template-columns: 96px minmax(0, 1fr); column-gap: 20px; align-items: start; }
+.person img {
+  display: block; width: 96px; height: 96px; object-fit: cover; filter: grayscale(1);
+  border-radius: var(--gl-radius-node); box-shadow: 0 0 0 1px var(--gl-line); background: var(--gl-panel);
+}
+.person h3 { font-size: 18px; line-height: 1.3; letter-spacing: -0.01em; font-weight: var(--gl-weight-semibold); }
+.person .role { margin-top: 2px; font-size: var(--gl-text-ui); line-height: 1.45; color: var(--gl-ink-3); }
+.person .bio { margin-top: 8px; max-width: 40em; font-size: 16px; line-height: 1.55; color: var(--gl-ink-2); text-wrap: pretty; }
+.cta-note { margin-top: 12px; font-size: var(--gl-text-ui); line-height: 1.5; color: var(--gl-ink-3); text-wrap: pretty; }
+.cta-note .email { font-size: inherit; }
+
 /* The rune: oversized, faint, cropped by the hairline above the footer */
 .rune-stage {
   --rune-w: min(60vw, 780px);
@@ -238,14 +312,26 @@ h1 {
   .stage:not(:last-child)::after { top: auto; bottom: 14px; left: calc(var(--node) / 2 - 5px); right: auto; transform: rotate(135deg); }
   .foot-main { grid-template-columns: minmax(0, 1fr); align-items: start; }
   .foot-contact { justify-content: flex-start; }
+  .evidence-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .start-grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "intro" "people" "action"; }
+  .people { margin-top: 36px; }
+  .start-action { margin-top: 36px; }
 }
 @media (max-width: 760px) {
   .nav-links { display: none; }
   .rune-stage { --rune-w: min(84vw, 520px); }
+  .workshop-grid { grid-template-columns: minmax(0, 1fr); }
+  .workshop { padding-right: 0; }
+  .workshop + .workshop { padding-left: 0; border-left: 0; border-top: 1px solid var(--gl-line); margin-top: 36px; padding-top: 36px; }
 }
 @media (max-width: 560px) {
   .logo { height: 26px; }
   .stage { column-gap: 18px; padding-bottom: 44px; }
   .stage .tag { font-size: 17px; }
   .device-card { padding-inline: 8px; }
+  .person { column-gap: 16px; }
+}
+/* The narrowest phones: the portrait sits above the text so the bios keep a readable measure */
+@media (max-width: 380px) {
+  .person { grid-template-columns: minmax(0, 1fr); row-gap: 14px; }
 }

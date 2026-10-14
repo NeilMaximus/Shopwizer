@@ -143,9 +143,20 @@ def inline_assets(page_html):
     return page_html
 
 
-TALK_LINK = '<a class="btn btn-dark" href="mailto:hello@growthlab.co.za">Talk to us</a>'
-TALK_COPY = ('<button class="btn btn-dark" type="button" data-copy="hello@growthlab.co.za" '
-             'data-copied="Email copied">Talk to us</button>')
+# The artifact preview swaps every email link for a copy button with a selectable address. Each
+# swap must match the site markup exactly, so a changed button fails the build instead of shipping
+# an email link into the Claude viewer.
+PREVIEW_SWAPS = [
+    ('<a class="btn btn-quiet" href="mailto:hello@growthlab.co.za">Talk to us</a>',
+     '<button class="btn btn-quiet" type="button" data-copy="hello@growthlab.co.za" '
+     'data-copied="Email copied">Talk to us</button>'),
+    ('<a class="btn btn-dark" href="mailto:hello@growthlab.co.za?subject=Audit%20enquiry">Book an audit</a>',
+     '<button class="btn btn-dark" type="button" data-copy="hello@growthlab.co.za" data-copy-target="audit-email" '
+     'data-copied="Email copied">Book an audit</button>'),
+    ('<p class="cta-note">Email us to agree the scope and next steps.</p>',
+     '<p class="cta-note">Copies <span class="email" id="audit-email">hello@growthlab.co.za</span> '
+     'so you can email us to agree the scope and next steps.</p>'),
+]
 
 
 def build_preview():
@@ -156,8 +167,9 @@ def build_preview():
     out.mkdir(parents=True, exist_ok=True)
     # Main page: the artifact host supplies doctype, head and body, so keep only what sits inside them
     page = inline_assets((SITE / "index.html").read_text(encoding="utf8"))
-    assert page.count(TALK_LINK) == 1, "footer email button changed: update TALK_LINK in build.py"
-    page = page.replace(TALK_LINK, TALK_COPY)
+    for site_markup, preview_markup in PREVIEW_SWAPS:
+        assert page.count(site_markup) == 1, f"preview swap no longer matches the site: {site_markup}"
+        page = page.replace(site_markup, preview_markup)
     head = re.search(r"<head>(.*?)</head>", page, re.S).group(1)
     body = re.search(r"<body>(.*?)</body>", page, re.S).group(1)
     head = re.sub(r'\s*<meta (charset|name="viewport")[^>]*>', "", head)
@@ -167,13 +179,28 @@ def build_preview():
         legal = re.sub(r'<a href="mailto:([^"]+)">([^<]+)</a>', r"\2", legal)
         legal = legal.replace('href="./"', 'href="index.html"')  # the artifact serves the page as index.html
         (out / name).write_text(legal, encoding="utf8")
-    for f in out.iterdir():
+    # Images stay separate files, published beside the page with the artifact
+    shutil.rmtree(out / "assets", ignore_errors=True)
+    shutil.copytree(SITE / "assets" / "media", out / "assets" / "media")
+    for f in out.glob("*.html"):
         assert "mailto:" not in f.read_text(encoding="utf8"), f"email link left in preview {f.name}"
     return out
 
 
 BROWSER_NAMES = {"index.html": "growth-lab-martech.html", "privacy.html": "growth-lab-privacy-draft.html",
                  "terms.html": "growth-lab-terms-draft.html"}
+BROWSER_FULL_MAP = "growth-lab-martechmap-2026-full.jpg"
+
+
+def inline_images(page_html):
+    """Embeds the page images as data URIs for the browser files. The map keeps its 1600 px file
+    only, so srcset goes. The full size map stays a separate file beside the page."""
+    def data_uri(match):
+        data = (SITE / "assets" / "media" / match.group(1)).read_bytes()
+        return 'src="data:image/jpeg;base64,' + base64.b64encode(data).decode() + '"'
+    page_html = re.sub(r'\s(srcset|sizes)="[^"]*"', "", page_html)
+    page_html = re.sub(r'src="assets/media/([\w.-]+\.jpg)"', data_uri, page_html)
+    return page_html.replace('href="assets/media/martechmap-2026-full.jpg"', f'href="{BROWSER_FULL_MAP}"')
 
 
 def build_browser():
@@ -184,12 +211,14 @@ def build_browser():
     out.mkdir(parents=True)
     icon = base64.b64encode((SITE / "favicon.svg").read_bytes()).decode()
     for name, target in BROWSER_NAMES.items():
-        page = inline_assets((SITE / name).read_text(encoding="utf8"))
+        page = inline_images(inline_assets((SITE / name).read_text(encoding="utf8")))
         page = page.replace("</title>", f'</title>\n<link rel="icon" href="data:image/svg+xml;base64,{icon}">', 1)
         page = page.replace('href="./"', f'href="{BROWSER_NAMES["index.html"]}"')
         for src, dst in BROWSER_NAMES.items():
             page = page.replace(f'href="{src}"', f'href="{dst}"')
+        assert not re.search(r'(src|href|srcset)="assets/', page), f"unresolved asset path in browser file {target}"
         (out / target).write_text(page, encoding="utf8")
+    shutil.copyfile(SITE / "assets" / "media" / "martechmap-2026-full.jpg", out / BROWSER_FULL_MAP)
     return out
 
 
@@ -202,6 +231,7 @@ def build_package():
         z.write(ROOT / "DEPLOY.md", top / "README.md")
         z.write(ROOT / "PRELAUNCH.md", top / "PRELAUNCH.md")
         z.write(ROOT / "DESIGN_SYSTEM.md", top / "DESIGN_SYSTEM.md")
+        z.write(ROOT / "SOURCES.md", top / "SOURCES.md")
         for f in sorted(SITE.rglob("*")):
             if f.is_file():
                 z.write(f, top / "site" / f.relative_to(SITE))

@@ -66,7 +66,7 @@
       timer = setTimeout(function () { btn.textContent = label; if (status) { status.textContent = ''; } }, 2400);
     }
     function select() {
-      var el = document.getElementById('email');
+      var el = document.getElementById(btn.getAttribute('data-copy-target') || 'email');
       if (el && window.getSelection && document.createRange) {
         var range = document.createRange();
         range.selectNodeContents(el);

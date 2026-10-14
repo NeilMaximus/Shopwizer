@@ -15,6 +15,8 @@ The site is ready to preview, not to publish. Clear every item below, with legal
 - [ ] Neil signs off the copy, the cube, the black four stage section and the rune in the private preview.
 - [ ] Copyright line reads "© 2026 Growth Lab". Change it if the approved entity name should appear instead.
 - [ ] Logo: the inline SVG is the verified live growthlab.co.za artwork (confirmed 14 October 2026). Re-check if the brand team issues a newer master.
+- [ ] MartechTribe figures: re-check them on martechtribe.com shortly before launch and update the page, its as at date and `SOURCES.md` together.
+- [ ] Frans Riemersma and MartechTribe confirm the wording about them, his portrait, the workshop descriptions and the use of the MartechMap image on Growth Lab's own site.
 
 ## Technical
 

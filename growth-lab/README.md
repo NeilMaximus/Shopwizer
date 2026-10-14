@@ -4,6 +4,7 @@ Source for the Growth Lab website, starting with Make Your Martech Pay. A static
 
 - Design rules: `DESIGN_SYSTEM.md` (read first)
 - Instructions for Claude: `CLAUDE.md`
+- Figures, links and images with their sources: `SOURCES.md`
 - What must happen before going live: `PRELAUNCH.md`
 
 ## Layout
@@ -13,6 +14,7 @@ growth-lab/
   DESIGN_SYSTEM.md      durable design rules
   CLAUDE.md             project instructions for Claude sessions
   PRELAUNCH.md          launch checklist (legal drafts, entity, hosting)
+  SOURCES.md            every figure, link and image in the white sections, with sources and date
   DEPLOY.md             Vercel deployment and protection notes (the README inside the zip)
   tokens/               tokens.css (source of truth) and tokens.json
   legal/                draft privacy notice and website terms (Markdown)
@@ -26,6 +28,7 @@ growth-lab/
     assets/fonts/geist  Geist variable woff2 (Latin, 400 to 700) and OFL licence
     favicon.svg         the mark
     assets/brand        logo, rune and mark SVGs
+    assets/media        MartechMap 2026 (800, 1600, 4096 px) and the two portraits
   scripts/              build.py, build_font.py, extract_rune.py, gen_cube_svg.py
   tests/verify.cjs      Playwright checks and screenshots
   dist/                 build output (git ignored): preview, zip, screenshots
@@ -40,9 +43,9 @@ NODE_PATH=tests/node_modules node tests/verify.cjs
 python3 scripts/build.py package     # dist/growth-lab-site.zip for Vercel
 ```
 
-To look at it in a normal browser without a server, open `dist/browser/growth-lab-martech.html` (font, styles and script are inlined; keep the two legal files beside it). Or use any static server, for example `python3 -m http.server -d site 8000`, then open http://localhost:8000.
+To look at it in a normal browser without a server, open `dist/browser/growth-lab-martech.html` (font, styles, script and images are built in; keep the two legal files and the full size map beside it). Or use any static server, for example `python3 -m http.server -d site 8000`, then open http://localhost:8000.
 
-`dist/preview/` is for the private Claude artifact only: its viewer can blank the page after an email link, so there "Talk to us" copies the address instead.
+`dist/preview/` is for the private Claude artifact only: its viewer can blank the page after an email link, so there "Book an audit" and "Talk to us" copy the address instead. Publish its `assets/media/` files with the page.
 
 ## Sources
 

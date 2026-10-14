@@ -1,6 +1,6 @@
 # Growth Lab website: Vercel package
 
-**`site/` is the deployment root.** It holds the whole website: a static site with no framework, no build command and no external requests, so the font, logo and rune are all served from it. Nothing outside `site/` is deployed. This README, `PRELAUNCH.md` and `DESIGN_SYSTEM.md` sit beside it on purpose.
+**`site/` is the deployment root.** It holds the whole website: a static site with no framework, no build command and no external requests, so the font, logo and rune are all served from it. Nothing outside `site/` is deployed. This README, `PRELAUNCH.md`, `DESIGN_SYSTEM.md` and `SOURCES.md` sit beside it on purpose.
 
 ## Before any deployment
 
@@ -59,8 +59,9 @@ Everything below sits in `site/`, the deployment root.
 | `assets/js/site.js` | Cube build, rune breathing, copy email |
 | `assets/fonts/geist/` | Geist variable woff2 (Latin, weights 400 to 700) and its SIL Open Font License |
 | `assets/brand/` | Verified Growth Lab logo, the rune (logo paths 1 and 2) and the mark |
+| `assets/media/` | MartechMap 2026 by chiefmartec and MartechTribe (800, 1600 and 4096 px) and the two portraits |
 | `favicon.svg` | The mark |
 
 ## Licences
 
-Geist is © 2023 Vercel, in collaboration with basement.studio, and licensed under the SIL Open Font License 1.1 (`assets/fonts/geist/OFL.txt`). The Growth Lab logo, rune and content belong to Growth Lab.
+Geist is © 2023 Vercel, in collaboration with basement.studio, and licensed under the SIL Open Font License 1.1 (`assets/fonts/geist/OFL.txt`). The Growth Lab logo, rune and content belong to Growth Lab. The MartechMap belongs to chiefmartec and MartechTribe and must keep its credit; sources for every figure are in `SOURCES.md`.

@@ -1,6 +1,6 @@
 # Growth Lab website design system
 
-Version 2.1, 14 October 2026. Owner: Neil Botha.
+Version 2.3, 14 October 2026. Owner: Neil Botha.
 
 These rules govern every page of the Growth Lab website, starting with Make Your Martech Pay. They are durable: follow them by default in every new page, edit and review. Neil requested and approved the changes recorded here. Change a rule only when he asks for it, and record the change in the change log at the end.
 
@@ -27,7 +27,7 @@ The presentation system for decks keeps its own rules. This document covers the 
 
 1. Concise copy. Every word earns its place. Do not pad, add slogans or invent claims.
 2. A white hero and page with generous space and a clear hierarchy, inspired by the restraint of x.ai/bot, plus one deliberate black section for the four stages. Draw inspiration only. Never copy x.ai's layout, its X VF typeface or its assets.
-3. One bold device per section. The value cube in the hero, the line of stage nodes, the rune above the footer. Everything around them stays quiet.
+3. One bold device per section: the value cube in the hero, the line of stage nodes, the MartechMap beside the benchmark, the rune above the footer. Everything around them stays quiet.
 4. Solid surfaces only. Panels are opaque. No translucency, frosted glass, blur, glows or heavy shadows.
 5. Motion with a purpose, slow and controlled. Never spinning, bouncing or decorative noise.
 
@@ -44,6 +44,9 @@ The presentation system for decks keeps its own rules. This document covers the 
 | --- | --- | --- | --- | --- |
 | Display (H1) | sized to its column, about 60 px on desktop, 34 px minimum | 600 | minus 0.035em | Two lines on desktop, `text-wrap: balance` |
 | Stage name (H2) | 28 to 34 px | 600 | minus 0.02em | Brand coral |
+| Section heading (H2, white sections) | 30 to 40 px | 600 | minus 0.02em | Ink, `text-wrap: balance` |
+| Workshop name (H3) | 22 to 26 px | 600 | minus 0.02em | Ink |
+| Person name (H3) | 18 px | 600 | minus 0.01em | Ink, role below in ink 3 |
 | Lead | 18 to 20 px | 400 | 0 | `--gl-ink-2` |
 | Tagline | 18 px | 600 | minus 0.01em | Two sentences break between sentences |
 | Body | 16 to 17 px | 400 | 0 | Line height 1.6 |
@@ -107,6 +110,7 @@ Measured contrast (WCAG 2.2):
 | Four stages (Diagnose, Prioritise, Unlock, Optimise) | **Black `#111111`, full width.** Purple icon tiles and connecting arrows, coral headings, white semibold taglines, light grey body text, numbers in `--gl-on-black-2`. All Geist Sans |
 | Rune band | White, with the faint grey rune cropped by the hairline |
 | Footer | White |
+| Evidence, workshops and the audit action (after the stages) | White, separated by hairlines inside the content width. No cards, tiles or grey panels. See section 11 |
 | Future supporting sections | White, or light grey `--gl-panel` sections, boxes and panels |
 
 - Never turn the four stage section white or light grey, and never restore Martian Mono or uppercase mono labels in it.
@@ -116,7 +120,7 @@ Measured contrast (WCAG 2.2):
 - Panels are solid `--gl-panel` with a 28 px radius (`--gl-radius-panel`). Never translucent.
 - Content width 1200 px with a fluid gutter of 20 to 48 px. Sections breathe: 72 to 140 px between them (`--gl-section`).
 - Apart from the black stage section, separate sections with space and hairlines (`--gl-line`).
-- Radii: panels 28 px, stage nodes 14 px, buttons fully rounded.
+- Radii: panels 28 px, stage nodes and portraits 14 px, framed images 10 px, buttons fully rounded.
 - Every layout works from 320 px wide with no horizontal scroll.
 
 ## 6. Logo
@@ -148,41 +152,68 @@ Measured contrast (WCAG 2.2):
 
 ## 10. Components
 
-- **Header:** white, logo left, stage links and a dark "Talk to us" pill right. Stage links hide under 760 px. The pill stays.
-- **Buttons:** dark pill (`--gl-ink` with white text) for the main action. Quiet pill (white, hairline border) for secondary actions such as Copy. Minimum height 44 px for main actions.
+- **Header:** white, logo left, stage links and a dark "Book an audit" pill right that jumps to the audit section. Stage links hide under 760 px. The pill stays.
+- **Buttons:** dark pill (`--gl-ink` with white text) only for the one main action, "Book an audit". Quiet pill (white, hairline border) for secondary actions such as Talk to us and Copy. Minimum height 44 px for main actions, and every link, button and summary at least 24 px each way.
 - **Four stage section:** black `#111111`, full width, `--gl-section` padding top and bottom. Number (Geist 500, `--gl-on-black-2`), coral heading, white tagline (Geist 600, two sentence taglines break between sentences), body in `--gl-on-black`.
-- **Footer:** white, under the rune band. Logo, the four section links, the "Talk to us" email button, the address as selectable text with a Copy button, then a hairline and the legal line: copyright, Privacy, Website terms.
-- **Footer in the private Claude preview:** the artifact viewer can show a blank page after an email link, so the preview build turns "Talk to us" into a button that copies the address ("Email copied") and shows addresses on the legal pages as plain text. The site and the browser files keep working email links. `scripts/build.py` makes this swap; never remove the address shown as text.
+- **Footer:** white, under the rune band. Logo, the four section links, a quiet "Talk to us" email pill, the address as selectable text with a Copy button, then a hairline and the legal line: copyright, Privacy, Website terms.
+- **Email actions in the private Claude preview:** the artifact viewer can show a blank page after an email link, so the preview build turns "Book an audit" and "Talk to us" into buttons that copy the address ("Email copied", or the address is selected if the clipboard is refused). Beside "Book an audit" the address shows as selectable text. Addresses on the legal pages are plain text. Never show a booking confirmation. The site and the browser files keep working email links. `scripts/build.py` makes these swaps and fails if they stop matching; never remove the address shown as text.
 - **Draft legal pages:** generated from `legal/*.md`, marked "Draft for review. Not approved and not yet in force", `noindex`, with CONFIRM placeholders highlighted.
 
-## 11. Motion
+## 11. Evidence, workshops and the audit action
+
+Three white sections sit between the black stages and the rune band, in this order. Each has one job and one H2, with no eyebrow, tiles, counters, icons or scroll effects. Hairlines inside the content width separate them. Every figure, link and image is recorded in `SOURCES.md` with its as at date.
+
+**Evidence (`#evidence`).** The benchmark number is the evidence. The map is supporting material.
+
+- Desktop: copy on the left (about 40 percent), map on the right (about 60 percent), vertically centred. Under 1000 px: copy first, then the map.
+- Heading "1,634 martech stacks benchmarked." Then "Growth Lab works with MartechTribe, drawing on martech research across industries since 2017." Write "since 2017", never a count of years that ages.
+- One quiet line in ink 3 for the secondary figures: "MartechTribe indexes 1,345 features across 49 martech categories and has advised 200+ global brands." Then a small source line linking https://martechtribe.com/ with the as at date.
+- The MartechMap is vendor artwork. Show it whole at 16:9 with its chiefmartec and MartechTribe credit visible: never crop, recolour or stretch it. Hairline ring, 10 px radius (`--gl-radius-image`). Caption "MartechMap 2026 · chiefmartec and MartechTribe · 15,505 products" with a "View the full map" link to the 4096 px file.
+- Never attach the 49 categories to the map, and never present the map or MartechTribe's figures as Growth Lab audit counts. No stat tiles, and no superlatives such as "the world's richest".
+
+**Workshops (`#workshops`).** Heading "Two workshops with MartechTribe."
+
+- Two equal open columns split by one vertical hairline, stacked with a horizontal hairline at 760 px and under. No cards, panels, icons or images.
+- Each column shows the name, one outcome line and the duration. Everything else sits in a native `details` element, "What you leave with", closed by default, using the browser's own marker in purple strong.
+- The Apex Martech Matrix is linked, never embedded: a short text explanation, then the link "See the retail benchmark example" labelled "Retail industry example, published by MartechTribe". It was developed by MartechTribe with the CMO Council and is not a Growth Lab client result. Do not scrape, redraw or invent data for it.
+
+**Audit action (`#audit`).** Heading "Start with an audit." Then the approved Diagnose line: "We examine your martech, data and customer journeys to find where value is being lost."
+
+- Neil Botha and Frans Riemersma get identical treatment: 96 px black and white portraits with a 14 px radius and hairline ring, then the name, their own separate role and one short credibility line.
+- Desktop: profiles on the right of the heading and button. Under 1000 px: heading, profiles, then the button. At 380 px and under, each portrait sits above its text.
+- Never say or imply that both people deliver every audit, that the relationship is exclusive, that a booking is confirmed, or any price, fee or free offer.
+- One action across the page, "Book an audit". In the header it jumps to `#audit`. In the section it opens an email to hello@growthlab.co.za with the subject "Audit enquiry", above the line "Email us to agree the scope and next steps." The footer "Talk to us" is a quiet pill so it does not compete.
+
+## 12. Motion
 
 - **Cube build:** on load, after 0.5 s, the cube grows from the core along one axis at a time (0.72 s each, cubic ease in and out), lighting each outcome label and arrow as its axis grows. It then rests.
 - **Rune breathing:** the two chevrons drift apart diagonally by 1.3 units, about 4 percent of the rune's width (31 px at full size, 13 px on a phone), and back, 8 s each way (`--gl-rune-cycle`). Smaller drifts could not be seen on a phone. It runs by default and pauses only while the band is known to be off screen. Its rest position is the true logo geometry, and the 5 percent headroom above the rune keeps the drift uncropped at the top.
 - **Reduced motion:** with `prefers-reduced-motion: reduce`, the cube shows its finished state at once and the rune stays still. Smooth scrolling is off.
 - No other animation without Neil's approval. Never spin, bounce or loop attention grabbing effects.
 
-## 12. Accessibility
+## 13. Accessibility
 
 - Contrast as in section 4. Text below large size uses ink, ink 2, ink 3 or purple strong only.
 - Visible focus on every interactive element: 2 px `--gl-purple-strong` outline, 3 px offset. Inside the black section the ring switches to `--gl-purple-soft`.
 - A skip link, landmarks (header, main, footer), one H1 per page, decorative SVG marked `aria-hidden`.
-- The copy action announces its result through a live region.
+- Copy actions announce their result through a live region.
+- Expandable detail uses native `details` and `summary`, reachable and operable with the keyboard (Enter and Space), with the same focus ring.
+- Portraits next to a visible name use empty alt text. The map has descriptive alt text. Links that open a new tab say so to screen readers.
 - Run `node tests/verify.cjs` before sharing or deploying.
 
-## 13. Copy
+## 14. Copy
 
 - UK English. Concise. Use Neil's approved copy as written.
 - No em dashes or hyphenated constructions where a comma or a plain phrase works.
 - Contact is hello@growthlab.co.za, shown as text as well as a link.
 
-## 14. Legal and footer honesty
+## 15. Legal and footer honesty
 
 - Never invent legal entity details, registration numbers, addresses, compliance claims or policies.
 - Privacy and Website terms stay labelled as drafts ("Drafts, pending approval") until approved versions replace them. See `PRELAUNCH.md`.
 - No cookie banner unless the site starts setting cookies or loading tracking. Today it sets none and loads nothing from third parties.
 
-## 15. Where things live
+## 16. Where things live
 
 | Path | What |
 | --- | --- |
@@ -190,12 +221,15 @@ Measured contrast (WCAG 2.2):
 | `site/` | The deployable site (Vercel output directory) |
 | `site/assets/fonts/geist/` | Geist woff2 and its OFL licence (fallback metrics in `scripts/geist-metrics.json`) |
 | `site/assets/brand/` | Logo, rune and mark SVGs |
+| `site/assets/media/` | MartechMap 2026 (800, 1600 and 4096 px) and the two portraits (192 px) |
+| `SOURCES.md` | Every figure, link and image in the white sections, with sources and the as at date |
 | `legal/` | Draft privacy notice and website terms (Markdown sources) |
 | `scripts/` | Build, font, rune and cube generators |
 | `tests/verify.cjs` | Automated checks and screenshots |
 
 ## Change log
 
+- **2.3, 14 October 2026.** Three white sections after the black stages: the benchmark evidence with the MartechMap (40 / 60 split), two workshops with MartechTribe in open columns with native details, and the audit action with Neil and Frans at identical size. One action, "Book an audit", in the header and the audit section; the footer "Talk to us" goes quiet. Apex Martech Matrix linked as a retail example, not embedded. New `SOURCES.md`.
 - **2.2, 14 October 2026.** Rune drift raised to 1.3 units over 8 s each way so it can be seen on a phone, and it now runs by default. Private preview: no email links (the viewer could go blank), "Talk to us" copies the address. New browser files in `dist/browser/` open straight from a folder.
 - **2.1, 14 October 2026.** Neil's correction: the four stage section is black `#111111` again, as in the original design, with purple tiles and arrows, coral headings, white taglines and light grey body text, all in Geist. The hero stays white. Light grey is for supporting sections and panels and never replaces the black section. Withdraws 2.0's instruction to remove all black bands.
 - **2.0, 14 October 2026.** Geist Sans only, no monospace. White base with opaque grey panels. Verified brand colours (purple `#7761FF`, coral `#FF4E4E`, amber `#FEBC2E`). Real vector logo. Rune band above a new footer. Draft legal pages.
