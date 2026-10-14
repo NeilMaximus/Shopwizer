@@ -40,7 +40,7 @@ const PHONE = { display: '+27 84 504 0505', href: 'tel:+27845040505' }; // confi
 const HOME = {
   heroLead: 'Growth Lab helps you get more from your marketing technology, customer data and AI. We find what needs to change, put the improvements in place and keep improving the results.',
   evidenceH2: 'Your next move shouldn’t take months. Or millions.',
-  evidenceLede: 'Considering Deloitte or Accenture for your martech strategy? See what years of benchmark research can tell you before committing to a large consulting engagement.',
+  evidenceLede: 'Considering Deloitte or Accenture for your martech strategy? We combine industry research, proven patterns and practical know-how with your own data. Then we pinpoint where your business can improve, prioritise the changes and help you put them into practice.',
   evidenceBody: 'Through MartechTribe, Growth Lab draws on 1,634 benchmarked martech stacks and research across industries since 2017. We bring those patterns into your business to focus the investigation, challenge assumptions and prioritise where to act.',
   benefits: ['Find the gaps worth investigating.', 'Challenge spend that isn’t earning its place.', 'Prioritise opportunities to grow revenue.'],
   closing: 'Less time establishing the landscape. More time improving your business.',
@@ -49,7 +49,7 @@ const HOME = {
   workshopsH2: 'See the opportunity. Know where to act.',
   workshopsLede: 'Use cross-industry research and your own data to identify opportunities, prioritise investment and plan the next steps.',
   startH2: 'Experience that moves you forward.',
-  startLede: 'Neil brings customer strategy and implementation experience. Frans brings deep martech research and benchmarking expertise.',
+  startLede: 'Neil and Frans combine customer experience strategy, martech research and hands-on implementation to help you turn insights into results.',
 };
 const WORKSHOPS = [
   { name: 'Value Engineering Workshop', icon: '#i-value', colour: 'rgb(119, 97, 255)',
@@ -245,7 +245,7 @@ async function pageChecks(page, tag, opts = {}) {
       geistLoaded: document.fonts.check('600 16px Geist') && document.fonts.check('400 16px Geist'),
       logos, missing: anchors.filter((h) => h.length > 1 && !document.getElementById(h.slice(1))), deadHash: anchors.filter((h) => h === '#'),
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-      headerH: header.getBoundingClientRect().height, vw: window.innerWidth, wrapInner,
+      headerH: header.getBoundingClientRect().height, vw: window.innerWidth, wrapInner, contact: document.body.classList.contains('contact-page'),
       h1: parseFloat(getComputedStyle(document.querySelector('h1')).fontSize),
       body: parseFloat(getComputedStyle(document.body).fontSize),
     };
@@ -255,7 +255,7 @@ async function pageChecks(page, tag, opts = {}) {
   check(`${tag} no monospace or Martian in stylesheets`, !info.monoInCss);
   const wrongTokens = Object.entries(EXPECTED_TOKENS).filter(([k, v]) => info.tokens[k] !== v).map(([k]) => `${k}=${info.tokens[k]}`);
   check(`${tag} brand and form tokens`, wrongTokens.length === 0, wrongTokens.join(', '));
-  check(`${tag} logos use the verified SVG at a legible size`, info.logos.length === 2 && info.logos.every((l) => l.viewBox === '0 0 297 70' &&
+  check(`${tag} logos use the verified SVG at a legible size`, info.logos.length === (info.contact ? 1 : 2) && info.logos.every((l) => l.viewBox === '0 0 297 70' &&
     JSON.stringify(l.paths) === JSON.stringify(logoPaths) && Math.abs(l.w / l.h - 297 / 70) < 0.02 && l.wordmark >= 9 &&
     l.h === (l.where === 'header' ? (info.vw <= 560 ? 30 : 36) : (info.vw <= 560 ? 26 : 30))),
     info.logos.map((l) => `${Math.round(l.w)}x${Math.round(l.h)}, wordmark ${l.wordmark.toFixed(1)}px`).join(' and '));
@@ -470,6 +470,11 @@ async function contactLayout(page, tag, width) {
   });
   check(`${tag} no horizontal overflow`, x.overflow <= 0, `${x.overflow}px`);
   check(`${tag} form on a light grey quiet panel`, x.panel === 'rgb(245, 245, 245)', x.panel);
+  const foot = await page.evaluate(() => { const f = document.querySelector('.site-footer'), legal = f.querySelector('.foot-legal');
+    return { logos: f.querySelectorAll('.logo, .logo-link').length, text: f.innerText.replace(/\s+/g, ' ').trim(), links: [...f.querySelectorAll('a')].map((a) => a.textContent.trim()),
+      left: legal.getBoundingClientRect().left, contentLeft: document.querySelector('.contact-intro').getBoundingClientRect().left, h: f.getBoundingClientRect().height, legalH: legal.getBoundingClientRect().height }; });
+  check(`${tag} footer: no logo, just copyright and the legal links, aligned with the content`, foot.logos === 0 && JSON.stringify(foot.links) === JSON.stringify(['Privacy', 'Website terms']) &&
+    /© 2026 Growth Lab/.test(foot.text) && /Drafts, pending approval/.test(foot.text) && Math.abs(foot.left - foot.contentLeft) < 1 && foot.h <= foot.legalH + 74, `${foot.text} (${Math.round(foot.h)}px tall for ${Math.round(foot.legalH)}px of text)`);
   const lines = width >= 1000 ? 3 : width >= 600 ? 2 : 3;
   check(`${tag} heading wraps to ${lines} balanced lines and stays a headline`, x.h1.lines === lines && x.h1.size >= 36 && x.h1.widest <= x.h1.box + 1,
     `${x.h1.lines} lines at ${x.h1.size}px`);
@@ -755,7 +760,7 @@ async function apiChecks() {
     }
     const ids = order.map((o) => o.id);
     check('[contact] keyboard reaches the email, the phone, every field, the check and the button with a visible ring', JSON.stringify(ids) ===
-      JSON.stringify(['Skip to content', 'Growth Lab, home', RECIPIENT, PHONE.display, 'f-name', 'f-company', 'f-email', 'f-phone', 'f-message', 'stub-captcha', 'Let’s Talk', 'Growth Lab, home']) &&
+      JSON.stringify(['Skip to content', 'Growth Lab, home', RECIPIENT, PHONE.display, 'f-name', 'f-company', 'f-email', 'f-phone', 'f-message', 'stub-captcha', 'Let’s Talk', 'Privacy']) &&
       order.every((o) => o.ring) && !ids.includes('f-website'), ids.join(' > '));
 
     // Empty submit: readable errors on the required fields, focus on the first

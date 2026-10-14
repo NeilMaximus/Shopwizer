@@ -27,7 +27,7 @@ Since version 2.5 the page shows no other figures. The Sources dropdown is gone;
 
 ## Research copy and the named comparison
 
-The research section is Neil's approved copy of 14 October 2026, word for word. Neil explicitly chose to name Deloitte and Accenture. The line is a question ("Considering Deloitte or Accenture for your martech strategy?") followed by an invitation; it makes no claim about their prices, timelines or results, and none may be added. The heading "Your next move shouldn’t take months. Or millions." speaks about the visitor's next move, not about those firms.
+The research section is Neil's approved copy of 14 October 2026, word for word. Neil explicitly chose to name Deloitte and Accenture. Since version 2.7 the paragraph reads: "Considering Deloitte or Accenture for your martech strategy? We combine industry research, proven patterns and practical know-how with your own data. Then we pinpoint where your business can improve, prioritise the changes and help you put them into practice." It opens with the question and then describes Growth Lab's own approach; it makes no claim about those firms' prices, timelines or results, and none may be added. The heading "Your next move shouldn’t take months. Or millions." speaks about the visitor's next move, not about those firms.
 
 The map caption repeats the research sentence and is followed by the credit "Research: MartechTribe. MartechMap © chiefmartec and MartechTribe." The map is MartechMap 2026, a vendor landscape; it is not a chart of the 1,634 benchmarked stacks.
 
@@ -65,7 +65,7 @@ Not on the page since version 2.4 (Neil's refinement removed the retail example 
 | Neil Botha | Founder and Strategy Director, Growth Lab | More than 20 years turning customer strategy, data and martech into measurable growth for South African financial services. | Life Insurer Lens v10, About the authors |
 | Frans Riemersma | Founder, MartechTribe | Produces the MartechMap and writes the annual State of Martech report with Scott Brinker. More than 30 years in consulting. | Life Insurer Lens v10, About the authors |
 
-Section line since version 2.6, Neil's wording: "Neil brings customer strategy and implementation experience. Frans brings deep martech research and benchmarking expertise." It describes what each person brings; it does not claim that both attend every engagement.
+Section line since version 2.7, Neil's wording: "Neil and Frans combine customer experience strategy, martech research and hands-on implementation to help you turn insights into results." It describes what they bring together; it does not claim that both attend every engagement.
 
 ## Contact details
 
