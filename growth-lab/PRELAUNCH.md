@@ -37,7 +37,7 @@ The form is built and tested against mocked Google and Resend responses. It cann
 
 ## Technical
 
-- [ ] hello@growthlab.co.za is the fallback for every enquiry. It bounced on 21 August 2026 (recorded in the Growth-Lab-2026 repository); outside mail addressed to it reached Neil's inbox on 16 and 22 September 2026, so it appears to work now. Send one test message to confirm before launch.
+- [x] hello@growthlab.co.za, the fallback for every enquiry, works: on 14 October 2026 Google Workspace Admin showed it as an alias on Neil's user (info@ also exists), and outside mail addressed to it arrived on 16 and 22 September 2026. The bounce noted on 21 August 2026 in the Growth-Lab-2026 repository is out of date. Keep hello@ as the published address. A fresh test message is being sent as a final check.
 
 - [ ] Choose the domain or path. If it replaces part of growthlab.co.za, plan that change with whoever runs the current site.
 - [ ] Vercel project: `site/` is the deployment root (Root Directory `growth-lab/site` in the repository, or `site` in the package), framework preset Other, no build command. Nothing outside `site/` is deployed.

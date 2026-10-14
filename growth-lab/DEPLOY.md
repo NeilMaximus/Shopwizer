@@ -15,6 +15,22 @@ Do not assume a Vercel preview is private. Who can open a preview depends on the
 
 With the Vercel CLI, `vercel project protection` shows the current settings for a linked project.
 
+## Release into the live project (version 2.11)
+
+growthlab.co.za is served by the Vercel project `growth-lab-2026` (team "Neil's projects", `neils-projects-23ef481a`). It deploys from `main` of the GitHub repository NeilMaximus/Growth-Lab-2026 with Framework Other, an empty Root Directory, `outputDirectory: public` from that repository's `vercel.json` and no build command; `www` redirects (308) to the apex. Every commit to `main` goes straight to production.
+
+`python3 scripts/build.py package` also writes `dist/growth-lab-2026-release.zip`, this site laid out for that repository:
+
+| In the release ZIP | Goes to, in Growth-Lab-2026 | Why |
+| --- | --- | --- |
+| `public/` | `public/`, replacing its contents entirely | The served files. Removing the old page, fonts, vendor scripts and media stops stale files being served; they stay in Git history and in the rollback deployment |
+| `api/contact.mjs` | `api/contact.mjs` at the repository root | Vercel builds functions only from `api/` under the Root Directory, never from the output directory |
+| `vercel.json` | `vercel.json` at the repository root, replacing it | Keeps `outputDirectory: public` and adds this site's caching and security headers. `cleanUrls` is left off, so `contact.html` and the asset paths behave exactly as tested |
+
+Commit those three in one commit to `main`; leave everything else in that repository alone. Rollback: Instant Rollback in the Vercel dashboard to the previous production deployment (`dpl_3VL175GJqHCRX1J46Pxi5ZDhbcBN`, commit `a099706`), or revert the commit.
+
+After the deployment is ready, check: the homepage and `/contact.html` load on growthlab.co.za, `www` still redirects, `/api/contact` answers `{"ready":false,"siteKey":null}` while the keys are absent and the contact view says enquiries are not connected, `/privacy.html` and `/terms.html` return 404, and `/assets/brand/growthlab-email-logo-v1.png` returns the PNG.
+
 ## Deploy to Vercel (when approved)
 
 Project settings:

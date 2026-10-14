@@ -351,6 +351,28 @@ def build_production():
     return out
 
 
+def build_repo_layout(site):
+    """The production site laid out for the Growth-Lab-2026 repository, which Vercel deploys from main
+    with Framework Other, an empty Root Directory and outputDirectory public: the static files in
+    public/, the function in api/ at the repository root (Vercel only builds functions from there, never
+    from the output directory) and vercel.json at the root with outputDirectory added. Replacing
+    public/, api/ and vercel.json in one commit swaps the site and leaves the rest of that repository."""
+    out = DIST / "growth-lab-2026"
+    if out.exists():
+        shutil.rmtree(out)
+    shutil.copytree(site, out / "public", ignore=lambda d, names: ["api", "vercel.json"] if pathlib.Path(d) == site else [])
+    shutil.copytree(site / "api", out / "api")
+    cfg = json.loads((site / "vercel.json").read_text(encoding="utf8"))
+    layout = {"$schema": cfg.pop("$schema"), "outputDirectory": "public", **cfg}
+    (out / "vercel.json").write_text(json.dumps(layout, indent=2) + "\n", encoding="utf8")
+    zpath = DIST / "growth-lab-2026-release.zip"
+    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
+        for f in sorted(out.rglob("*")):
+            if f.is_file():
+                z.write(f, pathlib.Path("growth-lab-2026-release") / f.relative_to(out))
+    return zpath
+
+
 def build_package():
     """Zip layout: docs at the top, the deployable production site in site/ so the docs are never served."""
     site = build_production()
@@ -386,6 +408,7 @@ def main(args):
         print("browser:", build_browser())
     if "package" in args:
         print("package:", build_package())
+        print("Growth-Lab-2026 layout:", build_repo_layout(DIST / "production"))
 
 
 if __name__ == "__main__":
