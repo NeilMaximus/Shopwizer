@@ -106,25 +106,29 @@ a { color: inherit; }
 }
 .clients.is-moving .clients-track { display: flex; gap: var(--clients-gap); width: max-content; will-change: transform; }
 .clients.is-moving .clients-set { flex-wrap: nowrap; justify-content: flex-start; }
-.clients-toggle {
-  align-self: flex-end; display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+/* Quiet pause controls for the two looping animations: the client logos and the value cube */
+.clients-toggle, .cube-toggle {
+  display: inline-flex; align-items: center; gap: 6px;
   min-height: 32px; padding: 4px 12px 4px 10px; border: 0; border-radius: var(--gl-radius-pill);
   background: transparent; color: var(--gl-ink-3); font-size: var(--gl-text-small); font-weight: var(--gl-weight-medium); cursor: pointer;
 }
-.clients-toggle[hidden] { display: none; }
+.clients-toggle { align-self: flex-end; margin-top: 12px; }
+.clients-toggle[hidden], .cube-toggle[hidden] { display: none; }
 .clients-toggle:hover { background: var(--gl-panel); color: var(--gl-ink); }
-.clients-toggle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.clients-toggle .i-play { display: none; fill: currentColor; stroke: none; }
-.clients.is-paused .clients-toggle .i-pause { display: none; }
-.clients.is-paused .clients-toggle .i-play { display: block; }
+.clients-toggle svg, .cube-toggle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.clients-toggle .i-play, .cube-toggle .i-play { display: none; fill: currentColor; stroke: none; }
+.clients.is-paused .clients-toggle .i-pause, .device-card.is-paused .cube-toggle .i-pause { display: none; }
+.clients.is-paused .clients-toggle .i-play, .device-card.is-paused .cube-toggle .i-play { display: block; }
+/* Headline and text as one block, centred on the cube panel: the two outer rows share the spare
+   height equally, whatever the length of the text (version 2.12) */
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-  grid-template-areas: "title device" "lead device";
-  grid-template-rows: 1fr 1fr;
+  grid-template-areas: ". device" "title device" "lead device" ". device";
+  grid-template-rows: 1fr auto auto 1fr;
   column-gap: clamp(32px, 4.4vw, 64px);
 }
-.title { grid-area: title; align-self: end; container-type: inline-size; }
+.title { grid-area: title; container-type: inline-size; }
 h1 {
   font-size: clamp(34px, 4.4vw, 60px);
   font-size: clamp(34px, 10.8cqi, 72px);
@@ -140,7 +144,7 @@ h1 {
 
 /* The value cube: today's results as the black core, the three outcomes as the axes it grows along */
 .device-card {
-  grid-area: device; align-self: center;
+  grid-area: device; align-self: center; position: relative;
   background: var(--gl-panel); border-radius: var(--gl-radius-panel);
   padding: clamp(28px, 3.4vw, 44px) clamp(12px, 2.4vw, 32px);
 }
@@ -165,6 +169,9 @@ h1 {
 .out-row .out:last-child { grid-column: 3; }
 .building .out:not(.on) { color: var(--gl-ink-3); }
 .building .arrow:not(.on) { stroke: var(--gl-idle); }
+/* The cube's pause control sits in the panel's top right corner, clear of the labels */
+.cube-toggle { position: absolute; top: 12px; right: 12px; }
+.cube-toggle:hover { background: var(--gl-panel-strong); color: var(--gl-ink); }
 
 /* Four ways to work with Growth Lab, joined by a line of icon nodes, on the deliberate black section.
    Keep it black. Each way: name, promise, offer, then a hairline and the detail (what we look at,
@@ -467,6 +474,9 @@ h1 {
   .stage { column-gap: 18px; padding-bottom: 44px; }
   .stage .tag { font-size: 17px; }
   .device-card { padding-inline: 8px; }
+  /* Icon only on phones, so it never meets "Win more customers."; its name stays in aria-label */
+  .cube-toggle { top: 8px; right: 8px; min-width: 32px; padding: 4px; justify-content: center; }
+  .cube-toggle-text { display: none; }
   .person { column-gap: 16px; }
   .contact-details { margin-top: 24px; padding-top: 20px; }
 }

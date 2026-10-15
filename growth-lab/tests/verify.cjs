@@ -382,7 +382,8 @@ async function homeChecks(page, vp) {
       banned: (document.querySelector('main').innerText.replace('the world’s largest independent benchmark of real martech stacks', '').replace('One of the leading international thinkers in martech', '').match(/richest|world.?s|largest|leading|best in class|unrivalled|\bfees?\b|\bfree\b|\bpric|\bR\s?\d|1,500,505|booked|appointment|confirmed/gi) || []),
       retail: document.querySelectorAll('a[href*="martechtribe.com/blog"]').length + (/retail/i.test(document.body.textContent) ? 1 : 0),
       small, primaries: [...document.querySelectorAll('.btn-dark, .btn-coral')].filter(visible).map((b) => Math.round(b.getBoundingClientRect().height)),
-      anims: document.getAnimations().map((a) => (a.effect && a.effect.target && a.effect.target.classList && a.effect.target.classList.contains('clients-track')) ? 'client-strip' : (a.animationName || a.transitionProperty || 'unknown')),
+      // The cube is drawn frame by frame; only its labels' colour transitions show up here, so they are left out
+      anims: document.getAnimations().filter((a) => !(a.effect && a.effect.target && a.effect.target.closest && a.effect.target.closest('.device-card'))).map((a) => (a.effect && a.effect.target && a.effect.target.classList && a.effect.target.classList.contains('clients-track')) ? 'client-strip' : (a.animationName || a.transitionProperty || 'unknown')),
       strip: (() => { const st = document.querySelector('.clients'); if (!st) return null;
         const sets = [...st.querySelectorAll('.clients-set')], imgs = [...sets[0].querySelectorAll('img')];
         return { moving: st.classList.contains('is-moving'), named: [...st.querySelectorAll('img')].filter((i) => i.alt && !i.closest('[aria-hidden="true"]')).map((i) => i.alt),
@@ -492,7 +493,7 @@ async function homeChecks(page, vp) {
   check(`${tag} no pricing, superlatives or booking claims`, x.banned.length === 0, x.banned.join(', '));
   check(`${tag} click targets at least 24px, action buttons at least 44px`, x.small.length === 0 && x.primaries.every((h) => h >= 44), x.small.join(' | ') || x.primaries.join(', '));
   const allowed = LOGOS_PRESENT.length ? ['client-strip', 'rune-a', 'rune-b'] : ['rune-a', 'rune-b'];
-  check(`${tag} no other animation: after the cube only the rune${LOGOS_PRESENT.length ? ' and the logo strip' : ''} move`, JSON.stringify([...x.anims].sort()) === JSON.stringify(allowed), x.anims.join(', '));
+  check(`${tag} no other animation: besides the cube only the rune${LOGOS_PRESENT.length ? ' and the logo strip' : ''} move`, JSON.stringify([...x.anims].sort()) === JSON.stringify(allowed), x.anims.join(', '));
   if (LOGOS_PRESENT.length) {
     const st = x.strip;
     check(`${tag} logo strip at the foot of the hero: the ${LOGOS_PRESENT.length} genuine logos, loaded, unstretched, one moving row, copies hidden`, !!st && st.moving &&
@@ -654,8 +655,37 @@ async function apiChecks() {
       check('[home desktop] cube animation runs on load', building && midTop !== finalTop, 'mid frame differs from the resting cube');
       await page.locator('.device-card').screenshot({ path: path.join(SHOTS, 'cube-mid-build.png') });
     }
-    await page.waitForTimeout(3400);
-    check(`[home ${vp.name}] cube settles on the full cube`, (await page.getAttribute('.f-top', 'points')) === finalTop);
+    const fullCube = (timeout) => page.waitForFunction((ft) => document.querySelector('.f-top').getAttribute('points') === ft, finalTop, { timeout }).then(() => true, () => false);
+    check(`[home ${vp.name}] cube builds to the full cube`, await fullCube(8000));
+    if (vp.name === 'desktop') {
+      // Version 2.12: it rests, folds back to the core and grows again, endlessly
+      const folded = await page.waitForFunction((ft) => document.querySelector('.f-top').getAttribute('points') !== ft &&
+        document.getElementById('device').classList.contains('building'), finalTop, { timeout: 6000 }).then(() => true, () => false);
+      check('[home desktop] cube loops: rests on the full cube, folds back to the core and grows again', folded && await fullCube(6000));
+      const toggleState = () => page.evaluate(() => { const t = document.querySelector('.cube-toggle');
+        return { shown: !t.hidden, label: t.getAttribute('aria-label'), text: t.innerText.trim(), points: document.querySelector('.f-top').getAttribute('points'),
+          on: document.querySelectorAll('#device .out.on').length }; });
+      const before = await toggleState();
+      await page.click('.cube-toggle');
+      const p0 = await page.getAttribute('.f-top', 'points');
+      await page.waitForTimeout(1500);
+      const paused = await toggleState();
+      await page.click('.cube-toggle');
+      const resumed = await page.waitForFunction((ft) => document.querySelector('.f-top').getAttribute('points') !== ft, finalTop, { timeout: 4000 }).then(() => true, () => false);
+      const after = await toggleState();
+      await page.evaluate(() => document.activeElement.blur());
+      check('[home desktop] cube pause control holds the full cube, plays it again, and says what it will do', before.shown && before.label === 'Pause the cube animation' &&
+        before.text === 'Pause' && p0 === finalTop && paused.points === finalTop && paused.on === 3 && paused.label === 'Play the cube animation' && paused.text === 'Play' &&
+        resumed && after.label === 'Pause the cube animation' && after.text === 'Pause', JSON.stringify({ before: before.label, paused: [paused.label, paused.on], resumed }));
+      await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
+      await page.waitForTimeout(300);
+      const away0 = await page.getAttribute('.f-top', 'points');
+      await page.waitForTimeout(1200);
+      const away1 = await page.getAttribute('.f-top', 'points');
+      await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+      check('[home desktop] cube rests while off screen', away0 === away1);
+      await fullCube(8000);
+    }
     await pageChecks(page, `[home ${vp.name}]`, { sizing });
     await loadImages(page);
     await homeChecks(page, vp);
@@ -686,6 +716,8 @@ async function apiChecks() {
       await page.locator('.approach').screenshot({ path: path.join(SHOTS, 'four-ways.png') });
       await page.locator('#workshops').screenshot({ path: path.join(SHOTS, 'workshops.png') });
       await page.locator('#evidence').screenshot({ path: path.join(SHOTS, 'research-and-map.png') });
+      await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+      await fullCube(8000);
       await page.locator('.device-card').screenshot({ path: path.join(SHOTS, 'cube-rest.png') });
       // Rune motion and its range
       await page.locator('.rune-stage').scrollIntoViewIfNeeded();
@@ -720,7 +752,7 @@ async function apiChecks() {
           await page.screenshot({ path: path.join(SHOTS, 'focus-header.png'), clip: { x: 0, y: 0, width: 1440, height: 110 } });
         }
       }
-      const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', ...(LOGOS_PRESENT.length ? ['Pause the client logos'] : []), 'Let’s Talk',
+      const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', 'Pause the cube animation', ...(LOGOS_PRESENT.length ? ['Pause the client logos'] : []), 'Let’s Talk',
         'Growth Lab, back to top', 'Privacy', 'Website terms'];
       check('[home desktop] keyboard order follows the page and every stop shows a ring', stops.every((s) => s.ring) &&
         JSON.stringify(stops.map((s) => s.label)) === JSON.stringify(expected), stops.map((s) => s.label + (s.ring ? '' : ' (no ring)')).join(' > '));
@@ -1006,7 +1038,7 @@ async function apiChecks() {
       await page.mouse.move(2, 2);
       await page.waitForTimeout(100);
       const left = (await state()).play;
-      await page.focus('.site-header .btn-dark');
+      await page.focus('.cube-toggle');
       await page.keyboard.press('Tab');
       const focus = await page.evaluate(() => ({ cls: document.activeElement.className, ring: getComputedStyle(document.activeElement).outlineStyle,
         h: document.activeElement.getBoundingClientRect().height }));
@@ -1080,7 +1112,11 @@ async function apiChecks() {
     await rp.waitForTimeout(150);
     const rTop = await rp.getAttribute('.f-top', 'points');
     const rBuilding = await rp.evaluate(() => document.getElementById('device').className);
-    check('[reduced motion] cube shows its final state at once', rTop === finalTop && !/building|pre-build/.test(rBuilding), rBuilding);
+    const rToggle = await rp.evaluate(() => document.querySelector('.cube-toggle').hidden);
+    await rp.waitForTimeout(1500);
+    const rStill = (await rp.getAttribute('.f-top', 'points')) === finalTop;
+    check('[reduced motion] cube shows its final state at once, stays still and has no pause control', rTop === finalTop && rStill && rToggle &&
+      !/building|pre-build/.test(rBuilding), rBuilding);
     await rp.locator('.rune-stage').scrollIntoViewIfNeeded();
     await rp.waitForTimeout(1500);
     const rRune = await rp.evaluate(() => ({ a: getComputedStyle(document.querySelector('.rune-a')).animationName, t: getComputedStyle(document.querySelector('.rune-a')).transform }));

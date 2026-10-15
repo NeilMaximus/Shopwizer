@@ -1,16 +1,21 @@
 /* Growth Lab website behaviour. Motion rules: growth-lab/DESIGN_SYSTEM.md, section Motion.
    Everything here is an enhancement: without it the page shows the finished cube, a still rune and
-   the client logos standing still. The contact form has its own script, contact.js. */
+   the client logos standing still. Each looping animation has a pause control and rests off screen. The contact form has its own script, contact.js. */
 (function () {
   var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-  /* Value cube. Grows from today's core along each axis in turn: customers up, lifetime to the
-     left, revenue to the right. Constants match scripts/gen_cube_svg.py, which draws the resting
-     state into the HTML. */
-  function buildCube() {
+  /* Value cube. Grows from today's core along each axis in turn (customers up, lifetime to the
+     left, revenue to the right), rests on the full cube, folds back to the core and grows again,
+     slowly and endlessly (Neil, version 2.12). A button pauses it on the full cube, and it rests
+     while off screen. With reduced motion, or without this script, it shows the full cube.
+     Constants match scripts/gen_cube_svg.py, which draws the resting state into the HTML. */
+  function liveCube() {
     var dev = document.getElementById('device');
     if (!dev) { return; }
-    if (reduce || !window.requestAnimationFrame) { dev.classList.remove('pre-build'); return; }
+    var card = dev.parentNode;
+    var toggle = card.querySelector('.cube-toggle');
+    var text = toggle && toggle.querySelector('.cube-toggle-text');
+    var query = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
     var C = 0.8660254, U = 132, K = 0.6, CX = 260, CY = 196;
     var top = dev.querySelector('.f-top'), left = dev.querySelector('.f-left'), right = dev.querySelector('.f-right');
     var labels = dev.querySelectorAll('.out'), arrows = dev.querySelectorAll('.arrow');
@@ -21,22 +26,89 @@
       right.setAttribute('points', [p(x, 0, 0), p(x, 0, z), p(x, y, z), p(x, y, 0)].join(' '));
     }
     function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
-    var DELAY = 500, DUR = 720, STEP = 840, start = null;
-    dev.classList.add('building');
-    draw(K, K, K);
-    dev.classList.remove('pre-build');
-    function frame(now) {
-      if (start === null) { start = now; }
-      var t = now - start - DELAY, g = [];
-      for (var i = 0; i < 3; i++) {
-        var k = Math.min(1, Math.max(0, (t - i * STEP) / DUR));
-        g.push(K + (1 - K) * ease(k));
-        if (k > 0) { labels[i].classList.add('on'); arrows[i].classList.add('on'); }
-      }
-      draw(g[2], g[0], g[1]);
-      if (t < 2 * STEP + DUR) { requestAnimationFrame(frame); } else { dev.classList.remove('building'); }
+    function light(i, on) { labels[i].classList.toggle('on', on); arrows[i].classList.toggle('on', on); }
+    // One cycle: each axis grows in turn, the full cube rests, then folds back to the core and holds
+    var DELAY = 500, DUR = 720, STEP = 840, BUILT = 2 * STEP + DUR, REST = 3000, FOLD = 900, CORE = 600;
+    var CYCLE = BUILT + REST + FOLD + CORE;
+    var elapsed = -DELAY, last = null, raf = 0, live = false;
+    var held = { user: false, away: false };
+
+    function full() {
+      draw(1, 1, 1);
+      for (var i = 0; i < 3; i++) { light(i, true); }
+      dev.classList.remove('building');
     }
-    requestAnimationFrame(frame);
+    function render() {
+      var t = elapsed < 0 ? elapsed : elapsed % CYCLE, i;
+      if (t < BUILT) {
+        var g = [];
+        for (i = 0; i < 3; i++) {
+          var k = Math.min(1, Math.max(0, (t - i * STEP) / DUR));
+          g.push(K + (1 - K) * ease(k));
+          light(i, k > 0);
+        }
+        dev.classList.add('building');
+        draw(g[2], g[0], g[1]);
+      } else if (t < BUILT + REST) {
+        full();
+      } else {
+        var s = 1 - (1 - K) * ease(Math.min(1, (t - BUILT - REST) / FOLD));
+        for (i = 0; i < 3; i++) { light(i, false); }
+        dev.classList.add('building');
+        draw(s, s, s);
+      }
+    }
+    // Time only moves while frames run, and a long gap (a background tab) counts as one frame
+    function frame(now) {
+      raf = 0;
+      if (last !== null) { elapsed += Math.min(now - last, 64); }
+      last = now;
+      render();
+      update();
+    }
+    function halt() { if (raf) { cancelAnimationFrame(raf); raf = 0; } last = null; }
+    function update() {
+      if (!live || held.user || held.away) { halt(); return; }
+      if (!raf) { raf = requestAnimationFrame(frame); }
+    }
+    function start() {
+      if (live) { return; }
+      live = true;
+      if (held.user) { full(); } else { render(); }
+      dev.classList.remove('pre-build');
+      if (toggle) { toggle.hidden = false; }
+      update();
+    }
+    function stop() {
+      live = false;
+      halt();
+      full();
+      dev.classList.remove('pre-build');
+      if (toggle) { toggle.hidden = true; }
+    }
+    function apply() { if (!window.requestAnimationFrame || (query && query.matches)) { stop(); } else { start(); } }
+
+    if (toggle) {
+      toggle.addEventListener('click', function () {
+        held.user = !held.user;
+        card.classList.toggle('is-paused', held.user);
+        if (text) { text.textContent = held.user ? 'Play' : 'Pause'; }
+        toggle.setAttribute('aria-label', (held.user ? 'Play' : 'Pause') + ' the cube animation');
+        // Paused, it rests on the full cube; played again, it folds back soon after
+        if (held.user) { halt(); full(); elapsed = BUILT + REST - 800; }
+        update();
+      });
+    }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        held.away = !entries[entries.length - 1].isIntersecting;
+        update();
+      }).observe(card);
+    }
+    if (query) {
+      if (query.addEventListener) { query.addEventListener('change', apply); } else if (query.addListener) { query.addListener(apply); }
+    }
+    apply();
   }
 
   /* Rune. It breathes by default and pauses only while it is known to be off screen, so it
@@ -149,7 +221,7 @@
     apply();
   }
 
-  buildCube();
+  liveCube();
   liveRune();
   clientStrip();
 })();

@@ -124,7 +124,7 @@ Measured contrast (WCAG 2.2):
 | Section | Ground |
 | --- | --- |
 | Header | White |
-| Hero ("Make your martech investment pay.") | White. The value cube sits on a light grey panel inside it, and the client logo strip runs along its foot, on white |
+| Hero ("Make your martech investment pay.") | White. The value cube sits on a light grey panel inside it, and the client logo strip runs along its foot, on white. The headline and text form one block, vertically centred on the panel (version 2.12) |
 | Four ways to work (Fix, Grow, Automate, Decide) | **Black `#111111`, full width.** White section heading, purple icon tiles and connecting arrows, coral names, white semibold promises, purple soft offer names, light grey detail, no numbers. All Geist Sans |
 | Evidence, workshops and getting going (after the black section) | White, separated by hairlines inside the content width. No cards, tiles or grey panels. See section 11 |
 | Rune band | White, with the faint grey rune cropped by the hairline |
@@ -175,6 +175,7 @@ The header keeps one height on every page so the logo does not shift between the
 
 - The hero device for "Win more customers. Keep them longer. Grow revenue more efficiently." A black core (today's results) sits inside a purple cube (the value Growth Lab unlocks). Each outcome is one axis: customers up, lifetime to the lower left, revenue to the lower right.
 - Geometry comes from `scripts/gen_cube_svg.py`. The static SVG in the page is the finished cube, so the page reads correctly without JavaScript.
+- Pause control (version 2.12): a quiet "Pause" button in the panel's top right corner, styled like the logo strip's (13 px, ink 3, 32 px high, `--gl-panel-strong` on hover), icon only under 560 px so it stays clear of "Win more customers.". It reads "Play" while paused, and its accessible name is "Pause the cube animation" or "Play the cube animation". Hidden with reduced motion or without the script.
 - It sits on a light grey panel. Labels are Geist 600, scaled with the panel width.
 
 ## 9. Icons and stage nodes
@@ -288,18 +289,18 @@ Three white sections sit between the black four ways section and the rune band, 
 
 ## 13. Motion
 
-- **Cube build:** on load, after 0.5 s, the cube grows from the core along one axis at a time (0.72 s each, cubic ease in and out), lighting each outcome label and arrow as its axis grows. It then rests.
+- **Cube loop (version 2.12, Neil):** on load, after 0.5 s, the cube grows from the core along one axis at a time (0.72 s each, cubic ease in and out), lighting each outcome label and arrow as its axis grows. It rests on the full cube for 3 s, folds back to the core in 0.9 s as the labels and arrows dim, holds the core for 0.6 s and grows again: a 6.9 s cycle, endlessly. It is drawn frame by frame in `site.js` (no extra files). It rests while the panel is off screen, and the Pause control holds it on the full cube with every label lit; Play folds it back soon after.
 - **Rune breathing (version 2.6):** the two chevrons drift apart diagonally by 1.6 units, about 5 percent of the rune's width (39 px at full size, 16 px on a phone), and back, 6 s each way, so a full breath is 12 s (`--gl-rune-cycle`), on a gentle sine ease (`--gl-ease-rune`). Each chevron starts 40 percent into its breath, so the drift is already visible when the band appears rather than easing out of a standstill. It runs as soon as any part of the band is within 120 px of the viewport, keeps running while partly visible, and rests only once the band has fully left. Its rest position is the true logo geometry, and 6 percent headroom above the rune keeps the larger drift uncropped. No spin, bounce, flash or faster speeds.
 - **Client logo strip:** a slow, constant drift from left to right, approved by Neil for version 2.5. Details in section 10.
-- **Reduced motion:** with `prefers-reduced-motion: reduce`, the cube shows its finished state at once, the rune stays still and the client logos stand still and wrap. Smooth scrolling is off.
-- No other animation without Neil's approval. Never spin, bounce or loop attention grabbing effects.
+- **Reduced motion:** with `prefers-reduced-motion: reduce`, the cube shows its finished state at once and stays still with no control, the rune stays still and the client logos stand still and wrap. Smooth scrolling is off.
+- No other animation without Neil's approval. Never spin, bounce or flash. The only loops are the slow cube cycle, the rune's breath and the logo strip, each approved by Neil.
 
 ## 14. Accessibility
 
 - Contrast as in section 4. Text below large size uses ink, ink 2, ink 3, purple strong or the error red only.
 - Visible focus on every interactive element: 2 px `--gl-purple-strong` outline, 3 px offset. Inside the black section the ring switches to `--gl-purple-soft`.
 - A skip link, landmarks (header, main, footer), one H1 per page, decorative SVG marked `aria-hidden`.
-- Moving content can be paused: the logo strip's Pause control, plus pausing on hover and focus (WCAG 2.2.2). Its copies are hidden from assistive technology so each client is announced once.
+- Moving content can be paused (WCAG 2.2.2): the cube's Pause control, and the logo strip's Pause control plus pausing on hover and focus. Its copies are hidden from assistive technology so each client is announced once.
 - Expandable detail uses native `details` and `summary`, reachable and operable with the keyboard (Enter and Space), with the same focus ring.
 - Forms: visible labels, autocomplete, required fields marked for assistive technology, readable errors linked to their fields, status messages in live regions, and focus moved to the first error or to the confirmation.
 - Portraits next to a visible name use empty alt text. The map has descriptive alt text. Links that open a new tab say so to screen readers.
@@ -339,6 +340,7 @@ Three white sections sit between the black four ways section and the rune band, 
 
 ## Change log
 
+- **2.12, 15 October 2026, hero refinement (Neil).** The headline and text now form one block vertically centred on the cube panel (the longer two paragraph text had pushed it below the panel's centre). The value cube loops: build, rest 3 s, fold back to the core, grow again, with a quiet Pause control in the panel corner, resting off screen and still under reduced motion. No new files: page weight and loading are unchanged.
 - **2.12, 15 October 2026.** New copy from Neil, set in the existing layout and patterns. Hero body in two paragraphs. The black section becomes "Four ways to work with Growth Lab": Fix, Grow, Automate and Decide, each with a promise, an offer name and its detail (what we look at, what you get), aligned across the columns with subgrid; new icons for Fix and Automate; no 01 to 04 numbers, per section 5. Research: "What 1,634 real martech stacks can tell you about yours.", an introduction, "What it tells you" and three bullets, MartechTribe's four figures as one quiet row with hairlines, and the 200+ brands line. The Deloitte or Accenture question and response, the coral regular weight exception and the repeated map caption are gone; the map keeps its credit and glow. Workshops: Technology Strategy first, titles, descriptions, pull quotes, "Ideal for" and "You’ll leave with"; the duration row is gone. New tokens: `--gl-line-on-black`; `--gl-space-research` removed. Copy edits for house style only: "the world’s largest" (not "the world’s the largest"), the closing quote mark, "prioritise", lower case "martech", "best performing" and "board ready" without hyphens, and a comma for the em dash.
 - **2.11, 14 October 2026.** Release preparation for production (Neil authorised the launch). Added the email logo PNG (section 6). The production build omits the unapproved privacy notice and website terms and their footer links (section 16); the preview keeps them.
 - **2.10, 14 October 2026.** The research response "Move faster and smarter through leading independent global martech research, applied to your business." is now regular weight (Neil), keeping the coral, size, line height and 24 px gaps of version 2.9. The question stays bold. Regular coral at 19 to 20 px is below WCAG AA contrast (3.25:1 against 4.5:1); Neil chose this over dark ink or a 24 px response, and it is recorded as the one exception in section 11 and in `PRELAUNCH.md`.
