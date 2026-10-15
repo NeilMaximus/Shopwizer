@@ -55,23 +55,21 @@ const HOME = {
   startH2: 'Experience that moves you forward.',
   startLede: 'Neil and Frans combine customer experience strategy, martech research and hands-on implementation to help you turn insights into results.',
 };
-// Four ways to work with Growth Lab, on the black section, in this order. No 01 to 04 numbers on the page
+// Four ways to work with Growth Lab, on the black section, in this order, one row each: the service, what you
+// get, then what we look at. Shortened copy (Neil, 15 October 2026). No 01 to 04 numbers on the page
 const WAYS = [
   { id: 'fix', name: 'Fix', icon: '#i-fix', tag: 'Get more from the platforms you already pay for', offer: 'Martech Health Check and fixes',
-    look: ['What you pay for against what you actually use, by module, seat and channel', 'The customer data reaching the platform, and the data that never arrives',
-      'The journeys and campaigns that are live against the ones the platform could be running', 'Who does the work and what slows them down, from skills to approvals'],
-    get: 'A plain list of what is broken, what is unused and what each fix is worth, ranked by return. Then we make the fixes with your team, or implement a new platform properly if that is the right call.' },
+    get: 'A plain list of what is broken or unused, ranked by return. Then we make the fixes with your team.',
+    look: ['What you pay for against what you use', 'The customer data that never arrives', 'What slows your team down'] },
   { id: 'grow', name: 'Grow', icon: '#i-grow', tag: 'Keep customers longer and earn more from each one', offer: 'Customer Journeys and Lifetime Value',
-    look: ['The moments that decide lifetime value. Onboarding, first use, renewal, cross sell, lapse and win back', 'What your data already tells you about who is about to leave and who is ready to buy',
-      'The journeys you run today, the offers inside them and what each one earns'],
-    get: 'A lifetime value map that shows where the money sits, the journeys that matter most built and live in your platform, and the numbers to prove what each one earns.' },
+    get: 'A lifetime value map, the journeys that matter most built and live, and proof of what each one earns.',
+    look: ['The moments that decide lifetime value', 'Who might leave, and who is ready to buy', 'What each journey and offer earns today'] },
   { id: 'automate', name: 'Automate', icon: '#i-automate', tag: 'Produce campaigns in days, not weeks, with AI your team controls', offer: 'AI Production Workflows',
-    look: ['How work moves today from brief to live campaigns, and where the time goes', 'The content you produce most. Social, emails, landing pages and offers, and what good looks like for each',
-      'The brand, product and compliance rules every piece has to pass'],
-    get: 'Working AI workflows your team uses every day, in your environment. Brief checking, first draft copy, brand and compliance review, build and reporting. The rules written down once, so the output is right every time.' },
+    get: 'AI workflows your team uses every day, from brief to first draft, review and reporting, with your rules built in.',
+    look: ['Where the time goes from brief to launch', 'The content you produce most', 'The brand and compliance rules it must pass'] },
   { id: 'decide', name: 'Decide', icon: '#i-decide', tag: 'Know what to buy, renew or replace before you sign', offer: 'Martech Strategy and Investment Case',
-    look: ['Your stack against 1,634 benchmarked stacks in MartechTribe research', 'Gaps, overlaps and spend across your platforms', 'The use cases that would earn the most, and what they need from the stack'],
-    get: 'A benchmark against high performing peers, your investments ranked by return, a roadmap, and a case your executive can sign off.' },
+    get: 'A peer benchmark, your investments ranked by return, a roadmap and a case your executive can sign off.',
+    look: ['Your stack against 1,634 benchmarked stacks', 'Gaps, overlaps and spend across your platforms', 'The use cases that would earn the most'] },
 ];
 const WORKSHOPS = [
   { name: 'Technology Strategy Workshop', icon: '#i-route', colour: 'rgb(255, 78, 78)', title: 'Benchmark your stack. Prioritise your investments.',
@@ -316,16 +314,24 @@ async function homeChecks(page, vp) {
       inOrder: order.every((el, i) => i === 0 || (order[i - 1].compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING)),
       grounds: { hero: colour('.hero', 'backgroundColor'), stages: colour('.approach', 'backgroundColor'),
         white: ['#evidence', '#workshops', '#start'].map((s) => colour(s, 'backgroundColor')),
-        node: colour('.node', 'backgroundColor'), h2: colour('.stage h3', 'color'), tag: colour('.stage .tag', 'color'),
-        body: colour('.stage .body', 'color'), look: colour('.stage .look li', 'color'), offer: colour('.stage .offer', 'color'), label: colour('.stage h4', 'color'),
-        rule: colour('.stage .detail', 'borderTopColor'), arrow: getComputedStyle(document.querySelector('.stage'), '::before').backgroundColor },
-      ways: { h2: t('.approach h2'), h2Colour: colour('.approach h2', 'color'), items: [...document.querySelectorAll('.stage')].map((st) => ({
-          id: st.id, name: t('h3', st), tag: t('.tag', st), offer: t('.offer', st), labels: [...st.querySelectorAll('h4')].map((h) => h.textContent.trim()),
-          look: [...st.querySelectorAll('.look li')].map((l) => l.textContent.trim()), get: t('.body', st),
-          icon: st.querySelector('.node use').getAttribute('href'), iconOk: !!document.querySelector(st.querySelector('.node use').getAttribute('href')),
-          rows: ['.tag', '.offer', '.detail'].map((sel) => Math.round(st.querySelector(sel).getBoundingClientRect().top)),
-          box: box(st) })) },
-      numbering: document.querySelectorAll('.stage .num').length + [...document.querySelectorAll('.stage *')].filter((e) => /^0[1-4]$/.test(e.textContent.trim())).length,
+        node: colour('.node', 'backgroundColor'), h2: colour('.way h3', 'color'), tag: colour('.way .tag', 'color'),
+        body: colour('.way .body', 'color'), look: colour('.way .look li', 'color'), offer: colour('.way .offer', 'color'),
+        label: colour('.way-label', 'color'), head: colour('.ways-head', 'color'), rule: colour('.way', 'borderTopColor') },
+      ways: { h2: t('.approach h2'), h2Colour: colour('.approach h2', 'color'), list: document.querySelector('.ways').tagName,
+        head: (() => { const h = document.querySelector('.ways-head'); return { shown: visible(h) && h.getBoundingClientRect().height > 0, hidden: h.getAttribute('aria-hidden'),
+          cols: [...h.children].map((c) => ({ text: c.textContent.trim(), l: Math.round(c.getBoundingClientRect().left) })) }; })(),
+        connectors: [...document.querySelectorAll('.way')].filter((w) => !['none', 'normal'].includes(getComputedStyle(w, '::before').content) ||
+          !['none', 'normal'].includes(getComputedStyle(w, '::after').content)).length,
+        items: [...document.querySelectorAll('.way')].map((st) => {
+          const part = (sel) => box(st.querySelector(sel));
+          return { id: st.id, name: t('h3', st), tag: t('.tag', st), offer: t('.offer', st), labels: [...st.querySelectorAll('h4')].map((h) => h.textContent.trim()),
+            labelsShown: [...st.querySelectorAll('h4')].map((h) => h.getBoundingClientRect().width > 2),
+            order: [...st.querySelectorAll('h3, .offer, .tag, .way-get, .way-look')].map((e) => e.tagName === 'H3' ? 'name' : e.className.replace('way-', '')),
+            look: [...st.querySelectorAll('.look li')].map((l) => l.textContent.trim()), get: t('.body', st),
+            icon: st.querySelector('.node use').getAttribute('href'), iconOk: !!document.querySelector(st.querySelector('.node use').getAttribute('href')),
+            node: part('.node'), id_: part('.way-id'), getBox: part('.way-get'), lookBox: part('.way-look'), box: box(st) };
+        }) },
+      numbering: document.querySelectorAll('.way .num').length + [...document.querySelectorAll('.approach *')].filter((e) => /^0[1-4]$/.test(e.textContent.trim())).length,
       header: { links: [...document.querySelectorAll('.site-header a')].map((a) => `${a.textContent.trim() || a.getAttribute('aria-label')}|${a.getAttribute('href')}|${a.className}`),
         navs: document.querySelectorAll('.site-header nav, .site-header ul').length },
       evidence: { h2: t('#evidence h2'), h2Colour: cs(document.querySelector('#evidence h2')).color, lede: t('#evidence .lede'), label: t('#evidence .list-label'),
@@ -399,22 +405,32 @@ async function homeChecks(page, vp) {
   check(`${tag} hero white, stages black, new sections white`, g.hero === 'rgb(255, 255, 255)' && g.stages === 'rgb(17, 17, 17)' &&
     g.white.every((c) => c === 'rgb(255, 255, 255)'), `${g.hero}, ${g.stages}, ${g.white.join(', ')}`);
   const ratios = { heading: contrast(g.h2, g.stages), tagline: contrast(g.tag, g.stages), body: contrast(g.body, g.stages), look: contrast(g.look, g.stages),
-    offer: contrast(g.offer, g.stages), label: contrast(g.label, g.stages), tile: contrast(g.node, g.stages), arrow: contrast(g.arrow, g.stages) };
+    offer: contrast(g.offer, g.stages), label: contrast(g.label, g.stages), head: contrast(g.head, g.stages), tile: contrast(g.node, g.stages) };
   check(`${tag} black section: coral names, white promises and labels, purple soft offers, readable detail, purple tiles`, ratios.heading >= 4.5 && ratios.tagline >= 7 &&
-    ratios.body >= 7 && ratios.look >= 7 && ratios.offer >= 7 && ratios.label >= 7 && ratios.tile >= 3 && ratios.arrow >= 3 &&
+    ratios.body >= 7 && ratios.look >= 7 && ratios.offer >= 7 && ratios.label >= 7 && ratios.head >= 7 && ratios.tile >= 3 &&
     g.h2 === 'rgb(255, 78, 78)' && g.tag === 'rgb(255, 255, 255)' && g.offer === 'rgb(217, 211, 255)' && g.rule === 'rgb(51, 51, 51)',
     Object.entries(ratios).map(([k, v]) => `${k} ${v.toFixed(2)}`).join(', '));
   const wy = x.ways;
-  check(`${tag} Four ways to work with Growth Lab: white heading, then Fix, Grow, Automate and Decide word for word`, wy.h2 === HOME.waysH2 && wy.h2Colour === 'rgb(255, 255, 255)' &&
+  check(`${tag} Four ways to work with Growth Lab: white heading, then Fix, Grow, Automate and Decide word for word, in reading order: service, promise, what you get, what we look at`,
+    wy.h2 === HOME.waysH2 && wy.h2Colour === 'rgb(255, 255, 255)' && wy.list === 'UL' &&
     wy.items.length === 4 && wy.items.every((it, i) => it.id === WAYS[i].id && it.name === WAYS[i].name && it.tag === WAYS[i].tag && it.offer === WAYS[i].offer &&
-      JSON.stringify(it.labels) === JSON.stringify(['What we look at', 'What you get']) && JSON.stringify(it.look) === JSON.stringify(WAYS[i].look) && it.get === WAYS[i].get),
-    wy.items.map((it) => `${it.name}: ${it.tag} / ${it.offer}`).join(' | '));
-  check(`${tag} each way has its own line icon in the purple node`, wy.items.every((it, i) => it.icon === WAYS[i].icon && it.iconOk));
+      JSON.stringify(it.labels) === JSON.stringify(['What you get', 'What we look at']) && JSON.stringify(it.look) === JSON.stringify(WAYS[i].look) && it.get === WAYS[i].get &&
+      JSON.stringify(it.order) === JSON.stringify(['name', 'offer', 'tag', 'get', 'look'])),
+    wy.items.map((it) => `${it.name}: ${it.offer} / ${it.order.join(' > ')}`).join(' | '));
+  check(`${tag} short copy: one sentence of what you get, three short points of what we look at`, wy.items.every((it) => it.get.split(' ').length <= 22 &&
+    it.look.length === 3 && it.look.every((l) => l.split(' ').length <= 9)), wy.items.map((it) => `${it.get.split(' ').length} words`).join(', '));
+  check(`${tag} each way has its own line icon in the purple node, and no arrows join them`, wy.items.every((it, i) => it.icon === WAYS[i].icon && it.iconOk) && wy.connectors === 0);
+  check(`${tag} the four ways stack as rows in order, split by hairlines`, wy.items.every((it, i) => i === 0 || it.box.t >= wy.items[i - 1].box.b - 1));
   if (vp.width >= 1000) {
-    check(`${tag} four columns; promises, offers and detail hairlines line up across them`, new Set(wy.items.map((it) => Math.round(it.box.t))).size === 1 &&
-      [0, 1, 2].every((r) => new Set(wy.items.map((it) => it.rows[r])).size === 1), wy.items.map((it) => it.rows.join('/')).join(' | '));
+    check(`${tag} each row reads across: node, service, what you get, what we look at, under two column headings (row labels kept for screen readers)`,
+      wy.head.shown && wy.head.hidden === 'true' && JSON.stringify(wy.head.cols.map((c) => c.text)) === JSON.stringify(['What you get', 'What we look at']) &&
+      wy.items.every((it) => it.node.r <= it.id_.l && it.id_.r <= it.getBox.l && it.getBox.r <= it.lookBox.l && Math.abs(it.getBox.t - it.lookBox.t) < 1 &&
+        Math.abs(it.getBox.l - wy.head.cols[0].l) <= 1 && Math.abs(it.lookBox.l - wy.head.cols[1].l) <= 1 && it.labelsShown.every((v) => !v)),
+      wy.items.map((it) => `${Math.round(it.id_.l)}/${Math.round(it.getBox.l)}/${Math.round(it.lookBox.l)}`).join(' | '));
   } else {
-    check(`${tag} the four ways stack in order`, wy.items.every((it, i) => i === 0 || it.box.t >= wy.items[i - 1].box.b - 1));
+    check(`${tag} each way stacks: service and promise, then what you get and what we look at with their own labels`, !wy.head.shown &&
+      wy.items.every((it) => it.id_.b <= it.getBox.t && it.id_.b <= it.lookBox.t && it.labelsShown.every((v) => v) && it.node.r <= it.getBox.l),
+      wy.items.map((it) => `${Math.round(it.getBox.l)}/${Math.round(it.lookBox.l)}`).join(' | '));
   }
   check(`${tag} no 01 to 04 numbering`, x.numbering === 0);
   check(`${tag} sections in order between the stages and the rune`, x.inOrder);

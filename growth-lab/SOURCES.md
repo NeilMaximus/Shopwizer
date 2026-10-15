@@ -10,7 +10,16 @@ Headline, unchanged: "Make your martech investment pay." Body since version 2.12
 
 ## Four ways to work with Growth Lab
 
-Neil's copy of 15 October 2026, word for word (no 01 to 04 numbers on the page, per `DESIGN_SYSTEM.md`): Fix (Martech Health Check and fixes), Grow (Customer Journeys and Lifetime Value), Automate (AI Production Workflows) and Decide (Martech Strategy and Investment Case). They describe Growth Lab's services and promise no result. The one figure in them, "Your stack against 1,634 benchmarked stacks in MartechTribe research" under Decide, is MartechTribe's, sourced below. "Implement a new platform properly" under Fix and "built and live in your platform" under Grow describe delivery work Growth Lab offers; confirm they match how engagements are scoped.
+Neil's copy of 15 October 2026 (no 01 to 04 numbers on the page, per `DESIGN_SYSTEM.md`): Fix (Martech Health Check and fixes), Grow (Customer Journeys and Lifetime Value), Automate (AI Production Workflows) and Decide (Martech Strategy and Investment Case). The names, offer names and promises are word for word. At Neil's request the same day, "What you get" and "What we look at" were shortened for a more digestible layout:
+
+| Way | What you get | What we look at |
+| --- | --- | --- |
+| Fix | A plain list of what is broken or unused, ranked by return. Then we make the fixes with your team. | What you pay for against what you use. The customer data that never arrives. What slows your team down |
+| Grow | A lifetime value map, the journeys that matter most built and live, and proof of what each one earns. | The moments that decide lifetime value. Who might leave, and who is ready to buy. What each journey and offer earns today |
+| Automate | AI workflows your team uses every day, from brief to first draft, review and reporting, with your rules built in. | Where the time goes from brief to launch. The content you produce most. The brand and compliance rules it must pass |
+| Decide | A peer benchmark, your investments ranked by return, a roadmap and a case your executive can sign off. | Your stack against 1,634 benchmarked stacks. Gaps, overlaps and spend across your platforms. The use cases that would earn the most |
+
+Dropped in the shortening, and worth restoring elsewhere if they matter: under Fix, "or implement a new platform properly if that is the right call", and the check of live journeys against what the platform could run; under Automate, the named content types (social, emails, landing pages and offers). They describe Growth Lab's services and promise no result. The one figure, "Your stack against 1,634 benchmarked stacks" under Decide, is MartechTribe's, sourced below. "Built and live" under Grow describes delivery work Growth Lab offers; confirm it matches how engagements are scoped.
 
 ## Figures
 
