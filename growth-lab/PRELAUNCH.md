@@ -13,15 +13,18 @@ The site is ready to preview, not to publish. Clear every item below, with legal
 
 ## Content and brand
 
-- [ ] Neil signs off the copy, the cube, the black four stage section, the rune and the contact view in the private preview.
+- [ ] Neil signs off the copy, the cube, the black four ways section, the rune and the contact view in the private preview. Version 2.12 (15 October 2026) carries Neil's new copy and has not been released: the live site still shows version 2.11.
 - [ ] Copyright line reads "© 2026 Growth Lab". Change it if the approved entity name should appear instead.
 - [ ] Logo: the inline SVG is the verified live growthlab.co.za artwork (confirmed 14 October 2026). Re-check if the brand team issues a newer master.
 - [ ] MartechTribe figures: re-check them on martechtribe.com shortly before launch and update the page, its as at date and `SOURCES.md` together.
-- [ ] Frans Riemersma and MartechTribe confirm the wording about them, including the research paragraph and map caption ("Through MartechTribe, Growth Lab draws on 1,634 benchmarked martech stacks…") and the credit line, his portrait, the workshop descriptions and the use of the MartechMap image on Growth Lab's own site.
-- [ ] MartechTribe and Frans confirm the positioning lines "Move faster and smarter through leading independent global martech research, applied to your business." and "One of the leading international thinkers in martech".
-- [ ] MartechTribe confirms that both workshops can be offered as "Three mornings or one full day.", as the page now says on Neil's instruction.
-- [ ] **Accessibility exception.** The research response is regular weight coral at 19 to 20 px, as Neil chose on 14 October 2026. Coral on white is 3.25:1, below WCAG AA's 4.5:1 for text of that size and weight. Confirm the choice before launch, or make the response bold, 24 px or dark ink to pass.
-- [ ] The research heading names Deloitte and Accenture in a question, as Neil chose. Consider a quick legal read of the comparison before launch.
+- [ ] Frans Riemersma and MartechTribe confirm the wording about them, including the research introduction ("Through MartechTribe, Growth Lab brings…"), the four figures and their descriptions, the credit line, his portrait, the workshop descriptions and pull quotes, and the use of the MartechMap image on Growth Lab's own site.
+- [ ] MartechTribe and Frans confirm the positioning lines "the world’s largest independent benchmark of real martech stacks" and "One of the leading international thinkers in martech".
+- [ ] MartechTribe confirms "Research used by 200+ global brands, including Standard Bank, Vodafone, Philips and Unilever." and that each of the four brands may be named.
+- [ ] MartechTribe confirms "1,345 features indexed daily across 49 categories" and "Current to the day". "9 years of independent research" becomes 10 in 2027: update it then, or return to "since 2017".
+- [ ] MartechTribe confirms the Apex Martech Score™ and GrowTechHQ names (and the trademark sign), the Nyenrode and Beeckestijn claim in the Value Engineering description, and who the workshop pull quotes belong to.
+- [ ] MartechTribe confirms the workshop formats: Value Engineering as "Three interactive mornings" (version 2.12 copy). Technology Strategy states no format, and the earlier "Three mornings or one full day." is off the page.
+- [x] **Accessibility exception resolved in version 2.12.** The regular weight coral research response is off the page; the research section is all dark text.
+- [x] The Deloitte or Accenture question is off the page in version 2.12, so it needs no legal read.
 - [ ] **Client logos.** Six are in (Sanlam, KFC, Santam, Momentum, Budget Insurance, First for Women). Still to add: Old Mutual, Philips, Telesure, Multiply, Sportsmans Warehouse and Famous Brands. A cleaner First for Women file is wanted (its crest flower is faint), and SVGs for KFC and Momentum would be sharper. Add the remaining genuine logos to `site/assets/clients/` (black variants on transparent, names in `config/client-logos.json`), run `python3 scripts/build.py` and check the strip on desktop and a phone, adjusting each logo's `scale` for even weight and the speed if needed. Ten are in Neil's folder; Sportsmans Warehouse and Famous Brands must come from their official sites. Confirm Growth Lab may show each client's logo.
 - [x] Phone number: Neil confirmed +27 84 504 0505 on 14 October 2026. It shows on the contact view beside the email.
 

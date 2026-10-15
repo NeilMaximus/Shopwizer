@@ -14,7 +14,7 @@
 
   /* Derived shades for legibility, not new brand colours */
   --gl-purple-strong: #644CF0;   /* purple text, links and focus ring on white or panel */
-  --gl-purple-soft: #D9D3FF;     /* cube top face, text selection */
+  --gl-purple-soft: #D9D3FF;     /* cube top face, text selection, offer names and the focus ring on black (13.2:1) */
   --gl-coral-hover: #EE3A3A;     /* hover on the coral button; white large text on it is 3.96:1 */
   --gl-error: #C42B2B;           /* form error text and borders: 5.6:1 on white, 5.2:1 on panel */
   --gl-field-line: #8A8A8A;      /* form field borders: 3.4:1 on white, 3.2:1 on panel (WCAG 1.4.11) */
@@ -31,10 +31,11 @@
   --gl-rune-top: #F1F1F1;        /* rune gradient, top */
   --gl-rune-bottom: #E3E3E3;     /* rune gradient, at the divider */
 
-  /* The black four stage section (Diagnose, Prioritise, Unlock, Optimise). Never replace it
+  /* The black four ways section (Fix, Grow, Automate, Decide). Never replace it
      with white or light grey */
   --gl-black: #111111;           /* section ground */
   --gl-on-black: #D4D4D4;        /* body text on black, 12.7:1 */
+  --gl-line-on-black: #333333;   /* hairline on black, between a way of working's summary and its detail */
 
   /* Value cube core (today's results) */
   --gl-core-top: #3A3A38;
@@ -60,7 +61,6 @@
   --gl-wrap: 1200px;
   --gl-gutter: clamp(20px, 4vw, 48px);
   --gl-section: clamp(72px, 10vw, 140px);
-  --gl-space-research: 24px;     /* one gap, baseline to capitals: research heading to question, question to response */
   --gl-radius-panel: 28px;
   --gl-radius-node: 14px;        /* stage tiles and portraits */
   --gl-radius-image: 10px;       /* framed images such as the MartechMap; small enough to keep its credit clear */

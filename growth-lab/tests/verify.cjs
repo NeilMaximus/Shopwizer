@@ -36,29 +36,54 @@ const VIEWPORTS = [
 const RECIPIENT = 'hello@growthlab.co.za';
 const PHONE = { display: '+27 84 504 0505', href: 'tel:+27845040505' }; // confirmed by Neil, 14 October 2026
 
-// Approved copy. It must match DESIGN_SYSTEM.md and SOURCES.md
+// Approved copy (Neil, 15 October 2026, version 2.12). It must match DESIGN_SYSTEM.md and SOURCES.md
 const HOME = {
-  heroLead: 'Growth Lab helps you get more from your marketing technology, customer data and AI. We find what needs to change, put the improvements in place and keep improving the results.',
-  evidenceH2: 'Your next move shouldn’t take months. Or millions.',
-  question: 'Considering Deloitte or Accenture?',
-  response: 'Move faster and smarter through leading independent global martech research, applied to your business.',
-  evidenceBody: 'We combine that research with proven patterns, practical know-how and your own data to:',
-  benefits: ['Identify where your business can improve.', 'Prioritise the changes that matter.', 'Help you put them into practice.'],
-  caption: 'Through MartechTribe, Growth Lab draws on 1,634 benchmarked martech stacks and research across industries since 2017.',
+  heroLead: 'Growth Lab helps you win more customers, keep them longer and grow more efficiently by making better use of your marketing technology, customer data and AI. We help you get more from the platforms you already own, identify where further investment will make a difference, and put the improvements into practice.',
+  waysH2: 'Four ways to work with Growth Lab',
+  evidenceH2: 'What 1,634 real martech stacks can tell you about yours.',
+  evidenceLede: 'Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses. Your stack, your spend and your plans, measured against how the top performers in your industry actually built theirs.',
+  evidenceLabel: 'What it tells you',
+  benefits: ['Where you sit against the top performers in your industry', 'Which of your platforms overlap, and which gaps are costing you', 'What the outperformers invested in that you have not'],
+  figures: [['1,634', 'real stacks benchmarked. How companies like yours actually built theirs.'],
+    ['15,505', 'solutions analysed. The whole market, including the ones your vendor does not mention.'],
+    ['1,345', 'features indexed daily across 49 categories. Current to the day, not last year’s report.'],
+    ['9 years', 'of independent research.']],
+  figuresNote: 'Research used by 200+ global brands, including Standard Bank, Vodafone, Philips and Unilever.',
   credit: 'Research: MartechTribe. MartechMap © chiefmartec and MartechTribe.',
   workshopsH2: 'See the opportunity. Know where to act.',
   workshopsLede: 'Use cross-industry research and your own data to identify opportunities, prioritise investment and plan the next steps.',
   startH2: 'Experience that moves you forward.',
   startLede: 'Neil and Frans combine customer experience strategy, martech research and hands-on implementation to help you turn insights into results.',
 };
+// Four ways to work with Growth Lab, on the black section, in this order. No 01 to 04 numbers on the page
+const WAYS = [
+  { id: 'fix', name: 'Fix', icon: '#i-fix', tag: 'Get more from the platforms you already pay for', offer: 'Martech Health Check and fixes',
+    look: ['What you pay for against what you actually use, by module, seat and channel', 'The customer data reaching the platform, and the data that never arrives',
+      'The journeys and campaigns that are live against the ones the platform could be running', 'Who does the work and what slows them down, from skills to approvals'],
+    get: 'A plain list of what is broken, what is unused and what each fix is worth, ranked by return. Then we make the fixes with your team, or implement a new platform properly if that is the right call.' },
+  { id: 'grow', name: 'Grow', icon: '#i-grow', tag: 'Keep customers longer and earn more from each one', offer: 'Customer Journeys and Lifetime Value',
+    look: ['The moments that decide lifetime value. Onboarding, first use, renewal, cross sell, lapse and win back', 'What your data already tells you about who is about to leave and who is ready to buy',
+      'The journeys you run today, the offers inside them and what each one earns'],
+    get: 'A lifetime value map that shows where the money sits, the journeys that matter most built and live in your platform, and the numbers to prove what each one earns.' },
+  { id: 'automate', name: 'Automate', icon: '#i-automate', tag: 'Produce campaigns in days, not weeks, with AI your team controls', offer: 'AI Production Workflows',
+    look: ['How work moves today from brief to live campaigns, and where the time goes', 'The content you produce most. Social, emails, landing pages and offers, and what good looks like for each',
+      'The brand, product and compliance rules every piece has to pass'],
+    get: 'Working AI workflows your team uses every day, in your environment. Brief checking, first draft copy, brand and compliance review, build and reporting. The rules written down once, so the output is right every time.' },
+  { id: 'decide', name: 'Decide', icon: '#i-decide', tag: 'Know what to buy, renew or replace before you sign', offer: 'Martech Strategy and Investment Case',
+    look: ['Your stack against 1,634 benchmarked stacks in MartechTribe research', 'Gaps, overlaps and spend across your platforms', 'The use cases that would earn the most, and what they need from the stack'],
+    get: 'A benchmark against high performing peers, your investments ranked by return, a roadmap, and a case your executive can sign off.' },
+];
 const WORKSHOPS = [
-  { name: 'Value Engineering Workshop', icon: '#i-value', colour: 'rgb(119, 97, 255)',
-    outcome: 'Identify the initiatives with the strongest potential return and focus your investment where it matters.', duration: 'Three mornings or one full day.',
-    values: ['The value at stake, quantified', 'Investment priorities, ranked by potential return', 'A clear case for where to invest', 'A framework your team can reuse'] },
-  { name: 'Technology Strategy Workshop', icon: '#i-route', colour: 'rgb(255, 78, 78)',
-    outcome: 'See how your stack compares with peers, identify the gaps and set a clear investment roadmap.',
-    duration: 'Three mornings or one full day.',
-    values: ['A benchmark against high performing peers', 'Prioritised technology investments', 'A clear investment roadmap', 'Recommendations your executives can act on'] },
+  { name: 'Technology Strategy Workshop', icon: '#i-route', colour: 'rgb(255, 78, 78)', title: 'Benchmark your stack. Prioritise your investments.',
+    outcome: 'Use the Apex Martech Score™, GrowTechHQ, and independent benchmark research to compare your technology with industry outperformers, identify bottlenecks, and build a practical technology roadmap.',
+    quotes: ['“AI won’t save a broken technology stack. It will expose it.”', '“The best performing martech stacks are not the most complex, but the most aligned.”'],
+    ideal: ['CMOs', 'CIOs', 'Marketing Technology', 'Enterprise Architecture'],
+    leave: ['Benchmark analysis', 'Technology priorities', 'Investment roadmap', 'Executive recommendations'] },
+  { name: 'Value Engineering Workshop', icon: '#i-value', colour: 'rgb(119, 97, 255)', title: 'Turn marketing initiatives into boardroom business cases.',
+    outcome: 'Three interactive mornings using your own company data to quantify business value, calculate ROI, and prioritise investments. You’ll learn the Value Engineering methodology developed through dozens of business cases at Nyenrode and Beeckestijn, and leave with a board ready business case and a framework you can apply again and again.',
+    quotes: ['“A missed opportunity is not a line item on the balance sheet.”'],
+    ideal: ['Marketing Operations', 'Digital Marketing', 'RevOps', 'Marketing Managers'],
+    leave: ['Quantified business value', 'Board ready business case', 'Investment priorities', 'Executive presentation'] },
 ];
 const PEOPLE = [['Neil Botha', 'Founder and Strategy Director, Growth Lab',
   'More than 20 years turning customer experience strategy, data and martech into measurable growth for South African organisations.'],
@@ -291,45 +316,54 @@ async function homeChecks(page, vp) {
       inOrder: order.every((el, i) => i === 0 || (order[i - 1].compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING)),
       grounds: { hero: colour('.hero', 'backgroundColor'), stages: colour('.approach', 'backgroundColor'),
         white: ['#evidence', '#workshops', '#start'].map((s) => colour(s, 'backgroundColor')),
-        node: colour('.node', 'backgroundColor'), h2: colour('.stage h2', 'color'), tag: colour('.stage .tag', 'color'),
-        body: colour('.stage .body', 'color'), arrow: getComputedStyle(document.querySelector('.stage'), '::before').backgroundColor },
+        node: colour('.node', 'backgroundColor'), h2: colour('.stage h3', 'color'), tag: colour('.stage .tag', 'color'),
+        body: colour('.stage .body', 'color'), look: colour('.stage .look li', 'color'), offer: colour('.stage .offer', 'color'), label: colour('.stage h4', 'color'),
+        rule: colour('.stage .detail', 'borderTopColor'), arrow: getComputedStyle(document.querySelector('.stage'), '::before').backgroundColor },
+      ways: { h2: t('.approach h2'), h2Colour: colour('.approach h2', 'color'), items: [...document.querySelectorAll('.stage')].map((st) => ({
+          id: st.id, name: t('h3', st), tag: t('.tag', st), offer: t('.offer', st), labels: [...st.querySelectorAll('h4')].map((h) => h.textContent.trim()),
+          look: [...st.querySelectorAll('.look li')].map((l) => l.textContent.trim()), get: t('.body', st),
+          icon: st.querySelector('.node use').getAttribute('href'), iconOk: !!document.querySelector(st.querySelector('.node use').getAttribute('href')),
+          rows: ['.tag', '.offer', '.detail'].map((sel) => Math.round(st.querySelector(sel).getBoundingClientRect().top)),
+          box: box(st) })) },
       numbering: document.querySelectorAll('.stage .num').length + [...document.querySelectorAll('.stage *')].filter((e) => /^0[1-4]$/.test(e.textContent.trim())).length,
       header: { links: [...document.querySelectorAll('.site-header a')].map((a) => `${a.textContent.trim() || a.getAttribute('aria-label')}|${a.getAttribute('href')}|${a.className}`),
         navs: document.querySelectorAll('.site-header nav, .site-header ul').length },
-      evidence: { h2: t('#evidence h2'), h2Colour: cs(document.querySelector('#evidence h2')).color, question: t('#evidence .question'), response: t('#evidence .response'),
-        coral: ['.question', '.response'].map((sel) => { const el = document.querySelector('#evidence ' + sel);
-          return { colour: cs(el).color, size: parseFloat(cs(el).fontSize), weight: Number(cs(el).fontWeight), lineHeight: cs(el).lineHeight, family: cs(el).fontFamily, tag: el.tagName }; }),
-        dark: ['.body', '.benefits li'].map((sel) => { const el = document.querySelector('#evidence ' + sel); return { colour: cs(el).color, weight: Number(cs(el).fontWeight) }; }),
-        gaps: (() => { const r = (sel) => document.querySelector('#evidence ' + sel).getBoundingClientRect();
-          return [r('.question').top - r('h2').bottom, r('.response').top - r('.question').bottom]; })(),
-        leftover: document.querySelectorAll('#evidence .lede, #evidence .closing').length,
-        stageColour: cs(document.querySelector('.stage h2')).color, mapShadow: cs(map).boxShadow, mapFilter: cs(map).filter, mapOpacity: cs(map).opacity, body: t('#evidence .body'),
+      evidence: { h2: t('#evidence h2'), h2Colour: cs(document.querySelector('#evidence h2')).color, lede: t('#evidence .lede'), label: t('#evidence .list-label'),
+        labelTag: document.querySelector('#evidence .list-label').tagName,
+        coral: [...document.querySelectorAll('#evidence *')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && cs(el).color === 'rgb(255, 78, 78)').length,
+        mapShadow: cs(map).boxShadow, mapFilter: cs(map).filter, mapOpacity: cs(map).opacity,
         benefits: [...document.querySelectorAll('#evidence .benefits li')].map((l) => l.textContent.trim()),
+        benefitColour: cs(document.querySelector('#evidence .benefits li')).color, ledeColour: cs(document.querySelector('#evidence .lede')).color,
         details: document.querySelectorAll('#evidence details, #evidence summary, #evidence .sources, #evidence .proof').length,
         links: document.querySelectorAll('#evidence a').length, visibleText: document.querySelector('#evidence').innerText,
-        caption: t('#evidence figcaption .map-caption'), bold: [...document.querySelectorAll('#evidence figcaption strong')].map((b) => b.textContent),
-        boldWeight: Number(cs(document.querySelector('#evidence figcaption strong')).fontWeight),
-        captionSize: parseFloat(cs(document.querySelector('#evidence .map-caption')).fontSize), captionColour: cs(document.querySelector('#evidence .map-caption')).color,
-        captionShown: visible(document.querySelector('#evidence .map-caption')), credit: t('#evidence .map-credit'),
+        figcaption: t('#evidence figcaption'), credit: t('#evidence .map-credit'),
         figBelow: document.querySelector('#evidence figcaption').getBoundingClientRect().top >= map.getBoundingClientRect().bottom,
+        figures: [...document.querySelectorAll('#evidence .figures .fig')].map((f) => ({ num: t('dt', f), text: t('dd', f), box: box(f),
+          numSize: parseFloat(cs(f.querySelector('dt')).fontSize), numColour: cs(f.querySelector('dt')).color,
+          card: [cs(f).backgroundColor, cs(f).boxShadow, cs(f).borderTopWidth].join(' '), borderLeft: `${cs(f).borderLeftWidth} ${cs(f).borderLeftStyle}` })),
+        figuresDl: document.querySelector('#evidence .figures').tagName, note: t('#evidence .figures-note'),
+        figuresBelowMap: document.querySelector('#evidence .figures').getBoundingClientRect().top >= document.querySelector('#evidence figcaption').getBoundingClientRect().bottom,
         map: { ok: map.complete && map.naturalWidth > 0, ratio: map.naturalWidth / map.naturalHeight, boxRatio: map.getBoundingClientRect().width / map.getBoundingClientRect().height,
           fit: cs(map).objectFit, alt: map.alt, box: box(map) }, copyBox: box(document.querySelector('.evidence-copy')) },
       workshops: { h2: t('#workshops h2'), lede: t('#workshops .lede'), disclosure: document.querySelectorAll('#workshops details, #workshops summary').length,
         items: [...document.querySelectorAll('.workshop')].map((w) => {
           const icon = w.querySelector('h3 .w-icon'); const use = icon && icon.querySelector('use');
-          const h3 = w.querySelector('h3'), label = w.querySelector('.value-label'), list = w.querySelector('.value-list'), dur = w.querySelector('.duration');
+          const h3 = w.querySelector('h3'), quote = w.querySelector('.w-quote'), lists = w.querySelector('.w-lists');
           const order = [...w.children].map((c) => c.className || c.tagName.toLowerCase());
           const iconOffset = icon ? icon.getBoundingClientRect().top - h3.getBoundingClientRect().top - (parseFloat(cs(h3).lineHeight) - 28) / 2 : 99;
-          return { name: t('h3', w), outcome: t('.outcome', w), duration: t('.duration', w), box: box(w), iconOffset,
+          const groups = [...lists.children].map((g) => { const label = g.querySelector('.value-label'), list = g.querySelector('.value-list');
+            return { label: label.textContent.trim(), labelTag: label.tagName, labelIcon: label.querySelector('use').getAttribute('href'), labelIconColour: cs(label.querySelector('svg')).color,
+              values: [...list.querySelectorAll('li')].map((l) => l.textContent.trim()), shown: [...list.querySelectorAll('li')].every((l) => l.checkVisibility()),
+              bullet: getComputedStyle(list.querySelector('li'), '::before').backgroundColor }; });
+          return { name: t('h3', w), title: t('.w-title', w), outcome: t('.outcome', w), box: box(w), iconOffset,
             lines: Math.round(h3.getBoundingClientRect().height / parseFloat(cs(h3).lineHeight)),
             icon: use ? use.getAttribute('href') : null, iconColour: icon ? cs(icon).color : null, iconSize: icon ? Math.round(icon.getBoundingClientRect().width) : 0,
-            durIcon: dur.querySelector('use').getAttribute('href'), durIconColour: cs(dur.querySelector('svg')).color, durTop: dur.getBoundingClientRect().top + scrollY,
-            durLast: w.lastElementChild === dur && dur.getBoundingClientRect().top >= list.getBoundingClientRect().bottom, order,
+            quoteTag: quote.tagName, quotes: [...quote.querySelectorAll('p')].map((q) => q.textContent.trim()), quoteRule: `${cs(quote).borderLeftWidth} ${cs(quote).borderLeftColor}`,
+            quoteColour: cs(quote.querySelector('p')).color, quoteBg: cs(quote).backgroundColor,
+            groups, listsTop: lists.getBoundingClientRect().top + scrollY, listsLast: w.lastElementChild === lists, order,
             card: [cs(w).backgroundColor, cs(w).boxShadow, cs(w).borderTopLeftRadius].join(' '),
             borderLeft: `${cs(w).borderLeftWidth} ${cs(w).borderLeftStyle}`, borderTop: `${cs(w).borderTopWidth} ${cs(w).borderTopStyle}`,
-            label: label.textContent.trim(), labelTag: label.tagName, labelIcon: label.querySelector('use').getAttribute('href'), labelIconColour: cs(label.querySelector('svg')).color,
-            values: [...list.querySelectorAll('li')].map((l) => l.textContent.trim()), valuesShown: [...list.querySelectorAll('li')].every((l) => l.checkVisibility()),
-            valueBullet: getComputedStyle(list.querySelector('li'), '::before').backgroundColor, images: w.querySelectorAll('img, picture, video, canvas').length };
+            duration: w.querySelectorAll('.duration').length, images: w.querySelectorAll('img, picture, video, canvas').length };
         }) },
       start: { h2: t('#start h2'), lede: t('#start .lede'), people: [...document.querySelectorAll('.person')].map((p) => {
           const img = p.querySelector('img'); const r = img.getBoundingClientRect();
@@ -344,8 +378,8 @@ async function homeChecks(page, vp) {
         links: [...document.querySelectorAll('.site-footer a')].map((a) => `${a.textContent.trim() || a.getAttribute('aria-label')}|${a.getAttribute('href')}`) },
       mailto: document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').length, copyButtons: document.querySelectorAll('[data-copy]').length,
       emailText: /@/.test(document.body.innerText),
-      // Neil approved two positioning phrases that use "leading"; everything else is still screened
-      banned: (document.querySelector('main').innerText.replace('leading independent global martech research', '').replace('One of the leading international thinkers in martech', '').match(/richest|world.?s|largest|leading|best in class|unrivalled|\bfees?\b|\bfree\b|\bpric|\bR\s?\d|1,500,505|booked|appointment|confirmed/gi) || []),
+      // Neil approved two positioning phrases (version 2.12 and 2.8); everything else is still screened
+      banned: (document.querySelector('main').innerText.replace('the world’s largest independent benchmark of real martech stacks', '').replace('One of the leading international thinkers in martech', '').match(/richest|world.?s|largest|leading|best in class|unrivalled|\bfees?\b|\bfree\b|\bpric|\bR\s?\d|1,500,505|booked|appointment|confirmed/gi) || []),
       retail: document.querySelectorAll('a[href*="martechtribe.com/blog"]').length + (/retail/i.test(document.body.textContent) ? 1 : 0),
       small, primaries: [...document.querySelectorAll('.btn-dark, .btn-coral')].filter(visible).map((b) => Math.round(b.getBoundingClientRect().height)),
       anims: document.getAnimations().map((a) => (a.effect && a.effect.target && a.effect.target.classList && a.effect.target.classList.contains('clients-track')) ? 'client-strip' : (a.animationName || a.transitionProperty || 'unknown')),
@@ -363,34 +397,42 @@ async function homeChecks(page, vp) {
   const g = x.grounds;
   check(`${tag} hero white, stages black, new sections white`, g.hero === 'rgb(255, 255, 255)' && g.stages === 'rgb(17, 17, 17)' &&
     g.white.every((c) => c === 'rgb(255, 255, 255)'), `${g.hero}, ${g.stages}, ${g.white.join(', ')}`);
-  const ratios = { heading: contrast(g.h2, g.stages), tagline: contrast(g.tag, g.stages), body: contrast(g.body, g.stages),
-    tile: contrast(g.node, g.stages), arrow: contrast(g.arrow, g.stages) };
-  check(`${tag} black section: coral headings, white taglines, readable body, purple tiles`, ratios.heading >= 4.5 && ratios.tagline >= 7 &&
-    ratios.body >= 7 && ratios.tile >= 3 && ratios.arrow >= 3 && g.h2 === 'rgb(255, 78, 78)' && g.tag === 'rgb(255, 255, 255)',
+  const ratios = { heading: contrast(g.h2, g.stages), tagline: contrast(g.tag, g.stages), body: contrast(g.body, g.stages), look: contrast(g.look, g.stages),
+    offer: contrast(g.offer, g.stages), label: contrast(g.label, g.stages), tile: contrast(g.node, g.stages), arrow: contrast(g.arrow, g.stages) };
+  check(`${tag} black section: coral names, white promises and labels, purple soft offers, readable detail, purple tiles`, ratios.heading >= 4.5 && ratios.tagline >= 7 &&
+    ratios.body >= 7 && ratios.look >= 7 && ratios.offer >= 7 && ratios.label >= 7 && ratios.tile >= 3 && ratios.arrow >= 3 &&
+    g.h2 === 'rgb(255, 78, 78)' && g.tag === 'rgb(255, 255, 255)' && g.offer === 'rgb(217, 211, 255)' && g.rule === 'rgb(51, 51, 51)',
     Object.entries(ratios).map(([k, v]) => `${k} ${v.toFixed(2)}`).join(', '));
+  const wy = x.ways;
+  check(`${tag} Four ways to work with Growth Lab: white heading, then Fix, Grow, Automate and Decide word for word`, wy.h2 === HOME.waysH2 && wy.h2Colour === 'rgb(255, 255, 255)' &&
+    wy.items.length === 4 && wy.items.every((it, i) => it.id === WAYS[i].id && it.name === WAYS[i].name && it.tag === WAYS[i].tag && it.offer === WAYS[i].offer &&
+      JSON.stringify(it.labels) === JSON.stringify(['What we look at', 'What you get']) && JSON.stringify(it.look) === JSON.stringify(WAYS[i].look) && it.get === WAYS[i].get),
+    wy.items.map((it) => `${it.name}: ${it.tag} / ${it.offer}`).join(' | '));
+  check(`${tag} each way has its own line icon in the purple node`, wy.items.every((it, i) => it.icon === WAYS[i].icon && it.iconOk));
+  if (vp.width >= 1000) {
+    check(`${tag} four columns; promises, offers and detail hairlines line up across them`, new Set(wy.items.map((it) => Math.round(it.box.t))).size === 1 &&
+      [0, 1, 2].every((r) => new Set(wy.items.map((it) => it.rows[r])).size === 1), wy.items.map((it) => it.rows.join('/')).join(' | '));
+  } else {
+    check(`${tag} the four ways stack in order`, wy.items.every((it, i) => i === 0 || it.box.t >= wy.items[i - 1].box.b - 1));
+  }
   check(`${tag} no 01 to 04 numbering`, x.numbering === 0);
   check(`${tag} sections in order between the stages and the rune`, x.inOrder);
   check(`${tag} header: real logo and one action, Let’s Talk to the contact view, no menu`, x.header.navs === 0 && x.header.links.length === 2 &&
     x.header.links[1] === 'Let’s Talk|contact.html|btn btn-dark', x.header.links.join(' ; '));
 
   const e = x.evidence;
-  check(`${tag} research copy word for word: heading, question, response, sentence and three bullets; old paragraph and closing line gone`, e.h2 === HOME.evidenceH2 &&
-    e.question === HOME.question && e.response === HOME.response && e.body === HOME.evidenceBody && JSON.stringify(e.benefits) === JSON.stringify(HOME.benefits) &&
-    e.leftover === 0 && !/Less time establishing|We bring those patterns/.test(e.visibleText), JSON.stringify([e.h2, e.question, e.response, e.body, e.benefits]));
-  check(`${tag} no Sources dropdown, separate proof line or links in the research section`, e.details === 0 && e.links === 0 &&
-    !/Sources|15,505|1,345|200\+|has benchmarked/.test(e.visibleText), e.details);
-  check(`${tag} caption repeats the research sentence, 1,634 benchmarked martech stacks in bold`, e.caption === HOME.caption &&
-    JSON.stringify(e.bold) === JSON.stringify(['1,634 benchmarked martech stacks']) && e.boldWeight >= 600 && e.captionShown && e.figBelow &&
-    e.captionSize >= 16 && contrast(e.captionColour, 'rgb(255, 255, 255)') >= 7 && (e.visibleText.match(/draws on 1,634 benchmarked martech stacks/g) || []).length === 1,
-    `${e.caption} (${e.captionSize}px)`);
-  check(`${tag} smaller credit under the caption`, e.credit === HOME.credit, e.credit);
-  check(`${tag} black heading; question and response in the stage headings' coral at one size and line height, question bold (WCAG large text), response regular (Neil's recorded exception); sentence and bullets regular dark`,
-    e.h2Colour === 'rgb(17, 17, 17)' && e.coral.every((c) => c.colour === e.stageColour && c.colour === 'rgb(255, 78, 78)' && c.size >= 18.66) &&
-    e.coral[0].weight >= 700 && e.coral[1].weight === 400 &&
-    e.coral.every((c) => c.tag === 'P' && c.size === e.coral[0].size && c.lineHeight === e.coral[0].lineHeight && c.family === e.coral[0].family) && e.dark.every((d) => d.colour === 'rgb(17, 17, 17)' && d.weight === 400),
-    e.coral.map((c) => `${c.tag} ${c.size}px ${c.weight} ${c.lineHeight}`).join(', '));
-  check(`${tag} equal space, heading to question and question to response (one 24 px token, baseline to capitals)`,
-    e.gaps.every((g) => Math.abs(g - 24) <= 1) && Math.abs(e.gaps[0] - e.gaps[1]) <= 1, e.gaps.map((g) => `${Math.round(g * 10) / 10}px`).join(' / '));
+  check(`${tag} research copy word for word: heading, introduction, What it tells you and three bullets`, e.h2 === HOME.evidenceH2 && e.lede === HOME.evidenceLede &&
+    e.label === HOME.evidenceLabel && e.labelTag === 'H3' && JSON.stringify(e.benefits) === JSON.stringify(HOME.benefits) &&
+    !/Deloitte|Accenture|months\. Or millions/.test(e.visibleText), JSON.stringify([e.h2, e.lede, e.label, e.benefits]));
+  check(`${tag} research text is dark: black heading, ink 2 introduction, ink bullets, no coral text`, e.h2Colour === 'rgb(17, 17, 17)' && e.coral === 0 &&
+    e.ledeColour === 'rgb(64, 64, 64)' && e.benefitColour === 'rgb(17, 17, 17)', `${e.coral} coral text element(s)`);
+  check(`${tag} MartechTribe's figures word for word, as plain figures (no tiles, boxes or counters)`, e.figuresDl === 'DL' && e.figures.length === 4 &&
+    e.figures.every((f, i) => f.num === HOME.figures[i][0] && f.text === HOME.figures[i][1] && f.numColour === 'rgb(17, 17, 17)' && f.numSize >= 30 &&
+      f.card === 'rgba(0, 0, 0, 0) none 0px') && e.note === HOME.figuresNote && e.figuresBelowMap, e.figures.map((f) => `${f.num} ${f.numSize}px`).join(', '));
+  if (vp.width >= 1000) check(`${tag} figures in one row split by hairlines`, new Set(e.figures.map((f) => Math.round(f.box.t))).size === 1 &&
+    e.figures[0].borderLeft === '0px none' && e.figures.slice(1).every((f) => f.borderLeft === '1px solid'));
+  check(`${tag} the map carries only its credit: no figures, categories or benchmark in the caption`, e.figcaption === HOME.credit && e.credit === HOME.credit && e.figBelow &&
+    e.details === 0 && e.links === 0 && !/Sources|has benchmarked/.test(e.visibleText), e.figcaption);
   check(`${tag} a restrained coral glow behind the map, the map itself untouched`, /(rgba\(255, 78, 78, 0\.3\)|color\(srgb 1 0\.30\d* 0\.30\d* \/ 0\.3\))/.test(e.mapShadow) &&
     e.mapFilter === 'none' && e.mapOpacity === '1', e.mapShadow);
   check(`${tag} map stays whole at 16:9 with no full map link`, !/View the full map/.test(e.visibleText) &&
@@ -405,21 +447,25 @@ async function homeChecks(page, vp) {
 
   const w = x.workshops;
   check(`${tag} workshops: See the opportunity. Know where to act., with the new support line`, w.h2 === HOME.workshopsH2 && w.lede === HOME.workshopsLede, w.lede);
-  check(`${tag} workshop names, lines and durations`, w.items.length === 2 && w.items.every((it, i) => it.name === WORKSHOPS[i].name &&
-    it.outcome === WORKSHOPS[i].outcome && it.duration === WORKSHOPS[i].duration), w.items.map((it) => `${it.name} / ${it.duration}`).join(' | '));
-  check(`${tag} small coloured line icons match their value label and bullets; a quiet clock marks the duration`, w.items.every((it, i) => it.icon === WORKSHOPS[i].icon &&
-    it.iconColour === WORKSHOPS[i].colour && it.labelIcon === '#i-target' && it.labelIconColour === WORKSHOPS[i].colour && it.valueBullet === WORKSHOPS[i].colour &&
-    it.iconSize === 28 && it.durIcon === '#i-clock' && it.durIconColour === 'rgb(102, 102, 102)'),
-    w.items.map((it) => `${it.icon} ${it.iconColour} ${it.iconSize}px, label ${it.labelIconColour}, clock ${it.durIconColour}`).join(' | '));
+  check(`${tag} workshops word for word: Technology Strategy first, then Value Engineering, each with title, description and quotes`, w.items.length === 2 &&
+    w.items.every((it, i) => it.name === WORKSHOPS[i].name && it.title === WORKSHOPS[i].title && it.outcome === WORKSHOPS[i].outcome &&
+      it.quoteTag === 'BLOCKQUOTE' && JSON.stringify(it.quotes) === JSON.stringify(WORKSHOPS[i].quotes) && it.duration === 0),
+    w.items.map((it) => `${it.name} / ${it.title}`).join(' | '));
+  check(`${tag} small coloured line icons match their list icons, bullets and quote rule`, w.items.every((it, i) => it.icon === WORKSHOPS[i].icon &&
+    it.iconColour === WORKSHOPS[i].colour && it.iconSize === 28 && it.quoteRule === `2px ${WORKSHOPS[i].colour}` && it.quoteColour === 'rgb(17, 17, 17)' &&
+    it.quoteBg === 'rgba(0, 0, 0, 0)' && it.groups.every((g) => g.labelIconColour === WORKSHOPS[i].colour && g.bullet === WORKSHOPS[i].colour)),
+    w.items.map((it) => `${it.icon} ${it.iconColour} ${it.iconSize}px, rule ${it.quoteRule}`).join(' | '));
   check(`${tag} each icon sits on its heading's first line`, w.items.every((it) => Math.abs(it.iconOffset) <= 1.5),
     w.items.map((it) => `${it.lines} line(s), offset ${it.iconOffset.toFixed(1)}px`).join(' | '));
-  check(`${tag} no accordion: The value you get and every bullet always visible`, w.disclosure === 0 && w.items.every((it, i) => it.label === 'The value you get' &&
-    it.labelTag === 'H4' && it.valuesShown && JSON.stringify(it.values) === JSON.stringify(WORKSHOPS[i].values)), w.items.map((it) => it.values.join(' / ')).join(' | '));
-  check(`${tag} same order in both: title, outcome, value label, bullets, then the duration last`, w.items.every((it) => it.durLast &&
-    JSON.stringify(it.order) === JSON.stringify(['h3', 'outcome', 'value-label', 'value-list', 'duration'])), w.items.map((it) => it.order.join(' > ')).join(' | '));
+  check(`${tag} no accordion: Ideal for and You’ll leave with, every item always visible`, w.disclosure === 0 && w.items.every((it, i) => it.groups.length === 2 &&
+    it.groups[0].label === 'Ideal for' && it.groups[0].labelIcon === '#i-people' && it.groups[1].label === 'You’ll leave with' && it.groups[1].labelIcon === '#i-target' &&
+    it.groups.every((g) => g.labelTag === 'H4' && g.shown) && JSON.stringify(it.groups[0].values) === JSON.stringify(WORKSHOPS[i].ideal) &&
+    JSON.stringify(it.groups[1].values) === JSON.stringify(WORKSHOPS[i].leave)), w.items.map((it) => it.groups.map((g) => g.values.join(' / ')).join(' + ')).join(' | '));
+  check(`${tag} same order in both: name, title, description, quote, then the two lists last`, w.items.every((it) => it.listsLast &&
+    JSON.stringify(it.order) === JSON.stringify(['h3', 'w-title', 'outcome', 'w-quote', 'w-lists'])), w.items.map((it) => it.order.join(' > ')).join(' | '));
   check(`${tag} open columns, no cards, no images, no retail example`, w.items.every((it) => it.card === 'rgba(0, 0, 0, 0) none 0px' && it.images === 0) && x.retail === 0);
   if (vp.width > 760) {
-    check(`${tag} the two durations line up across the columns`, Math.abs(w.items[0].durTop - w.items[1].durTop) < 1, w.items.map((it) => Math.round(it.durTop)).join(', '));
+    check(`${tag} the two lists line up across the columns`, Math.abs(w.items[0].listsTop - w.items[1].listsTop) < 1, w.items.map((it) => Math.round(it.listsTop)).join(', '));
     check(`${tag} workshops side by side with one hairline`, w.items[1].box.l >= w.items[0].box.r - 1 && Math.abs(w.items[0].box.w - w.items[1].box.w) < 2 &&
       w.items[1].borderLeft === '1px solid' && w.items[0].borderLeft === '0px none');
   } else {
@@ -441,7 +487,7 @@ async function homeChecks(page, vp) {
 
   check(`${tag} footer: logo, copyright and legal links only`, x.footer.links.length === 3 && /© 2026 Growth Lab/.test(x.footer.text) &&
     /Privacy/.test(x.footer.text) && /Website terms/.test(x.footer.text) && /Drafts, pending approval/.test(x.footer.text) &&
-    !/Diagnose|Talk to us|Copy|@/.test(x.footer.text), x.footer.links.join(' ; '));
+    !/Four ways|Talk to us|Copy|@/.test(x.footer.text), x.footer.links.join(' ; '));
   check(`${tag} no email or phone links on the homepage`, x.mailto === 0 && !x.emailText);
   check(`${tag} no pricing, superlatives or booking claims`, x.banned.length === 0, x.banned.join(', '));
   check(`${tag} click targets at least 24px, action buttons at least 44px`, x.small.length === 0 && x.primaries.every((h) => h >= 44), x.small.join(' | ') || x.primaries.join(', '));
@@ -637,10 +683,9 @@ async function apiChecks() {
     await page.screenshot({ path: path.join(SHOTS, `${vp.name}-new-sections.png`), fullPage: true, clip });
 
     if (vp.name === 'desktop') {
-      await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { d.open = true; }));
-      await page.locator('#workshops').screenshot({ path: path.join(SHOTS, 'workshops-details-open.png') });
+      await page.locator('.approach').screenshot({ path: path.join(SHOTS, 'four-ways.png') });
+      await page.locator('#workshops').screenshot({ path: path.join(SHOTS, 'workshops.png') });
       await page.locator('#evidence').screenshot({ path: path.join(SHOTS, 'research-and-map.png') });
-      await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { d.open = false; }));
       await page.locator('.device-card').screenshot({ path: path.join(SHOTS, 'cube-rest.png') });
       // Rune motion and its range
       await page.locator('.rune-stage').scrollIntoViewIfNeeded();
@@ -969,10 +1014,11 @@ async function apiChecks() {
       check('[strip] holds still on hover and on keyboard focus; the control is next in the tab order with a ring', hovered === 'paused' && left === 'running' &&
         focus.cls === 'clients-toggle' && focus.ring !== 'none' && focus.h >= 24 && focused === 'paused', JSON.stringify({ hovered, left, focus, focused }));
       await page.evaluate(() => document.activeElement.blur());
-      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      // Instant scrolls: the page scrolls smoothly, and a long smooth scroll back would outlast the wait
+      await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
       await page.waitForTimeout(300);
       const away = (await state()).play;
-      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
       await page.waitForTimeout(300);
       check('[strip] rests while off screen', away === 'paused' && (await state()).play === 'running', away);
     }
@@ -980,7 +1026,7 @@ async function apiChecks() {
     await page.evaluate(() => { document.activeElement && document.activeElement.blur(); window.scrollTo(0, 0); });
     await page.mouse.move(2, 2);
     const hero = await page.evaluate(() => document.querySelector('.hero').getBoundingClientRect().bottom + scrollY);
-    await page.screenshot({ path: path.join(SHOTS, `strip-test-shapes-${vp.name}.png`), clip: { x: 0, y: Math.max(0, hero - 380), width: vp.width, height: 460 } });
+    await page.screenshot({ path: path.join(SHOTS, `strip-test-shapes-${vp.name}.png`), fullPage: true, clip: { x: 0, y: Math.max(0, hero - 380), width: vp.width, height: 460 } });
     await ctx.close();
   }
   {

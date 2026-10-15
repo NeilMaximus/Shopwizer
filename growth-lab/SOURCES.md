@@ -1,37 +1,38 @@
 # Sources and figures
 
-Every figure, link and image in the white sections of Make Your Martech Pay (evidence, workshops and getting going) and on the contact view, where it comes from, and when it was checked. When a figure changes, update the page, this file and the as at date on the page together.
+Every figure, link and image in the white sections of Make Your Martech Pay (evidence, workshops and getting going), the claims in the four ways section, and on the contact view, where it comes from, and when it was checked. When a figure changes, update the page, this file and the as at date on the page together.
 
-**As at 14 October 2026.**
+**As at 15 October 2026** (version 2.12, Neil's new copy).
 
 ## Hero copy
 
-Headline, unchanged: "Make your martech investment pay." Body since version 2.6, approved by Neil on 14 October 2026: "Growth Lab helps you get more from your marketing technology, customer data and AI. We find what needs to change, put the improvements in place and keep improving the results." It describes Growth Lab's own work and makes no guarantee.
+Headline, unchanged: "Make your martech investment pay." Body since version 2.12, Neil's copy of 15 October 2026, in two paragraphs: "Growth Lab helps you win more customers, keep them longer and grow more efficiently by making better use of your marketing technology, customer data and AI." and "We help you get more from the platforms you already own, identify where further investment will make a difference, and put the improvements into practice." It describes Growth Lab's own work and makes no guarantee. The page's meta description now repeats the first sentence.
+
+## Four ways to work with Growth Lab
+
+Neil's copy of 15 October 2026, word for word (no 01 to 04 numbers on the page, per `DESIGN_SYSTEM.md`): Fix (Martech Health Check and fixes), Grow (Customer Journeys and Lifetime Value), Automate (AI Production Workflows) and Decide (Martech Strategy and Investment Case). They describe Growth Lab's services and promise no result. The one figure in them, "Your stack against 1,634 benchmarked stacks in MartechTribe research" under Decide, is MartechTribe's, sourced below. "Implement a new platform properly" under Fix and "built and live in your platform" under Grow describe delivery work Growth Lab offers; confirm they match how engagements are scoped.
 
 ## Figures
 
-These are MartechTribe's own figures. They describe MartechTribe's research and the MartechMap, not Growth Lab audits.
+These are MartechTribe's own figures. They describe MartechTribe's research and the MartechMap, not Growth Lab audits. Since version 2.12 they are on the page again, as one quiet row below the research copy and map (no tiles or counters).
 
 | On the page | Where | Source | Notes |
 | --- | --- | --- | --- |
-| 1,634 benchmarked martech stacks | The map caption (in bold); since version 2.8 no longer in the left column | https://martechtribe.com/, checked 14 October 2026 | Introduced as "Through MartechTribe, Growth Lab draws on…", so the benchmark is MartechTribe's |
-| Research across industries since 2017 | The map caption | https://martechtribe.com/, checked 14 October 2026 | The site also says 9 years. Use "since 2017" so the page does not age |
+| 1,634 real stacks benchmarked | The research heading, the first figure and the Decide detail | https://martechtribe.com/, checked 14 October 2026 | Introduced as "Through MartechTribe…", so the benchmark is MartechTribe's |
+| 15,505 solutions analysed | Second figure | https://martechtribe.com/ (15,505 solutions), checked 14 October 2026, and State of Martech 2026, Brinker and Riemersma | The MartechMap 2026 count. Never 1,500,505, which was a typo in a draft brief |
+| 1,345 features indexed daily across 49 categories | Third figure | https://martechtribe.com/ (1,345 features, 49 categories), checked 14 October 2026 | "Indexed daily" and "Current to the day" are Neil's wording: confirm with MartechTribe. The 49 categories stay out of the map caption |
+| 9 years of independent research | Fourth figure | https://martechtribe.com/ (9 years; research since 2017), checked 14 October 2026 | This figure ages: it becomes 10 years in 2027. Update it with the as at date, or return to "since 2017" |
+| Research used by 200+ global brands, including Standard Bank, Vodafone, Philips and Unilever | Line under the figures | https://martechtribe.com/ (200+ brands), checked 14 October 2026 | The four named brands are Neil's copy and have not been checked against a public source here: confirm with MartechTribe that each may be named |
 
-Since version 2.5 the page shows no other figures. The Sources dropdown is gone; these stay on record for provenance and for any future use:
+## Research copy
 
-| Figure | Source | Notes |
-| --- | --- | --- |
-| MartechMap 2026 by chiefmartec and MartechTribe: 15,505 solutions | https://martechtribe.com/ (15,505 solutions), checked 14 October 2026, and State of Martech 2026, Brinker and Riemersma | The figure is 15,505. Never 1,500,505, which was a typo in a draft brief |
-| 1,345 features across 49 martech categories | https://martechtribe.com/, checked 14 October 2026 | "Indexed daily" was the wording of Neil's brief; confirm it with MartechTribe before any reuse. Never attach the 49 categories to the map |
-| 200+ global brands advised | https://martechtribe.com/ (200+ brands), checked 14 October 2026 | "Advised" is the wording of Neil's approved copy, from the Life Insurer Lens v10 |
+The research section is Neil's copy of 15 October 2026, word for word: the heading "What 1,634 real martech stacks can tell you about yours.", the introduction "Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses. Your stack, your spend and your plans, measured against how the top performers in your industry actually built theirs.", then "What it tells you" and three bullets (Where you sit against the top performers in your industry. Which of your platforms overlap, and which gaps are costing you. What the outperformers invested in that you have not). It replaces the Deloitte or Accenture question and response of versions 2.8 to 2.11, which are no longer on the page.
 
-## Research copy and the named comparison
+**Positioning, not sourced fact.** "The world’s largest independent benchmark of real martech stacks" is Neil's approved description of MartechTribe's benchmark. No independent source ranks it against other datasets (see "Not used" below, where an earlier "richest" claim was dropped for that reason). Confirm the wording with MartechTribe before release (see `PRELAUNCH.md`).
 
-The research section is Neil's approved copy of 14 October 2026, word for word. Neil explicitly chose to name Deloitte and Accenture. Since version 2.9 the section reads: the question "Considering Deloitte or Accenture?", then the response, in the same coral and size but regular weight (version 2.10), "Move faster and smarter through leading independent global martech research, applied to your business.", then "We combine that research with proven patterns, practical know-how and your own data to:" and three bullets (Identify where your business can improve. Prioritise the changes that matter. Help you put them into practice.). The question makes no claim about those firms' prices, timelines or results, and none may be added.
+Copy edits made for house style only: "the world’s largest" (the supplied text read "the world’s the largest").
 
-**Positioning, not sourced fact.** "Leading independent global martech research" (in the response "Move faster and smarter through leading independent global martech research, applied to your business.") is Neil's approved marketing description of MartechTribe's research. It is not a ranking from an independent source. What is sourced: 1,634 benchmarked stacks and research since 2017 (martechtribe.com), shown in the map caption. Confirm the wording with MartechTribe before launch (see `PRELAUNCH.md`). The heading "Your next move shouldn’t take months. Or millions." speaks about the visitor's next move, not about those firms.
-
-The map caption repeats the research sentence and is followed by the credit "Research: MartechTribe. MartechMap © chiefmartec and MartechTribe." The map is MartechMap 2026, a vendor landscape; it is not a chart of the 1,634 benchmarked stacks.
+The map caption is now the credit alone: "Research: MartechTribe. MartechMap © chiefmartec and MartechTribe." The map is MartechMap 2026, a vendor landscape; it is not a chart of the 1,634 benchmarked stacks.
 
 ## Relationship wording
 
@@ -41,16 +42,23 @@ Never claim that Frans attends every Growth Lab audit, an exclusive partnership,
 
 ## Workshops
 
-Source for both: https://martechtribe.com/workshops, checked 14 October 2026, which confirms both formats and their outcomes, and the copy Neil supplied from the Life Insurer Lens v10. Since version 2.6 the wording on the page is Neil's: outcome sentences and bullets phrased as benefits rather than paperwork, with the same underlying deliverables.
+Earlier source for both: https://martechtribe.com/workshops, checked 14 October 2026, which confirms both formats and their outcomes. Since version 2.12 the wording is Neil's copy of 15 October 2026, word for word, with Technology Strategy first.
 
-| Workshop | Outcome sentence | The value you get | Duration on the page |
-| --- | --- | --- | --- |
-| Value Engineering Workshop | Identify the initiatives with the strongest potential return and focus your investment where it matters. | The value at stake, quantified. Investment priorities, ranked by potential return. A clear case for where to invest. A framework your team can reuse | Three mornings or one full day. |
-| Technology Strategy Workshop | See how your stack compares with peers, identify the gaps and set a clear investment roadmap. | A benchmark against high performing peers. Prioritised technology investments. A clear investment roadmap. Recommendations your executives can act on | Three mornings or one full day. |
+| Workshop | Title | Description | Pull quotes | Ideal for | You'll leave with |
+| --- | --- | --- | --- | --- | --- |
+| Technology Strategy Workshop | Benchmark your stack. Prioritise your investments. | Use the Apex Martech Score™, GrowTechHQ, and independent benchmark research to compare your technology with industry outperformers, identify bottlenecks, and build a practical technology roadmap. | “AI won’t save a broken technology stack. It will expose it.” “The best performing martech stacks are not the most complex, but the most aligned.” | CMOs, CIOs, Marketing Technology, Enterprise Architecture | Benchmark analysis, Technology priorities, Investment roadmap, Executive recommendations |
+| Value Engineering Workshop | Turn marketing initiatives into boardroom business cases. | Three interactive mornings using your own company data to quantify business value, calculate ROI, and prioritise investments. You’ll learn the Value Engineering methodology developed through dozens of business cases at Nyenrode and Beeckestijn, and leave with a board ready business case and a framework you can apply again and again. | “A missed opportunity is not a line item on the balance sheet.” | Marketing Operations, Digital Marketing, RevOps, Marketing Managers | Quantified business value, Board ready business case, Investment priorities, Executive presentation |
 
-**Duration, by Neil's instruction (14 October 2026).** Both workshops show "Three mornings or one full day." as the same format. This is Neil's instruction for the page, superseding the earlier source wording that Value Engineering runs over three mornings only. It is not an independently verified public MartechTribe offer: confirm it with MartechTribe before launch (see `PRELAUNCH.md`).
+To confirm with MartechTribe and Frans before release:
 
-Version 2.4 dropped the method sentence (the Apex Martech Score, GrowTechHQ and MartechTribe's benchmark research) from the Technology Strategy detail so the outcomes read as crisp bullets.
+- **Apex Martech Score™ and GrowTechHQ.** MartechTribe's names; confirm the trademark sign and that Growth Lab may name both.
+- **Nyenrode and Beeckestijn.** The claim that the Value Engineering methodology was developed through dozens of business cases there is Neil's copy; confirm it and that both institutions may be named.
+- **Pull quotes.** Unattributed on the page. Confirm whose words they are and whether they need a name.
+- **Durations.** "Three mornings or one full day." for both workshops (versions 2.6 to 2.11) is no longer on the page. Value Engineering now says "Three interactive mornings"; Technology Strategy states no format.
+
+Copy edits made for house style only: "prioritise" (supplied "prioritize"), a comma in place of the em dash before "and leave with", "board ready" without a hyphen, the closing quote mark on the second quote (supplied as ".:"), lower case "martech" and "best performing" without a hyphen in that quote.
+
+Version 2.4 had dropped the method sentence (the Apex Martech Score, GrowTechHQ and MartechTribe's benchmark research) from the Technology Strategy detail; version 2.12 brings it back in Neil's new description.
 
 ## The Apex Martech Matrix
 
@@ -116,8 +124,8 @@ Neil's Google Drive holds older logo files (a 2019 "Client Logos" folder with Il
 
 ## Not used, and why
 
-- "The world's richest martech benchmark dataset across every industry": no source ranks the dataset against others or shows coverage of every industry.
+- "The world's richest martech benchmark dataset across every industry": no source ranks the dataset against others or shows coverage of every industry. (Version 2.12 uses Neil's "the world’s largest independent benchmark of real martech stacks" as positioning, to be confirmed with MartechTribe.)
 - The Lens v10 heading "Martech audits in numbers": it presented MartechTribe's figures as audit counts.
-- Five large statistic tiles, a Sources dropdown and a separate proof sentence: removed in favour of Neil's research copy and the map caption.
-- Prices, timelines or results attributed to Deloitte, Accenture or any other firm: not verified, and not part of Neil's approved question.
+- Five large statistic tiles, a Sources dropdown and a separate proof sentence: removed in version 2.5. Version 2.12 shows four of the figures again as a plain row from Neil's copy, without tiles or counters.
+- Prices, timelines or results attributed to Deloitte, Accenture or any other firm: never used. The Deloitte or Accenture question itself is off the page since version 2.12.
 - Pricing from older plans and testimonials: not approved for this page.
