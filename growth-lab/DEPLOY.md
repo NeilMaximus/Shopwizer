@@ -15,7 +15,7 @@ Do not assume a Vercel preview is private. Who can open a preview depends on the
 
 With the Vercel CLI, `vercel project protection` shows the current settings for a linked project.
 
-## Release into the live project (version 2.11)
+## Release into the live project (version 2.12)
 
 growthlab.co.za is served by the Vercel project `growth-lab-2026` (team "Neil's projects", `neils-projects-23ef481a`). It deploys from `main` of the GitHub repository NeilMaximus/Growth-Lab-2026 with Framework Other, an empty Root Directory, `outputDirectory: public` from that repository's `vercel.json` and no build command; `www` redirects (308) to the apex. Every commit to `main` goes straight to production.
 
@@ -27,9 +27,9 @@ growthlab.co.za is served by the Vercel project `growth-lab-2026` (team "Neil's 
 | `api/contact.mjs` | `api/contact.mjs` at the repository root | Vercel builds functions only from `api/` under the Root Directory, never from the output directory |
 | `vercel.json` | `vercel.json` at the repository root, replacing it | Keeps `outputDirectory: public` and adds this site's caching and security headers. `cleanUrls` is left off, so `contact.html` and the asset paths behave exactly as tested |
 
-Commit those three in one commit to `main`; leave everything else in that repository alone. Rollback: Instant Rollback in the Vercel dashboard to the previous production deployment (`dpl_3VL175GJqHCRX1J46Pxi5ZDhbcBN`, commit `a099706`), or revert the commit.
+Commit those three in one commit to `main`; leave everything else in that repository alone. Before copying, compare `main` with the last release: anything changed there directly (as the approved legal pages, footer links and LinkedIn icon were on 14 October 2026) must first be brought into this source, or the release will undo it. Release 2.12 went out on 16 October 2026 as commit a09bd7b, deployment `dpl_FuSzJtRCGjMc5XovVF578SvMA8YK`. Rollback: Instant Rollback in the Vercel dashboard to the previous production deployment (`dpl_EuMJqdedJrkNN6WzoJdobgas2uvQ`, commit f0f4b97, release 2.11 with the approved legal pages and LinkedIn icon), or revert the commit.
 
-After the deployment is ready, check: the homepage and `/contact.html` load on growthlab.co.za, `www` still redirects, `/api/contact` answers `{"ready":false,"siteKey":null}` while the keys are absent and the contact view says enquiries are not connected, `/privacy.html` and `/terms.html` return 404, and `/assets/brand/growthlab-email-logo-v1.png` returns the PNG.
+After the deployment is ready, check: the homepage and `/contact.html` load on growthlab.co.za, `www` still redirects, `/api/contact` answers `{"ready":true,"siteKey":"…"}` (the keys have been set since the first launch; `ready:false` would mean they are missing and the contact view says enquiries are not connected), `/privacy.html` and `/terms.html` return the approved pages, and `/assets/brand/growthlab-email-logo-v1.png` returns the PNG. All of these passed for release 2.12 on 16 October 2026.
 
 ## Deploy to Vercel (when approved)
 

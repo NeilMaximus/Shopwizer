@@ -4,7 +4,7 @@ This folder holds the Growth Lab website (Make Your Martech Pay, its contact vie
 
 ## Live site
 
-Since 14 October 2026 this site is live on growthlab.co.za (release 2.11, source commit 5e3f6bc). Vercel project `growth-lab-2026` deploys it from `main` of NeilMaximus/Growth-Lab-2026, which holds only the build output: `public/`, `api/contact.mjs` and `vercel.json`, copied from `dist/growth-lab-2026/`. This folder stays the editable source. Every commit to that repository's `main` goes straight to production; rollback is Vercel Instant Rollback. The release is archived in the GrowthLab shared drive under Brand Assets / Website / 2026-10-14 Production Release. `handover/` holds the CLAUDE.md for that repository and a memory note for the Claude app.
+Since 14 October 2026 this site is live on growthlab.co.za. The current release is 2.12, released on 16 October 2026 from source commit e8d51b6 (branch `growth-lab-2.12-copy`) as Growth-Lab-2026 commit a09bd7b, deployment `dpl_FuSzJtRCGjMc5XovVF578SvMA8YK`; the one before it is `dpl_EuMJqdedJrkNN6WzoJdobgas2uvQ` (commit f0f4b97). Vercel project `growth-lab-2026` deploys it from `main` of NeilMaximus/Growth-Lab-2026, which holds only the build output: `public/`, `api/contact.mjs` and `vercel.json`, copied from `dist/growth-lab-2026/`. This folder stays the editable source. Every commit to that repository's `main` goes straight to production; rollback is Vercel Instant Rollback. The release is archived in the GrowthLab shared drive under Brand Assets / Website / 2026-10-14 Production Release. `handover/` holds the CLAUDE.md for that repository and a memory note for the Claude app.
 
 ## Hard rules
 
