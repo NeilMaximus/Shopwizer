@@ -4,12 +4,12 @@ The site is ready to preview, not to publish. Clear every item below, with legal
 
 ## Legal (blocking)
 
-- [ ] **Operating entity.** Confirm the legal name and registration number to show in the privacy notice and website terms. Growth Lab's contracts in Drive name Future Island (Pty) Ltd trading as Growth Lab, while one recent proposal says GrowthLab (Pty) Ltd. Confirm which entity runs the website.
-- [ ] **Information Officer.** Name and contact address for POPIA.
-- [ ] **Privacy notice.** Complete every CONFIRM item in `legal/DRAFT_PRIVACY_NOTICE.md`: hosting provider, what it logs and for how long, the contact form and its email delivery provider (Resend), Google reCAPTCHA and whether it needs consent before it loads, phone and email enquiries, cross border transfers, retention, security summary, Information Regulator contact details. Have it reviewed.
-- [ ] **Website terms.** Complete every CONFIRM item in `legal/DRAFT_WEBSITE_TERMS.md`, including whether section 43 of the Electronic Communications and Transactions Act applies. Have it reviewed.
-- [ ] **Launch treatment (14 October 2026).** The production build leaves out the draft privacy notice and website terms and their footer links, so nothing unapproved is published as policy. The site collects no personal data while the form is not connected; the privacy notice must be approved and published before the form is switched on.
-- [ ] **Publish the approved versions.** Replace the drafts, rename the files without the `DRAFT_` prefix, remove the draft banner sentence, run `python3 scripts/build.py`, then remove the "Drafts, pending approval" label from the footers in `site/index.html` and `site/contact.html` and the `noindex` rules for the two pages in `site/vercel.json`.
+- [x] **Operating entity.** Confirm the legal name and registration number to show in the privacy notice and website terms. Growth Lab's contracts in Drive name Future Island (Pty) Ltd trading as Growth Lab, while one recent proposal says GrowthLab (Pty) Ltd. Confirm which entity runs the website.
+- [x] **Information Officer.** Name and contact address for POPIA.
+- [x] **Privacy notice.** Complete every CONFIRM item in `legal/DRAFT_PRIVACY_NOTICE.md`: hosting provider, what it logs and for how long, the contact form and its email delivery provider (Resend), Google reCAPTCHA and whether it needs consent before it loads, phone and email enquiries, cross border transfers, retention, security summary, Information Regulator contact details. Have it reviewed.
+- [x] **Website terms.** Complete every CONFIRM item in `legal/DRAFT_WEBSITE_TERMS.md`, including whether section 43 of the Electronic Communications and Transactions Act applies. Have it reviewed.
+- [x] **Launch treatment (14 October 2026).** The production build leaves out the draft privacy notice and website terms and their footer links, so nothing unapproved is published as policy. The site collects no personal data while the form is not connected; the privacy notice must be approved and published before the form is switched on.
+- [x] **Publish the approved versions.** Replace the drafts, rename the files without the `DRAFT_` prefix, remove the draft banner sentence, run `python3 scripts/build.py`, then remove the "Drafts, pending approval" label from the footers in `site/index.html` and `site/contact.html` and the `noindex` rules for the two pages in `site/vercel.json`. Done: approved and published on 14 October 2026 (Future Island (Pty) Ltd trading as Growth Lab; Information Officer Neil Botha); `legal/PRIVACY_NOTICE.md`, `legal/WEBSITE_TERMS.md`, `site/privacy.html`, `site/terms.html`.
 
 ## Content and brand
 

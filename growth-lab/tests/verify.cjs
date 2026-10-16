@@ -635,8 +635,9 @@ async function homeChecks(page, vp) {
   if (vp.width >= 1000) check(`${tag} portraits beside the action`, s.peopleBox.l >= s.introBox.r && s.actionBox.t > s.introBox.b);
   else check(`${tag} heading, then people, then the button`, s.introBox.b <= s.peopleBox.t && s.peopleBox.b <= s.actionBox.t);
 
-  check(`${tag} footer: logo, copyright and legal links only`, x.footer.links.length === 3 && /© 2026 Growth Lab/.test(x.footer.text) &&
-    /Privacy/.test(x.footer.text) && /Website terms/.test(x.footer.text) && /Drafts, pending approval/.test(x.footer.text) &&
+  check(`${tag} footer: logo, copyright, the approved legal links and LinkedIn only`, x.footer.links.length === 4 && /© 2026 Growth Lab/.test(x.footer.text) &&
+    /Privacy/.test(x.footer.text) && /Website terms/.test(x.footer.text) && !/Draft/.test(x.footer.text) &&
+    x.footer.links.some((l) => l === 'Growth Lab on LinkedIn (opens in a new tab)|https://www.linkedin.com/company/growth-lab-za/') &&
     !/Four ways|Talk to us|Copy|@/.test(x.footer.text), x.footer.links.join(' ; '));
   check(`${tag} no email or phone links on the homepage`, x.mailto === 0 && !x.emailText);
   check(`${tag} no pricing, superlatives or booking claims`, x.banned.length === 0, x.banned.join(', '));
@@ -725,10 +726,11 @@ async function contactLayout(page, tag, width) {
   check(`${tag} no horizontal overflow`, x.overflow <= 0, `${x.overflow}px`);
   check(`${tag} form on a light grey quiet panel`, x.panel === 'rgb(245, 245, 245)', x.panel);
   const foot = await page.evaluate(() => { const f = document.querySelector('.site-footer'), legal = f.querySelector('.foot-legal');
-    return { logos: f.querySelectorAll('.logo, .logo-link').length, text: f.innerText.replace(/\s+/g, ' ').trim(), links: [...f.querySelectorAll('a')].map((a) => a.textContent.trim()),
+    return { logos: f.querySelectorAll('.logo, .logo-link').length, text: f.innerText.replace(/\s+/g, ' ').trim(), links: [...f.querySelectorAll('a')].map((a) => a.textContent.trim() || a.getAttribute('aria-label')),
       left: legal.getBoundingClientRect().left, contentLeft: document.querySelector('.contact-intro').getBoundingClientRect().left, h: f.getBoundingClientRect().height, legalH: legal.getBoundingClientRect().height }; });
-  check(`${tag} footer: no logo, just copyright and the legal links, aligned with the content`, foot.logos === 0 && JSON.stringify(foot.links) === JSON.stringify(['Privacy', 'Website terms']) &&
-    /© 2026 Growth Lab/.test(foot.text) && /Drafts, pending approval/.test(foot.text) && Math.abs(foot.left - foot.contentLeft) < 1 && foot.h <= foot.legalH + 74, `${foot.text} (${Math.round(foot.h)}px tall for ${Math.round(foot.legalH)}px of text)`);
+  check(`${tag} footer: no logo, just copyright, the legal links and LinkedIn, aligned with the content`, foot.logos === 0 &&
+    JSON.stringify(foot.links) === JSON.stringify(['Privacy', 'Website terms', 'Growth Lab on LinkedIn (opens in a new tab)']) &&
+    /© 2026 Growth Lab/.test(foot.text) && !/Draft/.test(foot.text) && Math.abs(foot.left - foot.contentLeft) < 1 && foot.h <= foot.legalH + 74, `${foot.text} (${Math.round(foot.h)}px tall for ${Math.round(foot.legalH)}px of text)`);
   const lines = width >= 1000 ? 3 : width >= 600 ? 2 : 3;
   check(`${tag} heading wraps to ${lines} balanced lines and stays a headline`, x.h1.lines === lines && x.h1.size >= 36 && x.h1.widest <= x.h1.box + 1,
     `${x.h1.lines} lines at ${x.h1.size}px`);
@@ -936,7 +938,7 @@ async function apiChecks() {
       }
       const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', 'Where you sit against your i', 'Slide 1: Where you sit', 'Slide 2: What each position ',
         'Slide 3: What to fix first', 'Slide 4: The whole market', 'Next example', 'Let’s Talk',
-        'Growth Lab, back to top', 'Privacy', 'Website terms'];
+        'Growth Lab, back to top', 'Privacy', 'Website terms', 'Growth Lab on LinkedIn (open'];
       check('[home desktop] keyboard order follows the page and every stop shows a ring', stops.every((s) => s.ring) &&
         JSON.stringify(stops.map((s) => s.label)) === JSON.stringify(expected), stops.map((s) => s.label + (s.ring ? '' : ' (no ring)')).join(' > '));
 
@@ -949,16 +951,17 @@ async function apiChecks() {
       await page.waitForURL(/contact\.html$/);
       check('[home desktop] the section Let’s Talk opens the contact view', (await page.textContent('h1')).trim() === CONTACT.h1);
 
-      // Draft legal pages
+      // The approved legal pages (published 14 October 2026), exactly as live
       for (const p of ['privacy.html', 'terms.html']) {
         const res = await page.request.get(base + p);
         const body = await res.text();
-        check(`[links] ${p} returns 200 and is marked draft`, res.status() === 200 && body.includes('Draft for review') && body.includes('noindex'));
+        check(`[links] ${p} returns 200 and is the approved page, with no draft markers`, res.status() === 200 && body.includes('Effective date') &&
+          !/Draft for review|CONFIRM/.test(body) && body.includes('Future Island (Pty) Ltd'));
       }
       const legal = await ctx.newPage();
       await legal.goto(base + 'privacy.html');
       await legal.evaluate(() => document.fonts.ready);
-      await legal.screenshot({ path: path.join(SHOTS, 'privacy-draft.png'), fullPage: true });
+      await legal.screenshot({ path: path.join(SHOTS, 'privacy.png'), fullPage: true });
     }
     await ctx.close();
   }
@@ -1370,7 +1373,7 @@ async function apiChecks() {
         platforms: [...document.querySelectorAll('.platforms img')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/png;base64,')),
         logos: [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')].map((i) => i.complete && i.naturalWidth > 0 && /^data:image\/(svg\+xml|png);base64,/.test(i.src)),
         files: [...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => !/^(#|mailto:|tel:|https:)/.test(h)),
-        external: [...document.querySelectorAll('a[href^="http"]')].map((a) => a.getAttribute('href')),
+        external: [...document.querySelectorAll('a[href^="http"]')].map((a) => a.getAttribute('href')).filter((h) => h !== 'https://www.linkedin.com/company/growth-lab-za/'),
         actions: [...document.querySelectorAll('.btn')].map((a) => a.getAttribute('href')) };
     });
     const missing = bv.files.filter((h) => !fs.existsSync(path.join(browserDir, h)));
@@ -1385,7 +1388,7 @@ async function apiChecks() {
     check('[browser file] contact view opens offline in preview mode with working email and phone links', bc.mode === 'preview' && bc.notice &&
       JSON.stringify(bc.links) === JSON.stringify([`mailto:${RECIPIENT}`, PHONE.href]) && bc.home === 'growth-lab-martech.html' && requests.length === 0, JSON.stringify(bc));
     await bctx.close();
-    for (const n of ['growth-lab-privacy-draft.html', 'growth-lab-terms-draft.html']) {
+    for (const n of ['growth-lab-privacy.html', 'growth-lab-terms.html']) {
       const html = fs.readFileSync(path.join(browserDir, n), 'utf8');
       check(`[browser file] ${n} returns to the main page`, html.includes('href="growth-lab-martech.html"') && !html.includes('href="./"'));
     }

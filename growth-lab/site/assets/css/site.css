@@ -502,7 +502,8 @@ h1 {
 .foot-legal ul { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 22px; }
 .foot-legal a { color: var(--gl-ink-2); text-decoration: none; padding-block: 4px; display: inline-block; }
 .foot-legal a:hover { color: var(--gl-ink); text-decoration: underline; text-underline-offset: 3px; }
-.draft-note { background: var(--gl-panel); color: var(--gl-ink-3); border-radius: var(--gl-radius-pill); padding: 3px 10px; }
+/* Growth Lab on LinkedIn (Neil, 14 October 2026): the icon alone, with a 44 px target */
+.foot-legal .foot-social { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 10px; }
 .contact-page .site-footer { border-top: 1px solid var(--gl-line); }
 
 /* Contact view: heading and direct details on the left, the form on a light grey panel on the right */

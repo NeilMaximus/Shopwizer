@@ -20,13 +20,13 @@ growth-lab/
   config/contact.json   the contact email and Neil's phone number, written into the contact view
   config/client-logos.json  the client logo strip: brands, order, scale, speed and sources
   tokens/               tokens.css (source of truth) and tokens.json
-  legal/                draft privacy notice and website terms (Markdown)
+  legal/                the approved privacy notice and website terms (Markdown)
   site/                 the deployment root (Vercel Root Directory), nothing else is deployed
     index.html          Make Your Martech Pay
     contact.html        the contact view and form
     api/contact.mjs     serverless function: validate, verify reCAPTCHA, send through Resend
-    privacy.html        generated draft, noindex
-    terms.html          generated draft, noindex
+    privacy.html        the approved privacy notice, as published
+    terms.html          the approved website terms, as published
     vercel.json         headers and caching
     assets/css          tokens.css (copied) and site.css
     assets/js/site.js   cube build, rune breathing and the logo strip
@@ -44,7 +44,7 @@ growth-lab/
 ## Work on it
 
 ```
-python3 scripts/build.py preview     # sync tokens, render legal drafts and the phone line, write dist/preview and dist/browser
+python3 scripts/build.py preview     # sync tokens, check the legal pages, render the phone line, write dist/preview and dist/browser
 npm install --prefix tests           # once, installs Playwright for the checks
 NODE_PATH=tests/node_modules node tests/verify.cjs
 python3 scripts/build.py package     # dist/growth-lab-site.zip for Vercel, with api/ and .env.example

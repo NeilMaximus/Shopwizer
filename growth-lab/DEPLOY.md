@@ -4,7 +4,7 @@
 
 ## Before any deployment
 
-Neil authorised the production launch on 14 October 2026, replacing the current growthlab.co.za site. The open items in `PRELAUNCH.md` still stand. The privacy notice and website terms are drafts, so the production build in this package (`site/`) leaves both pages and their footer links out; they return once approved. The contact form has no keys yet, so it says online enquiries are not connected and points to hello@growthlab.co.za and the phone number.
+Neil authorised the production launch on 14 October 2026 and the 2.12 release on 16 October 2026. The open items in `PRELAUNCH.md` still stand. The privacy notice and website terms are approved and published (since 14 October 2026), and the production build carries them and their footer links. The contact form has no keys yet, so it says online enquiries are not connected and points to hello@growthlab.co.za and the phone number.
 
 Do not assume a Vercel preview is private. Who can open a preview depends on the project's Deployment Protection settings and on your Vercel plan, so check them before you create or share one:
 
@@ -53,7 +53,7 @@ vercel --prod               # production: only after PRELAUNCH.md is cleared and
 
 Option B, Git: import the source repository in the Vercel dashboard and set the Root Directory to `growth-lab/site`. Selecting Deploy creates a deployment straight away, and once the repository is connected Vercel deploys on every push: production from the production branch, previews from the others. Check the production branch and Deployment Protection before you connect. The repository also holds an unrelated app at its root, which the Root Directory setting keeps out of this project. The function is an ES module (`.mjs`) so that app's `package.json` cannot change how it loads.
 
-`vercel.json` sets caching for the font and assets, basic security headers, and `noindex` on the two draft legal pages. The function sets `Cache-Control: no-store` on its own responses.
+`vercel.json` sets caching for the font and assets, basic security headers, and `noindex` on the two legal pages (as live). The function sets `Cache-Control: no-store` on its own responses.
 
 ## Connect the contact form (when approved)
 
@@ -96,7 +96,7 @@ Everything below sits in `site/`, the deployment root.
 | `index.html` | Make Your Martech Pay |
 | `contact.html` | The contact view: heading, email and phone, and the form |
 | `api/contact.mjs` | Serverless function: validates the enquiry, verifies reCAPTCHA with Google, sends the email through Resend |
-| `privacy.html`, `terms.html` | Not in the production package: draft legal pages, built from the source repository's `legal/` folder for the preview only, until approved |
+| `privacy.html`, `terms.html` | The approved privacy notice and website terms, exactly as published on 14 October 2026 (text in the source repository's `legal/` folder) |
 | `vercel.json` | Headers and caching |
 | `assets/css/tokens.css` | Design tokens (edit the source copy in `tokens/`, not this one) |
 | `assets/css/site.css` | Page styles and the Geist `@font-face` |
