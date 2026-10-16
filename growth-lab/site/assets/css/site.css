@@ -235,6 +235,10 @@ h1 {
   width: 8px; height: 8px; border-radius: 2px; background: var(--gl-purple);
 }
 .evidence-copy .lede { margin-top: 20px; }
+/* The research heading and the introduction's first sentence in brand coral (Neil, version 2.12). The
+   heading is large text (3.25:1 passes); the regular weight sentence is a recorded contrast exception
+   (DESIGN_SYSTEM.md, section 11). The rest of the introduction stays ink 2 */
+.evidence .evidence-copy h2, .evidence-copy .lede-lead { color: var(--gl-coral); }
 .list-label { margin-top: 28px; font-size: var(--gl-text-ui); line-height: 1.4; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 .evidence-copy .benefits { margin-top: 12px; }
 .nowrap { white-space: nowrap; }

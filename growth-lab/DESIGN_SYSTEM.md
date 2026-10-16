@@ -47,7 +47,7 @@ The presentation system for decks keeps its own rules. This document covers the 
 | Contact heading (H1) | 48 to 56 px beside the form (three lines), 36 to 60 px stacked | 600 | minus 0.035em | `text-wrap: balance`. Never shrunk to a subheading |
 | Section heading on black (H2) | 30 to 40 px | 600 | minus 0.02em | White. "Four ways to work with Growth Lab" |
 | Way name (H3) | 26 to 32 px | 600 | minus 0.02em | Brand coral. Fix, Grow, Automate, Decide, under the node |
-| Section heading (H2, white sections) | 30 to 40 px | 600 | minus 0.02em | Ink, `text-wrap: balance` |
+| Section heading (H2, white sections) | 30 to 40 px | 600 | minus 0.02em | Ink, `text-wrap: balance`. The research heading is brand coral (version 2.12) |
 | Workshop name (H3) | 22 to 26 px | 600 | minus 0.02em | Ink |
 | Person name (H3) | 18 px | 600 | minus 0.01em | Ink, role below in ink 3 |
 | Lead | 18 to 20 px | 400 | 0 | `--gl-ink-2` |
@@ -104,7 +104,7 @@ Measured contrast (WCAG 2.2):
 | Ink 3 on white / on panel | 5.7 / 5.3 | All text |
 | Purple strong on white / on panel | 5.5 / 5.0 | All text, links, focus ring |
 | Purple on white | 4.25 | Large text and graphics only |
-| Coral on white | 3.25 | Large text only: 24 px and up, or 19 px bold and up |
+| Coral on white | 3.25 | Large text only: 24 px and up, or 19 px bold and up (one recorded exception: the regular weight first sentence of the research introduction, section 11) |
 | White on coral / on coral hover | 3.25 / 3.96 | **Only the 19 px bold action label.** Never small or regular weight text on coral |
 | Coral on panel | 2.99 | **Not for text.** Keep coral text on white |
 | Error on white / on panel | 5.6 / 5.2 | Error text at any size |
@@ -214,7 +214,7 @@ Three white sections sit between the black four ways section and the rune band, 
 - Heading: "What 1,634 real martech stacks can tell you about yours."
 - Then the introduction in the lead style (18 to 20 px, ink 2): "Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses. Your stack, your spend and your plans, measured against how the top performers in your industry actually built theirs."
 - Then "What it tells you" (an H3 list label, 15 px semibold ink) and three bullets in 18 px ink with small purple square markers: "Where you sit against the top performers in your industry", "Which of your platforms overlap, and which gaps are costing you", "What the outperformers invested in that you have not".
-- All text in this section is dark. No coral text: the regular weight coral exception of version 2.10 has gone with the response.
+- The heading and the introduction's first sentence ("Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses.") are brand coral `--gl-coral` (Neil, 16 October 2026); the rest of the introduction stays ink 2 and the bullets ink. Nothing else in the section is coral. The heading is large text and passes; **recorded exception:** the first sentence is regular weight coral at 18 to 20 px, 3.25:1 against WCAG AA's 4.5:1 for text of that size, the same trade off Neil accepted for the research response in version 2.10. It is the only regular weight coral text allowed; review it before release (`PRELAUNCH.md`), and make it bold at 19 px or more, or ink, if it must pass.
 - The MartechMap is vendor artwork. Show it whole at 16:9 with the chiefmartec and MartechTribe credits in the artwork visible: never crop, recolour or stretch it. Hairline ring, 10 px radius (`--gl-radius-image`), and one restrained glow in the same brand coral behind it (`0 10px 44px -6px`, coral at 30 percent). The glow sits outside the image: never tint, filter or fade the map itself. No "View the full map" link. Its caption is the small credit only (13 px ink 3): "Research: MartechTribe. MartechMap © chiefmartec and MartechTribe." The map is a vendor landscape, not a chart of the 1,634 benchmarked stacks: never label it as one, and keep the figures and the 49 categories out of its caption.
 - Below the copy and map, full width: MartechTribe's figures as one quiet row of four, split by vertical hairlines (two by two under 1000 px, one column at 420 px and under). Each is a plain `dl` entry, no tile, box, panel or counting animation: the figure (32 to 44 px, 600, ink), then its text in 15 px ink 2 with the lead phrase in semibold ink. Word for word: "1,634" real stacks benchmarked. How companies like yours actually built theirs. "15,505" solutions analysed. The whole market, including the ones your vendor does not mention. "1,345" features indexed daily across 49 categories. Current to the day, not last year’s report. "9 years" of independent research.
 - Then one line in 15 px ink 2: "Research used by 200+ global brands, including Standard Bank, Vodafone, Philips and Unilever."
@@ -341,6 +341,7 @@ Three white sections sit between the black four ways section and the rune band, 
 
 ## Change log
 
+- **2.12, 16 October 2026, research in coral (Neil).** The research heading and the first sentence of its introduction are brand coral. The sentence is regular weight, a recorded contrast exception (section 11 and `PRELAUNCH.md`).
 - **2.12, 16 October 2026, workshop spacing (Neil).** More space between the pull quotes and the "Ideal for" and "You’ll leave with" lists (44 to 64 px, up from 28 px), so the lists sit lower as their own group instead of blurring into the quotes.
 - **2.12, 16 October 2026, four ways layout (Neil).** The dense columns were hard to take in. Copy shortened (what you get to one sentence, what we look at to three short points) and reordered top to bottom: name, offer, promise, what you get, what we look at. A left to right row layout was tried and set aside in favour of Neil's preferred vertical columns. New label icons: a box for "What you get" and an eye for "What we look at". The arrows between the nodes are gone, since the ways are options rather than steps.
 - **2.12, 15 October 2026, hero refinement (Neil).** The headline and text now form one block vertically centred on the cube panel (the longer two paragraph text had pushed it below the panel's centre). The value cube loops: build, rest 3 s, fold back to the core, grow again, with a quiet Pause control in the panel corner, resting off screen and still under reduced motion. No new files: page weight and loading are unchanged.
