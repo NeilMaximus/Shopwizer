@@ -243,6 +243,45 @@ def render_client_logos():
     return missing
 
 
+QUADRANTS = {"powerhouse": "Powerhouse", "overbuilt": "Overbuilt", "precision": "Precision", "underbuilt": "Underbuilt"}
+
+
+def apex_matrix(source=ROOT / "config" / "apex-retail-example.json"):
+    """Markup for the Apex Martech Matrix retail example in the research carousel, drawn from the
+    measured data in config/apex-retail-example.json: every retailer's dot in its quadrant colour at
+    its measured position, the four example companies named. Nothing is invented or moved."""
+    cfg = json.loads(source.read_text(encoding="utf8"))
+    named = {e["name"]: e for e in cfg["examples"]}
+    dots = []
+    for r in sorted(cfg["retailers"], key=lambda r: r["name"] in named):
+        q = r["quadrant"]
+        assert q in QUADRANTS and 0 <= r["x"] <= 100 and 0 <= r["y"] <= 100, f"bad retailer {r}"
+        if r["name"] in named:
+            assert named[r["name"]]["quadrant"] == q, f"{r['name']}: example quadrant differs from the chart"
+            side = named[r["name"]].get("label", "right")
+            assert side in ("left", "right", "above", "below"), f"bad label side for {r['name']}"
+            dots.append(f'              <span class="mx-dot q-{q} is-named label-{side}" style="--x: {r["x"]}%; --y: {r["y"]}%">'
+                        f'<span class="mx-name">{html.escape(r["name"])}</span></span>\n')
+        else:
+            dots.append(f'              <span class="mx-dot q-{q}" style="--x: {r["x"]}%; --y: {r["y"]}%"></span>\n')
+    d = cfg["dividers"]
+    return (f'            <div class="mx-plot" style="--mx-x: {d["x"]}%; --mx-y: {d["y"]}%" aria-hidden="true">\n'
+            '              <span class="mx-goal"></span><span class="mx-line mx-v"></span><span class="mx-line mx-h"></span>\n'
+            + "".join(f'              <span class="mx-tag mx-tag-{q}"><i class="q-{q}"></i>{label}</span>\n' for q, label in QUADRANTS.items())
+            + "".join(dots) +
+            '            </div>\n')
+
+
+def render_apex_matrix():
+    """Writes the Apex Martech Matrix example into site/index.html between its markers."""
+    path = SITE / "index.html"
+    page = path.read_text(encoding="utf8")
+    page, n = re.subn(r"(            <!-- apex-matrix:start -->\n).*?(            <!-- apex-matrix:end -->)",
+                      lambda m: m.group(1) + apex_matrix() + m.group(2), page, flags=re.S)
+    assert n == 1, "index.html lost its apex-matrix markers"
+    path.write_text(page, encoding="utf8")
+
+
 def offline_contact(page_html):
     """The Claude preview and the browser files have no server behind them, so their contact form
     runs in preview mode: it validates but never sends, and says so on the page."""
@@ -396,6 +435,7 @@ def main(args):
     sync_tokens()
     print("contact phone:", "set" if render_contact_phone() else "pending (config/contact.json)")
     missing = render_client_logos()
+    render_apex_matrix()
     total = len(json.loads((ROOT / "config" / "client-logos.json").read_text(encoding="utf8"))["logos"])
     print(f"client logos: {total - len(missing)} of {total} present" + (f"; MISSING: {', '.join(missing)}" if missing else ""))
     legal_page("DRAFT_PRIVACY_NOTICE.md", "privacy.html", "Privacy notice")

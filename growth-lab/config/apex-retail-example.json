@@ -1,0 +1,253 @@
+{
+  "_about": "Apex Martech Matrix, retail example, by MartechTribe and the CMO Council. Supplied by Neil Botha as images on 16 October 2026. Dot centres measured from the chart image (single dots by colour detection, overlapping dots by eye, within about 2 px of 1,154 px) and stored as percentages of the plot area. Quadrant per the chart's own colours. See SOURCES.md before changing anything here.",
+  "axes": {
+    "x": "Martech performance: how well the team uses its technology",
+    "y": "Martech presence: what the technology can do"
+  },
+  "dividers": {
+    "x": 50.0,
+    "y": 48.97
+  },
+  "retailers": [
+    {
+      "rank": 1,
+      "name": "Amazon",
+      "quadrant": "powerhouse",
+      "x": 84.66,
+      "y": 14.45
+    },
+    {
+      "rank": 13,
+      "name": "eBay",
+      "quadrant": "powerhouse",
+      "x": 50.61,
+      "y": 24.67
+    },
+    {
+      "rank": 25,
+      "name": "Carrefour",
+      "quadrant": "powerhouse",
+      "x": 52.86,
+      "y": 39.4
+    },
+    {
+      "rank": 26,
+      "name": "Aldi",
+      "quadrant": "powerhouse",
+      "x": 55.46,
+      "y": 42.78
+    },
+    {
+      "rank": 37,
+      "name": "Aeon",
+      "quadrant": "powerhouse",
+      "x": 55.46,
+      "y": 47.65
+    },
+    {
+      "rank": 20,
+      "name": "Staples",
+      "quadrant": "powerhouse",
+      "x": 65.86,
+      "y": 49.34
+    },
+    {
+      "rank": 21,
+      "name": "Sainsbury’s",
+      "quadrant": "overbuilt",
+      "x": 49.39,
+      "y": 33.49
+    },
+    {
+      "rank": 42,
+      "name": "Ikea",
+      "quadrant": "overbuilt",
+      "x": 41.59,
+      "y": 36.12
+    },
+    {
+      "rank": 52,
+      "name": "Zalando",
+      "quadrant": "overbuilt",
+      "x": 38.65,
+      "y": 38.18
+    },
+    {
+      "rank": 40,
+      "name": "Otto",
+      "quadrant": "precision",
+      "x": 56.59,
+      "y": 50.94
+    },
+    {
+      "rank": 50,
+      "name": "H&M",
+      "quadrant": "precision",
+      "x": 54.07,
+      "y": 53.85
+    },
+    {
+      "rank": 61,
+      "name": "MediaMarktSaturn",
+      "quadrant": "precision",
+      "x": 52.17,
+      "y": 59.19
+    },
+    {
+      "rank": 33,
+      "name": "Sargento",
+      "quadrant": "precision",
+      "x": 69.15,
+      "y": 55.82
+    },
+    {
+      "rank": 76,
+      "name": "Maxi Pet",
+      "quadrant": "precision",
+      "x": 56.24,
+      "y": 70.54
+    },
+    {
+      "rank": 47,
+      "name": "Chalhoub Group",
+      "quadrant": "precision",
+      "x": 79.64,
+      "y": 68.11
+    },
+    {
+      "rank": 77,
+      "name": "Ulta Beauty",
+      "quadrant": "underbuilt",
+      "x": 35.53,
+      "y": 53.47
+    },
+    {
+      "rank": 81,
+      "name": "Boozyshop",
+      "quadrant": "underbuilt",
+      "x": 34.84,
+      "y": 58.63
+    },
+    {
+      "rank": 63,
+      "name": "Loblaw Companies Limited",
+      "quadrant": "underbuilt",
+      "x": 45.49,
+      "y": 54.41
+    },
+    {
+      "rank": 68,
+      "name": "CDKGlobal",
+      "quadrant": "underbuilt",
+      "x": 43.59,
+      "y": 57.5
+    },
+    {
+      "rank": 74,
+      "name": "Fossil",
+      "quadrant": "underbuilt",
+      "x": 47.05,
+      "y": 63.13
+    },
+    {
+      "rank": 84,
+      "name": "Campari Group",
+      "quadrant": "underbuilt",
+      "x": 36.14,
+      "y": 66.23
+    },
+    {
+      "rank": 82,
+      "name": "Mobly",
+      "quadrant": "underbuilt",
+      "x": 42.37,
+      "y": 66.7
+    },
+    {
+      "rank": 95,
+      "name": "Bellavie",
+      "quadrant": "underbuilt",
+      "x": 14.99,
+      "y": 74.2
+    },
+    {
+      "rank": 93,
+      "name": "Sandviks as",
+      "quadrant": "underbuilt",
+      "x": 33.45,
+      "y": 76.64
+    },
+    {
+      "rank": 90,
+      "name": "SavUnette",
+      "quadrant": "underbuilt",
+      "x": 38.99,
+      "y": 76.08
+    }
+  ],
+  "examples": [
+    {
+      "name": "Amazon",
+      "quadrant": "powerhouse",
+      "score": 75,
+      "label": "below"
+    },
+    {
+      "name": "Zalando",
+      "quadrant": "overbuilt",
+      "score": 50,
+      "label": "left"
+    },
+    {
+      "name": "Chalhoub Group",
+      "quadrant": "precision",
+      "score": 51,
+      "label": "below"
+    },
+    {
+      "name": "Bellavie",
+      "quadrant": "underbuilt",
+      "score": 29,
+      "label": "above"
+    }
+  ],
+  "_examples_note": "The supplied cards call Chalhoub Group Overbuilt and Zalando Precision; the chart places them the other way round. The chart is followed here (its rank numbers fit the scores); confirm with MartechTribe.",
+  "scorecard": {
+    "now": 75,
+    "possible": 87,
+    "fix": [
+      [
+        "Events, meetings and webinars",
+        5,
+        "maturity and features"
+      ],
+      [
+        "Social media marketing",
+        5,
+        "maturity"
+      ],
+      [
+        "Collaboration",
+        2,
+        "features"
+      ]
+    ],
+    "strong": [
+      [
+        "Affiliate marketing",
+        0,
+        "at or above"
+      ],
+      [
+        "eCommerce marketing",
+        0,
+        "at or above"
+      ],
+      [
+        "Video ads",
+        1,
+        "just above"
+      ]
+    ]
+  }
+}

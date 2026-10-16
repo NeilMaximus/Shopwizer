@@ -69,13 +69,17 @@ Copy edits made for house style only: "prioritise" (supplied "prioritize"), a co
 
 Version 2.4 had dropped the method sentence (the Apex Martech Score, GrowTechHQ and MartechTribe's benchmark research) from the Technology Strategy detail; version 2.12 brings it back in Neil's new description.
 
-## The Apex Martech Matrix
+## The Apex Martech Matrix (research carousel)
 
-Not on the page since version 2.4 (Neil's refinement removed the retail example and its caption). Kept here for reference:
+Back on the page since 16 October 2026 (version 2.12, Neil), rebuilt in Growth Lab colours as the first three examples of the research carousel and as WhatsApp images (`share/whatsapp/`). Version 2.4 had removed it.
 
-- Source: https://martechtribe.com/blog/there-is-no-best-in-class-technology-its-official
-- MartechTribe's caption there: "The Apex Martech Matrix, developed by MartechTribe in collaboration with the CMO Council. Retail Industry example."
-- It is a retail example, not a Growth Lab client result. If it ever returns, link it with that label; never scrape, redraw or invent data for it.
+- **Source.** MartechTribe's Apex Martech Matrix, developed with the CMO Council, retail industry example. Neil supplied three images on 16 October 2026: the matrix chart, the four company cards (Amazon, Zalando, Chalhoub Group, Bellavie with their Apex Scores) and an example Apex Martech Score output ("75/100, can increase to 87/100", with "Fix these areas" and "Doing great here"). MartechTribe's article: https://martechtribe.com/blog/there-is-no-best-in-class-technology-its-official (caption there: "The Apex Martech Matrix, developed by MartechTribe in collaboration with the CMO Council. Retail Industry example."). The network here blocks martechtribe.com, so the article was not re-read on 16 October 2026.
+- **Data.** `config/apex-retail-example.json` holds every number the page shows. The 25 dot centres were measured from the chart image (plot area 1,154 x 1,066 px; single dots by colour detection, overlapping dots by eye, within about 2 px) and stored as percentages of the plot, with each retailer's quadrant taken from the chart's own colours and the dividers at 50.0 and 48.97 percent. Names come from the chart's numbered legend. Nothing is interpolated or invented: a dot that cannot be read is left out, never guessed.
+- **Axes.** MartechTribe's "Martech presence" (what the technology can do) is shown as "What the technology can do", and "Martech performance" (how well the team uses it) as "How well the team uses it". Quadrant names are MartechTribe's: Powerhouse, Overbuilt, Precision, Underbuilt.
+- **Examples and scores.** Amazon 75/100 Powerhouse, Zalando 50/100 Overbuilt, Chalhoub Group 51/100 Precision, Bellavie 29/100 Underbuilt. The supplied cards call Chalhoub Group Overbuilt and Zalando Precision, but the chart places them the other way round; the page follows the chart, whose rank numbers fit the scores (Chalhoub Group, 51, ranks above Zalando, 50). **Confirm with MartechTribe.** The one line meanings ("More technology than the team can use", "Broad technology, used well", "Behind on both", "Fewer tools, used very well") and each example's sentence are Growth Lab's plain language summaries of the cards.
+- **Example score.** MartechTribe's sample output, not a Growth Lab client: 75 today, 87 possible. Fix these first: Events, meetings and webinars +5 (maturity and features, shown as "Use it better, add features"), Social media marketing +5 (maturity, "Use it better"), Collaboration +2 (features, "Add features"). Already strong: Affiliate marketing +0 and eCommerce marketing +0 (at or above the industry), Video ads +1 (just above). The fixes add up to the 12 points between 75 and 87. "Use it better" stands for MartechTribe's maturity (skills, process and adoption) and "Add features" for its functionality. The icons are Growth Lab's own line icons; no vendor logos.
+- **Credit lines on the page.** "Retail example of 25 retailers, among them eBay, Ikea, H&M, Carrefour and Aldi. Apex Martech Matrix by MartechTribe and the CMO Council." "Apex Scores out of 100, from the same retail example." "Example output of the Apex Martech Score, MartechTribe."
+- **Permission.** MartechTribe and the CMO Council must agree to the rebuilt example on Growth Lab's site and in WhatsApp images before release (`PRELAUNCH.md`). It is a retail industry example, never a Growth Lab client result, and is never presented as one.
 
 ## People
 

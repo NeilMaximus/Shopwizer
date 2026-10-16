@@ -193,7 +193,53 @@
     apply();
   }
 
+  /* Research carousel. One example at a time on a scroll snap track, so it swipes on touch screens and
+     scrolls with a trackpad even without this script. The script adds previous and next buttons and
+     one dot per example, keeps them in step with the track, and lets the arrow keys move between
+     examples. It never moves on its own (DESIGN_SYSTEM.md, section 11). */
+  function researchCarousel() {
+    var rc = document.querySelector('.rc');
+    if (!rc) { return; }
+    var track = rc.querySelector('.rc-track'), slides = rc.querySelectorAll('.rc-slide');
+    var controls = rc.querySelector('.rc-controls'), dots = rc.querySelectorAll('.rc-dot');
+    var prev = rc.querySelector('.rc-prev'), next = rc.querySelector('.rc-next');
+    var current = -1;
+    function mark(i) {
+      if (i === current) { return; }
+      current = i;
+      for (var d = 0; d < dots.length; d++) {
+        if (d === i) { dots[d].setAttribute('aria-current', 'true'); } else { dots[d].removeAttribute('aria-current'); }
+      }
+      prev.disabled = i === 0;
+      next.disabled = i === slides.length - 1;
+      fit();
+    }
+    // The panel takes the height of the example in view, so a short example leaves no empty space
+    function fit() { if (current >= 0) { track.style.height = slides[current].offsetHeight + 'px'; } }
+    function go(i) {
+      i = Math.max(0, Math.min(slides.length - 1, i));
+      track.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: reduce ? 'auto' : 'smooth' });
+      mark(i);
+    }
+    function sync() { mark(Math.round(track.scrollLeft / Math.max(1, track.clientWidth))); }
+    prev.addEventListener('click', function () { go(current - 1); });
+    next.addEventListener('click', function () { go(current + 1); });
+    Array.prototype.forEach.call(dots, function (dot, i) { dot.addEventListener('click', function () { go(i); }); });
+    track.addEventListener('scroll', function () { window.requestAnimationFrame(sync); }, { passive: true });
+    track.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(current + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(current - 1); }
+    });
+    if ('ResizeObserver' in window) {
+      var ro = new ResizeObserver(fit);
+      Array.prototype.forEach.call(slides, function (sl) { ro.observe(sl); });
+    }
+    controls.hidden = false;
+    mark(0);
+  }
+
   liveCube();
+  researchCarousel();
   liveRune();
   clientStrip();
 })();
