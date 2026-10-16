@@ -91,7 +91,6 @@ const CSS = `
   .share .score-col li { row-gap: 2px; }
   .share .s-name { font-size: 14px; }
   .share .s-how { font-size: 12.5px; }
-  .share .score-key { font-size: 12.5px; margin-top: 14px; padding-top: 10px; }
 `;
 
 const server = http.createServer((req, res) => {
@@ -158,10 +157,9 @@ server.listen(0, '127.0.0.1', async () => {
       const positions = slide('rc-positions');
       const score = slide('rc-score');
       const scoreTop = take('.score', score);
-      scoreTop.querySelectorAll('.score-cols, .score-key').forEach((n) => n.remove());
+      scoreTop.querySelectorAll('.score-cols').forEach((n) => n.remove());
       const scoreRows = take('.score', score);
-      // The WhatsApp card keeps the lists only: each area's note already says how the points come
-      scoreRows.querySelectorAll('.score-head, .meter, .meter-key, .score-key').forEach((n) => n.remove());
+      scoreRows.querySelectorAll('.score-head, .meter, .meter-key').forEach((n) => n.remove());
 
       const deck = document.createElement('div');
       deck.className = 'share-deck';
