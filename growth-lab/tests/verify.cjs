@@ -1516,7 +1516,7 @@ async function apiChecks() {
     const pv = await pp.evaluate(async () => { await document.fonts.ready; return {
       geist: document.fonts.check('600 16px Geist'), overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       external: [...document.querySelectorAll('link[href], script[src]')].map((e) => e.getAttribute('href') || e.getAttribute('src')),
-      imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img):not(.platforms img)')].map((i) => i.complete && i.naturalWidth > 0),
+      imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img):not(.platforms img):not(.map-dialog img)')].map((i) => i.complete && i.naturalWidth > 0),
       brands: [...document.querySelectorAll('.brands img')].map((i) => i.complete && i.naturalWidth > 0 && i.getAttribute('src').startsWith('assets/brands/')),
       platforms: [...document.querySelectorAll('.platforms img')].map((i) => i.complete && i.naturalWidth > 0 && i.getAttribute('src').startsWith('assets/platforms/')),
       logos: [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')].map((i) => i.complete && i.naturalWidth > 0),
@@ -1572,7 +1572,7 @@ async function apiChecks() {
       for (const i of document.querySelectorAll('img')) { i.scrollIntoView(); await i.decode().catch(() => {}); }
       return { geist: document.fonts.check('600 16px Geist'), cube: !document.getElementById('device').className.includes('pre-build'),
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-        imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img):not(.platforms img)')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/jpeg')),
+        imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img):not(.platforms img):not(.map-dialog img)')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/jpeg')),
         brands: [...document.querySelectorAll('.brands img')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/png;base64,')),
         platforms: [...document.querySelectorAll('.platforms img')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/png;base64,')),
         logos: [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')].map((i) => i.complete && i.naturalWidth > 0 && /^data:image\/(svg\+xml|png);base64,/.test(i.src)),

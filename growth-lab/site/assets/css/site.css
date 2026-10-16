@@ -329,6 +329,8 @@ h1 {
 .rx-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 40px; margin-top: 28px; padding-inline: clamp(16px, 2.8vw, 40px); }
 .rx-cta-title { font-size: clamp(21px, 1.9vw, 26px); line-height: 1.25; letter-spacing: -0.015em; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-wrap: balance; }
 .rx-cta-copy p { margin-top: 6px; font-size: 17px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
+/* The button keeps to the screen: on a phone it takes the full width and its words may wrap */
+.rx-cta .btn-coral { max-width: 100%; white-space: normal; text-align: center; }
 
 /* Quadrant colours, shared by the matrix, its tags and the position cards */
 .q-powerhouse { background: var(--gl-purple); }
@@ -696,6 +698,8 @@ h1 {
   /* On a phone the four tabs sit two by two, and each view keeps its own height */
   .rx-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rx-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rx-cta { padding-inline: 0; }
+  .rx-cta .btn-coral { width: 100%; }
   .rx-nav .rx-count { display: none; }
   .rx-step { width: 100%; }
   .score { padding: 16px; }
@@ -707,7 +711,7 @@ h1 {
   .rx-tab { min-height: 52px; gap: 10px; padding: 8px 10px 8px 8px; font-size: 14px; border-radius: 18px; }
   .rx-ico { width: 30px; height: 30px; border-radius: 9px; }
   .rx-ico svg { width: 17px; height: 17px; }
-  .mx-name, .mx-tag { font-size: 11px; }
+  .mx-name, .mx-tag { font-size: 12px; }
   .mx-tag-overbuilt, .mx-tag-powerhouse { top: 8px; }
   .mx-tag-underbuilt, .mx-tag-precision { bottom: 8px; }
   .mx-tag-overbuilt, .mx-tag-underbuilt { left: 8px; }
