@@ -6,7 +6,7 @@ Every figure, link and image in the white sections of Make Your Martech Pay (evi
 
 ## Hero copy
 
-Headline, unchanged: "Make your martech investment pay." Body since version 2.12, Neil's copy of 15 October 2026, in two paragraphs: "Growth Lab helps you win more customers, keep them longer and grow more efficiently by making better use of your marketing technology, customer data and AI." and "We help you get more from the platforms you already own, identify where further investment will make a difference, and put the improvements into practice." It describes Growth Lab's own work and makes no guarantee. The page's meta description now repeats the first sentence.
+Headline, unchanged: "Make your martech investment pay." Body since version 2.13.1, Neil's copy of 16 October 2026, in two paragraphs: "Growth Lab helps you get more from the marketing technology you already own. We help you use customer data and AI to make your marketing more effective, reduce wasted spend and decide where to invest next." and "We identify the biggest opportunities, set clear priorities and work with your team to make it happen." It describes Growth Lab's own work and makes no guarantee. The page's meta description, link preview text and structured data repeat its first sentence. Version 2.12 to 2.13 read: "Growth Lab helps you win more customers, keep them longer and grow more efficiently by making better use of your marketing technology, customer data and AI." and "We help you get more from the platforms you already own, identify where further investment will make a difference, and put the improvements into practice."
 
 ## Four ways to work with Growth Lab
 

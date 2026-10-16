@@ -37,9 +37,9 @@ const VIEWPORTS = [
 const RECIPIENT = 'hello@growthlab.co.za';
 const PHONE = { display: '+27 84 504 0505', href: 'tel:+27845040505' }; // confirmed by Neil, 14 October 2026
 
-// Approved copy (Neil, 15 October 2026, version 2.12). It must match DESIGN_SYSTEM.md and SOURCES.md
+// Approved copy (Neil, 15 October 2026, version 2.12; hero text 16 October 2026, version 2.13.1). It must match DESIGN_SYSTEM.md and SOURCES.md
 const HOME = {
-  heroLead: 'Growth Lab helps you win more customers, keep them longer and grow more efficiently by making better use of your marketing technology, customer data and AI. We help you get more from the platforms you already own, identify where further investment will make a difference, and put the improvements into practice.',
+  heroLead: 'Growth Lab helps you get more from the marketing technology you already own. We help you use customer data and AI to make your marketing more effective, reduce wasted spend and decide where to invest next. We identify the biggest opportunities, set clear priorities and work with your team to make it happen.',
   waysH2: 'Four ways to work with Growth Lab',
   evidenceH2: 'What 1,634 real martech stacks can tell you about yours.',
   evidenceLede: 'Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses. See how your technology compares with relevant peers, where you could get more from existing platforms and which investments deserve priority.',
