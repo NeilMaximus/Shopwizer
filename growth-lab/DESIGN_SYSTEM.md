@@ -27,8 +27,8 @@ The presentation system for decks keeps its own rules. This document covers the 
 
 1. Concise copy. Every word earns its place. Do not pad, add slogans or invent claims.
 2. A white hero and page with generous space and a clear hierarchy, inspired by the restraint of x.ai/bot, plus one deliberate black section for the four ways to work. The contact view takes its directness from Isoflow's contact page: a clear heading, a few large labelled fields and one button. Draw inspiration only. Never copy either site's layout, typeface, assets, keys or contact details.
-3. One bold device per section: the value cube in the hero, the purple nodes that head each of the four ways to work, the MartechMap beside the research, the rune above the footer. Everything around them stays quiet, including the client logo strip at the foot of the hero.
-4. Solid surfaces only. Panels are opaque. No translucency, frosted glass, blur, glows or heavy shadows, with one approved exception: the restrained coral glow behind the MartechMap (section 11).
+3. One bold device per section: the value cube in the hero, the purple nodes that head each of the four ways to work, the research explorer, the rune above the footer. Everything around them stays quiet, including the client logo strip at the foot of the hero.
+4. Solid surfaces only. Panels are opaque. No translucency, frosted glass, blur, glows or heavy shadows.
 5. Motion with a purpose, slow and controlled. Never spinning, bouncing or decorative noise.
 6. One kind of action. Every action on the homepage leads to the contact view.
 
@@ -65,7 +65,7 @@ The presentation system for decks keeps its own rules. This document covers the 
 | Form fields | 16 px | 400 | 0 | 16 px so phones do not zoom on focus |
 | Field errors | 14 px | 500 | 0 | `--gl-error` |
 | Figure text, figures note | 15 px | 400, the lead phrase 600 | 0 | Ink 2, the lead phrase in ink |
-| Small print | 13 px | 400 | 0 | Footer legal line, the map credit, contact detail labels, the logo strip control |
+| Small print | 13 px | 400 | 0 | Footer legal line, contact detail labels, the logo strip control |
 
 ## 4. Colour
 
@@ -208,7 +208,7 @@ The header keeps one height on every page so the logo does not shift between the
 
 Four white sections sit between the black four ways section and the rune band, in this order: research, workshops, getting going and the leading solutions row. Each has one job and one H2, with no eyebrow, tiles, counters or scroll effects. Hairlines inside the content width separate them. Every figure, link and image is recorded in `SOURCES.md` with its as at date.
 
-**Research (`#evidence`).** Version 2.13, the final pass approved by Neil on 16 October 2026: the heading and its coral line kept word for word, one supporting line, the research explorer with four views, one enquiry, then the evidence.
+**Research (`#evidence`).** Version 2.13, the final pass approved by Neil on 16 October 2026: the heading and its coral line kept word for word, one supporting line, the research explorer with four views, then the evidence: MartechTribe's figures and the brands that use the research. No enquiry strip and no map since version 2.13.2.
 
 - **Introduction**, in two columns (stacked under 1000 px). Left: "What 1,634 real martech stacks can tell you about yours." Right: "Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses." then "See how your technology compares with relevant peers, where you could get more from existing platforms and which investments deserve priority." The earlier second sentence, "What it tells you" and its three bullets are gone: the explorer now tells that story.
 - The heading and the coral line are brand coral `--gl-coral`; the supporting line is ink 2. Nothing else in the section is coral. The heading is large text and passes; **recorded exception:** the coral line is regular weight at 18 to 20 px, 3.25:1 against WCAG AA's 4.5:1 for text of that size, as Neil chose. It is the only regular weight coral text allowed (`PRELAUNCH.md`).
@@ -220,11 +220,10 @@ Four white sections sit between the black four ways section and the rune band, i
 - **One frame (Neil, 16 October 2026).** At any width all four views share the same outer width and height, so the tabs, Previous and Next and everything below the panel stay still when the visitor changes view. The views share one grid cell, so the frame takes the tallest view's height after fonts and images load; the others are made invisible and inert. Never hide them with the `hidden` attribute: a page reset that forces `[hidden]` to `display: none`, as the Claude preview host appears to, made the 2.13 draft's matrix and position views taller than the others. No internal scrollbars, clipped content or type under 12 px. On a phone the frame is as tall as the longest view, so the shorter ones leave space below them.
 - **One window.** From 1000 px the panel is about 590 px tall, so it fits in one window at 1920 x 1080, 1536 x 864, a 1440 x 900 Mac and 1366 x 768 (`tests/verify.cjs` checks all four with 24 px to spare). The tallest view sets the height, so check the fit before adding to any view.
 - The explorer never moves on its own, so it needs no pause control. It follows the ARIA tabs pattern: a tab list labelled "An example of what the benchmark shows", the arrow keys, Home and End moving between tabs, and tab panels labelled by their tabs. Previous and Next keep focus; when one becomes unavailable, focus moves to the other, and a polite live region names the view. On a phone, if the top of the panel has scrolled away, Previous and Next bring it back. Without JavaScript the tabs and Previous and Next stay hidden and every view shows in turn.
-- **One enquiry** immediately below the explorer, outside the tabs, so it shows whichever view is open: "Where should your next martech investment go?" (21 to 26 px semibold), "We’ll discuss your goals, current platforms and whether a benchmark would help." (17 px ink 2) and the coral button "Discuss your martech priorities", which opens `contact.html`.
+- **No enquiry strip and no map (version 2.13.2, Neil, 16 October 2026).** Neil took out the enquiry under the explorer ("Where should your next martech investment go?" and "Discuss your martech priorities") and the MartechMap block below the figures, because they did not add value. The section ends with the figures and the brands, evenly spaced: on desktop about 80 px from the explorer to the figures and 72 px to the brands, then as much room after the brands as above the heading (96 px) before the hairline and the workshops (`tests/verify.cjs` checks the balance at every width). Do not add either back without Neil.
 - The same views go out as WhatsApp images. `scripts/render_share.cjs` renders five 1080 x 1350 cards from the page's own markup into `share/whatsapp/`: the cover (heading, the two lines and the four views), then your position, what it means, your priorities (the scores, meter and both lists, without the notes) and your next steps (one header row names the plan's columns). Re-run it after any change to the explorer; it fails if a card overflows.
-- Below the enquiry, full width: MartechTribe's figures as one quiet row of four, split by vertical hairlines (two by two under 1000 px, one column at 420 px and under). Each is a plain `dl` entry, no tile, box, panel or counting animation: the figure (32 to 44 px, 600, ink), then its text in 15 px ink 2 with the lead phrase in semibold ink. Word for word: "1,634" real stacks benchmarked. How companies like yours actually built theirs. "15,505" solutions analysed. The whole market, including the ones your vendor does not mention. "1,345" features indexed daily across 49 categories. Current to the day, not last year’s report. "9 years" of independent research.
-- **The MartechMap as supporting evidence (version 2.13).** After the figures, behind a hairline, two columns (stacked under 1000 px): the map, compact, whole at 16:9 with its hairline ring, coral glow and credit ("Research: MartechTribe. MartechMap © chiefmartec and MartechTribe."); beside it "The whole market your stack is chosen from", the line "Independent market research to inform your technology choices." and a white pill, **View the full market map**, which opens the existing 1600 px image in a dialog over the page (title, close button, "Open the image in a new tab" and the credit; Escape, the close button or a click outside closes it, and focus returns to the link). Without JavaScript the link opens the image itself. The map is vendor artwork: never crop, recolour or stretch it, and never call it a chart of the 1,634 benchmarked stacks or put the figures or the 49 categories in its caption.
-- Under that line, behind a hairline: "Research used by 200+ global brands, including" in 15 px ink 2, followed by four small genuine logos in ink (Standard Bank, Vodafone, Philips, Unilever), smaller than the client logos at the top.
+- Below the explorer, full width: MartechTribe's figures as one quiet row of four, split by vertical hairlines (two by two under 1000 px, one column at 420 px and under). Each is a plain `dl` entry, no tile, box, panel or counting animation: the figure (32 to 44 px, 600, ink), then its text in 15 px ink 2 with the lead phrase in semibold ink. Word for word: "1,634" real stacks benchmarked. How companies like yours actually built theirs. "15,505" solutions analysed. The whole market, including the ones your vendor does not mention. "1,345" features indexed daily across 49 categories. Current to the day, not last year’s report. "9 years" of independent research.
+- Under the figures: "Research used by 200+ global brands, including" in 15 px ink 2, followed by four small genuine logos in ink (Standard Bank, Vodafone, Philips, Unilever), smaller than the client logos at the top.
 - No Sources dropdown or links in the section. Provenance for every figure lives in `SOURCES.md`. The approved positioning phrases are "the world’s largest independent benchmark of real martech stacks" (version 2.12), Frans's "One of the leading international thinkers in martech" (version 2.8) and the platform row's "We work across the leading solutions" (16 October 2026), both Neil's wording and both to be confirmed with MartechTribe before release. Never present MartechTribe's figures as Growth Lab audits.
 
 **Workshops (`#workshops`).** Heading "See the opportunity. Know where to act." Then the support line: "Use cross-industry research and your own data to identify opportunities, prioritise investment and plan the next steps." Both are unchanged in version 2.12. The research section already credits MartechTribe, so there is no separate attribution line. Never say that a workshop implements anything or guarantees revenue.
@@ -319,14 +318,14 @@ Four white sections sit between the black four ways section and the rune band, i
 - **Recorded exception, WCAG 2.2.2 Pause, Stop, Hide (Neil, 16 October 2026).** The looping cube and the logo strip start on their own and run for more than five seconds, and Neil removed their Pause buttons. What remains: both stand still for anyone whose device asks for reduced motion, both rest while off screen, and the strip holds still on hover. That does not fully meet WCAG 2.2.2, which asks for a control on the page. Review it before release (`PRELAUNCH.md`); restoring the two quiet Pause buttons of version 2.12 meets it. The strip's copies are hidden from assistive technology so each client is announced once.
 - Expandable detail uses native `details` and `summary`, reachable and operable with the keyboard (Enter and Space), with the same focus ring.
 - Forms: visible labels, autocomplete, required fields marked for assistive technology, readable errors linked to their fields, status messages in live regions, and focus moved to the first error or to the confirmation.
-- Portraits next to a visible name use empty alt text. The map has descriptive alt text. Links that open a new tab say so to screen readers.
+- Portraits next to a visible name use empty alt text. Links that open a new tab say so to screen readers.
 - Run `node tests/verify.cjs` before sharing or deploying.
 
 ## 15. Copy
 
 - UK English. Concise. Use Neil's approved copy as written, with the typographic apostrophe in "Let’s".
 - No em dashes or hyphenated constructions where a comma or a plain phrase works.
-- Contact is hello@growthlab.co.za, shown on the contact view as text and a working link. The homepage shows no address: its three actions (the header and getting going "Let’s Talk", and the research section's "Discuss your martech priorities", version 2.13) all lead to the contact view.
+- Contact is hello@growthlab.co.za, shown on the contact view as text and a working link. The homepage shows no address: its two actions, the header and getting going "Let’s Talk", both lead to the contact view (the research section's enquiry was removed in version 2.13.2).
 
 ## 16. Legal and footer honesty
 
@@ -354,7 +353,7 @@ Four white sections sit between the black four ways section and the rune band, i
 | `.env.example` | The environment variables the function needs, without values |
 | `site/assets/fonts/geist/` | Geist woff2 and its OFL licence (fallback metrics in `scripts/geist-metrics.json`) |
 | `site/assets/brand/` | Logo, rune and mark SVGs |
-| `site/assets/media/` | MartechMap 2026 (800 and 1600 px) and the two portraits (192 px) |
+| `site/assets/media/` | The two portraits (192 px), and MartechMap 2026 (800 and 1600 px), kept in the source but not shown since version 2.13.2 |
 | `SOURCES.md` | Every figure, link and image in the white sections, with sources and the as at date |
 | `legal/` | The approved privacy notice and website terms (Markdown, the text of record for `site/privacy.html` and `site/terms.html`) |
 | `scripts/` | Build, font, rune and cube generators |
@@ -374,6 +373,7 @@ Version 2.12.1 (16 October 2026), so Google indexes the site correctly and links
 
 ## Change log
 
+- **2.13.2, 16 October 2026, research section foot (Neil).** The enquiry under the explorer and the MartechMap block (the map, its credit, "The whole market your stack is chosen from", the line and "View the full market map" with its dialog) are gone: they did not add value. The research brands move back directly under the figures, as in 2.12.1, with even space between the explorer, the figures and the brands and as much room after them as above the heading. The homepage now has two actions, both "Let’s Talk". The map files stay in the source.
 - **2.13.1, 16 October 2026, released to growthlab.co.za (Neil).** Growth-Lab-2026 commit 4a50341, deployment `dpl_9T8KTkH7WfgJenpYRWJUhuHXQEny`; the live homepage matches the build byte for byte.
 - **2.13.1, 16 October 2026, hero text (Neil).** The headline stays; the two paragraphs under it are Neil's new copy word for word (`SOURCES.md`): what Growth Lab helps with (getting more from the marketing technology you already own, customer data and AI, less wasted spend, where to invest next), then how (the biggest opportunities, clear priorities, working with your team). The meta description, link preview text and structured data repeat its first sentence. Nothing else changes.
 - **2.13, 16 October 2026, released to growthlab.co.za (Neil).** Growth-Lab-2026 commit 532e3fd, deployment `dpl_7bVNz1eTvsWdDraocSjwzyBwap1d`; the live homepage, stylesheet and script match the build byte for byte.

@@ -291,8 +291,7 @@ BROWSER_NAMES = {"index.html": "growth-lab-martech.html", "contact.html": "growt
 
 
 def inline_images(page_html):
-    """Embeds the page images as data URIs for the browser files. The map keeps its 1600 px file
-    only, so srcset goes."""
+    """Embeds the page images as data URIs for the browser files, each from its own file, so srcset goes."""
     def data_uri(match):
         data = (SITE / "assets" / "media" / match.group(1)).read_bytes()
         return 'src="data:image/jpeg;base64,' + base64.b64encode(data).decode() + '"'
@@ -324,10 +323,6 @@ def build_browser():
         page = page.replace('href="./"', f'href="{BROWSER_NAMES["index.html"]}"')
         for src, dst in BROWSER_NAMES.items():
             page = page.replace(f'href="{src}"', f'href="{dst}"')
-        # The full map opens in its dialog from the image built into the file; there is no image file beside it,
-        # so its link points at the map in the section and the "new tab" link is left out
-        page = re.sub(r'\s*<a class="map-new-tab"[^>]*>[^<]*</a>', "", page)
-        page = page.replace('href="assets/media/martechmap-2026.jpg"', 'href="#research-map"')
         assert not re.search(r'(src|href|srcset)="assets/', page), f"unresolved asset path in browser file {target}"
         (out / target).write_text(page, encoding="utf8")
     return out

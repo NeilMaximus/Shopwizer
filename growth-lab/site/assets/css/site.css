@@ -210,8 +210,8 @@ h1 {
 }
 .plain .lede { margin-top: 18px; max-width: 34em; font-size: var(--gl-text-lead); line-height: 1.55; color: var(--gl-ink-2); text-wrap: pretty; }
 
-/* Evidence: what the benchmark tells you beside the MartechMap, then MartechTribe's figures in one quiet
-   row split by hairlines (no tiles, boxes or counters), then the brands that use the research */
+/* Evidence: the research explorer, then MartechTribe's figures in one quiet row split by hairlines (no tiles,
+   boxes or counters), then the brands that use the research (version 2.13.2: no map and no enquiry here) */
 /* The introduction in two columns above the research explorer (version 2.13): the heading on the left, its
    coral line and one supporting line on the right */
 .evidence-intro { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px clamp(40px, 6vw, 96px); align-items: start; }
@@ -224,16 +224,6 @@ h1 {
    (DESIGN_SYSTEM.md, section 11). The rest of the introduction stays ink 2 */
 .evidence .evidence-copy h2, .evidence .lede-lead { color: var(--gl-coral); }
 .nowrap { white-space: nowrap; }
-.map { min-width: 0; }
-/* Vendor artwork: shown whole at its own 16 by 9 with the credit band it carries, never cropped or
-   recoloured. The ring is a box shadow so it adds no size and the image keeps its exact ratio */
-.map img {
-  display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
-  border-radius: var(--gl-radius-image); background: var(--gl-panel);
-  /* Hairline ring, then one restrained glow in brand coral behind the map (Neil, version 2.6). The glow
-     sits outside the image, so the map itself is never tinted */
-  box-shadow: 0 0 0 1px var(--gl-line), 0 10px 44px -6px color-mix(in srgb, var(--gl-coral) 30%, transparent);
-}
 /* Research explorer (version 2.13, Neil, 16 October 2026): four named views of MartechTribe's Apex Martech
    Matrix retail example on one light grey panel at the full content width: your position, what it means, your
    priorities and your next steps. Four tabs sit at the top and Previous and Next at the foot. Every view shares
@@ -324,13 +314,6 @@ h1 {
   .rx-tab, .rx-ico, .rx-step { transition: none; }
   .rx.is-tabbed .rx-view[data-active="true"] { animation: none; }
 }
-
-/* One enquiry, under the explorer whichever view is open */
-.rx-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 40px; margin-top: 28px; padding-inline: clamp(16px, 2.8vw, 40px); }
-.rx-cta-title { font-size: clamp(21px, 1.9vw, 26px); line-height: 1.25; letter-spacing: -0.015em; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-wrap: balance; }
-.rx-cta-copy p { margin-top: 6px; font-size: 17px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
-/* The button keeps to the screen: on a phone it takes the full width and its words may wrap */
-.rx-cta .btn-coral { max-width: 100%; white-space: normal; text-align: center; }
 
 /* Quadrant colours, shared by the matrix, its tags and the position cards */
 .q-powerhouse { background: var(--gl-purple); }
@@ -445,32 +428,6 @@ h1 {
 .plan-action { margin-top: 3px; font-size: 14.5px; line-height: 1.45; color: var(--gl-ink-2); text-wrap: pretty; }
 .plan-owner { display: flex; flex-direction: column; gap: 2px; font-size: 14.5px; line-height: 1.35; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 .plan-owner small { font-size: 13px; font-weight: var(--gl-weight-medium); color: var(--gl-ink-3); }
-
-/* The MartechMap as supporting evidence beside the research credentials (version 2.13): a compact image, its line
-   and credit, and the full map on request */
-.market { display: grid; grid-template-columns: minmax(0, 0.44fr) minmax(0, 0.56fr); align-items: center; gap: 32px clamp(32px, 4.5vw, 64px); margin-top: clamp(40px, 5vw, 64px); padding-top: clamp(32px, 4vw, 48px); border-top: 1px solid var(--gl-line); }
-.market-title { font-size: clamp(20px, 1.7vw, 22px); line-height: 1.3; letter-spacing: -0.01em; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
-.market-line { margin-top: 8px; font-size: 17px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
-.map-open {
-  display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 16px; padding: 0 18px;
-  border-radius: var(--gl-radius-pill); background: var(--gl-white); box-shadow: 0 0 0 1px var(--gl-line);
-  font-size: 15px; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-decoration: none; transition: box-shadow 0.2s;
-}
-.map-open:hover { box-shadow: 0 0 0 1px var(--gl-purple); }
-.map-open:focus-visible, .map-close:focus-visible, .map-new-tab:focus-visible { outline: 2px solid var(--gl-purple-strong); outline-offset: 2px; }
-.map-open svg, .map-close svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.market .brands { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--gl-line); }
-.map-dialog { width: min(1600px, calc(100vw - 32px)); max-width: none; max-height: calc(100vh - 32px); padding: 0; border: 0; border-radius: 16px; background: var(--gl-white); color: var(--gl-ink); overflow: auto; }
-.map-dialog::backdrop { background: rgb(17 17 17 / 0.82); }
-.map-dialog-bar { display: flex; align-items: center; gap: 12px 20px; padding: 10px 10px 10px 20px; border-bottom: 1px solid var(--gl-line); }
-.map-dialog-bar h3 { margin-right: auto; font-size: 17px; font-weight: var(--gl-weight-semibold); }
-.map-new-tab { font-size: 15px; font-weight: var(--gl-weight-medium); color: var(--gl-purple-strong); text-underline-offset: 3px; }
-.map-close { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: var(--gl-panel); color: var(--gl-ink); cursor: pointer; }
-.map-close:hover { background: var(--gl-panel-strong); }
-.map-dialog img { display: block; width: 100%; height: auto; max-height: calc(100vh - 150px); object-fit: contain; background: var(--gl-panel); }
-.map-dialog .map-credit { padding: 10px 20px 14px; }
-.map figcaption { margin-top: 14px; }
-.map-credit { font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3); }
 .figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: clamp(48px, 6vw, 80px); }
 .fig { min-width: 0; padding-inline: clamp(20px, 2.4vw, 32px); border-left: 1px solid var(--gl-line); }
 .fig:first-child { padding-left: 0; border-left: 0; }
@@ -672,7 +629,6 @@ h1 {
   .ways { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: clamp(48px, 7vw, 64px); }
   .evidence-intro { grid-template-columns: minmax(0, 1fr); }
   .evidence-tells { padding-top: 0; }
-  .market { grid-template-columns: minmax(0, 1fr); }
   .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; }
   .fig:nth-child(odd) { padding-left: 0; border-left: 0; }
   .fig:nth-child(even) { padding-right: 0; }
@@ -698,8 +654,6 @@ h1 {
   /* On a phone the four tabs sit two by two, and each view keeps its own height */
   .rx-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rx-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .rx-cta { padding-inline: 0; }
-  .rx-cta .btn-coral { width: 100%; }
   .rx-nav .rx-count { display: none; }
   .rx-step { width: 100%; }
   .score { padding: 16px; }

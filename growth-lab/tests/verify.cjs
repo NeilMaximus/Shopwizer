@@ -43,16 +43,12 @@ const HOME = {
   waysH2: 'Four ways to work with Growth Lab',
   evidenceH2: 'What 1,634 real martech stacks can tell you about yours.',
   evidenceLede: 'Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses. See how your technology compares with relevant peers, where you could get more from existing platforms and which investments deserve priority.',
-  // The research section's enquiry, under the explorer (version 2.13)
-  cta: { title: 'Where should your next martech investment go?', text: 'We’ll discuss your goals, current platforms and whether a benchmark would help.', button: 'Discuss your martech priorities' },
-  marketLine: 'Independent market research to inform your technology choices.',
   figures: [['1,634', 'real stacks benchmarked. How companies like yours actually built theirs.'],
     ['15,505', 'solutions analysed. The whole market, including the ones your vendor does not mention.'],
     ['1,345', 'features indexed daily across 49 categories. Current to the day, not last year’s report.'],
     ['9 years', 'of independent research.']],
   figuresNote: 'Research used by 200+ global brands, including',
   brands: ['Standard Bank', 'Vodafone', 'Philips', 'Unilever'],
-  credit: 'Research: MartechTribe. MartechMap © chiefmartec and MartechTribe.',
   workshopsH2: 'See the opportunity. Know where to act.',
   workshopsLede: 'Use cross-industry research and your own data to identify opportunities, prioritise investment and plan the next steps.',
   startH2: 'Experience that moves you forward.',
@@ -320,7 +316,6 @@ async function homeChecks(page, vp) {
     const visible = (el) => el.checkVisibility();
     const order = ['.approach', '#evidence', '#workshops', '#start', '#platforms', '.rune-stage'].map((s) => document.querySelector(s));
     const colour = (sel, prop) => cs(document.querySelector(sel))[prop];
-    const map = document.querySelector('#evidence .map img');
     const small = [];
     for (const el of document.querySelectorAll('a[href], button, summary')) {
       const r = el.getBoundingClientRect();
@@ -358,19 +353,16 @@ async function homeChecks(page, vp) {
         leadColour: cs(document.querySelector('#evidence .lede-lead')).color, leadOwnLine: (() => { const ps = document.querySelectorAll('#evidence .lede');
           return ps.length === 2 && ps[0].tagName === 'P' && ps[0].classList.contains('lede-lead') && ps[1].tagName === 'P' && !ps[1].classList.contains('lede-lead'); })(), coralText: [...document.querySelectorAll('#evidence *')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && cs(el).color === 'rgb(255, 78, 78)').map((el) => el.textContent.replace(/\s+/g, ' ').trim()), label: t('#evidence .list-label'),
         coral: [...document.querySelectorAll('#evidence *')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && cs(el).color === 'rgb(255, 78, 78)').length,
-        mapShadow: cs(map).boxShadow, mapFilter: cs(map).filter, mapOpacity: cs(map).opacity,
         ledeColour: cs(document.querySelector('#evidence .evidence-tells .lede:not(.lede-lead)')).color, lists: document.querySelectorAll('#evidence .benefits, #evidence .list-label').length,
-        cta: (() => { const c = document.querySelector('#evidence .rx-cta'), a = c.querySelector('a'), rx = document.querySelector('#evidence .rx');
-          return { title: t('.rx-cta-title', c), text: t('.rx-cta-copy p', c), button: a.textContent.trim(), href: a.getAttribute('href'), coral: a.classList.contains('btn-coral'),
-            below: c.getBoundingClientRect().top >= rx.getBoundingClientRect().bottom && c.getBoundingClientRect().top - rx.getBoundingClientRect().bottom <= 48, outside: !rx.contains(c) }; })(),
-        market: (() => { const m = document.querySelector('#evidence .market'), open = m.querySelector('.map-open'), dlg = document.querySelector('#evidence .map-dialog');
-          return { title: t('.market-title', m), line: t('.market-line', m), open: open.textContent.trim(), href: open.getAttribute('href'),
-            dialogImg: dlg.querySelector('img').getAttribute('src'), afterFigures: m.getBoundingClientRect().top >= document.querySelector('#evidence .figures').getBoundingClientRect().bottom,
-            brandsInside: !!m.querySelector('.brands'), outsideExplorer: !document.querySelector('.rx').contains(m) }; })(),
+        // Version 2.13.2 (Neil): no enquiry strip and no map here; the brands follow the figures, with even space around them
+        gone: document.querySelectorAll('#evidence .rx-cta, #evidence .market, #evidence .map, #evidence figure, #evidence dialog, #evidence .map-open').length,
+        foot: (() => { const sec = document.querySelector('#evidence'), rx = sec.querySelector('.rx'), fg = sec.querySelector('.figures'), br = sec.querySelector('.brands');
+          const r = (el) => el.getBoundingClientRect(), next = document.querySelector('#workshops h2');
+          return { order: rx.nextElementSibling === fg && fg.nextElementSibling === br && br.nextElementSibling === null, top: Math.round(r(sec.querySelector('h2')).top - r(sec).top),
+            toFigures: Math.round(r(fg).top - r(rx).bottom), toBrands: Math.round(r(br).top - r(fg).bottom), toEnd: Math.round(r(sec).bottom - r(br).bottom),
+            toNext: Math.round(r(next).top - r(sec).bottom) }; })(),
         details: document.querySelectorAll('#evidence details, #evidence summary, #evidence .sources, #evidence .proof').length,
         links: [...document.querySelectorAll('#evidence a')].map((a) => a.getAttribute('href')), visibleText: document.querySelector('#evidence').innerText,
-        figcaption: t('#evidence figcaption'), credit: t('#evidence .map-credit'),
-        figBelow: document.querySelector('#evidence figcaption').getBoundingClientRect().top >= map.getBoundingClientRect().bottom && map.getBoundingClientRect().height > 0,
         figures: [...document.querySelectorAll('#evidence .figures .fig')].map((f) => ({ num: t('dt', f), text: t('dd', f), box: box(f),
           numSize: parseFloat(cs(f.querySelector('dt')).fontSize), numColour: cs(f.querySelector('dt')).color,
           card: [cs(f).backgroundColor, cs(f).boxShadow, cs(f).borderTopWidth].join(' '), borderLeft: `${cs(f).borderLeftWidth} ${cs(f).borderLeftStyle}` })),
@@ -384,9 +376,8 @@ async function homeChecks(page, vp) {
             topMean: top.length ? top.reduce((a, i) => a + i.getBoundingClientRect().height, 0) / top.length : 30,
             topBase: parseFloat(getComputedStyle(document.querySelector('.clients') || document.body).getPropertyValue('--logo-h')) || 30,
             afterNote: imgs.every((i) => i.getBoundingClientRect().left >= note.getBoundingClientRect().right - 1 || i.getBoundingClientRect().top >= note.getBoundingClientRect().bottom - 1) }; })(),
-        figuresBelowMap: document.querySelector('#evidence .figures').getBoundingClientRect().top >= document.querySelector('#evidence .rx').getBoundingClientRect().bottom,
-        map: { ok: map.complete && map.naturalWidth > 0, ratio: map.naturalWidth / map.naturalHeight, boxRatio: map.getBoundingClientRect().width / map.getBoundingClientRect().height,
-          fit: cs(map).objectFit, alt: map.alt, box: box(map) }, copyBox: box(document.querySelector('.evidence-copy')), tellsBox: box(document.querySelector('.evidence-tells')), introBox: box(document.querySelector('.evidence-intro')),
+        figuresBelowExplorer: document.querySelector('#evidence .figures').getBoundingClientRect().top >= document.querySelector('#evidence .rx').getBoundingClientRect().bottom,
+        copyBox: box(document.querySelector('.evidence-copy')), tellsBox: box(document.querySelector('.evidence-tells')), introBox: box(document.querySelector('.evidence-intro')),
         rxBox: box(document.querySelector('#evidence .rx')), figuresW: document.querySelector('#evidence .figures').getBoundingClientRect().width,
         explorer: (() => {
           const rx = document.querySelector('.rx'), list = rx.querySelector('.rx-tabs'), tabs = [...list.querySelectorAll('[role="tab"]')], views = [...rx.querySelectorAll('.rx-view')];
@@ -568,7 +559,7 @@ async function homeChecks(page, vp) {
     e.leadText === HOME.evidenceLede.split('. ')[0] + '.' && JSON.stringify(e.coralText) === JSON.stringify([HOME.evidenceH2, e.leadText]), JSON.stringify(e.coralText));
   check(`${tag} MartechTribe's figures word for word, as plain figures (no tiles, boxes or counters)`, e.figuresDl === 'DL' && e.figures.length === 4 &&
     e.figures.every((f, i) => f.num === HOME.figures[i][0] && f.text === HOME.figures[i][1] && f.numColour === 'rgb(17, 17, 17)' && f.numSize >= 30 &&
-      f.card === 'rgba(0, 0, 0, 0) none 0px') && e.note === HOME.figuresNote && e.figuresBelowMap, e.figures.map((f) => `${f.num} ${f.numSize}px`).join(', '));
+      f.card === 'rgba(0, 0, 0, 0) none 0px') && e.note === HOME.figuresNote && e.figuresBelowExplorer, e.figures.map((f) => `${f.num} ${f.numSize}px`).join(', '));
   check(`${tag} "including" is followed by the four genuine brand logos in ink, labelled for screen readers, unstretched and smaller than the client logos`,
     JSON.stringify(e.brands.alts) === JSON.stringify(HOME.brands) && e.brands.labelled && e.brands.ok && e.brands.ratio && e.brands.local && e.brands.afterNote &&
     e.brands.heights.every((h) => h >= 10 && h <= e.brands.topBase) &&
@@ -576,20 +567,12 @@ async function homeChecks(page, vp) {
     `${e.brands.heights.join('/')} px against ${Math.round(e.brands.topMean)} px on average at the top (base ${e.brands.topBase} px)`);
   if (vp.width >= 1000) check(`${tag} figures in one row split by hairlines`, new Set(e.figures.map((f) => Math.round(f.box.t))).size === 1 &&
     e.figures[0].borderLeft === '0px none' && e.figures.slice(1).every((f) => f.borderLeft === '1px solid'));
-  check(`${tag} the map carries only its credit: no figures, categories or benchmark in the caption`, e.figcaption === HOME.credit && e.credit === HOME.credit && e.figBelow &&
-    e.details === 0 && JSON.stringify(e.links) === JSON.stringify(['contact.html', 'assets/media/martechmap-2026.jpg', 'assets/media/martechmap-2026.jpg']) &&
-    !/Sources|has benchmarked/.test(e.visibleText), e.links.join(', '));
-  check(`${tag} a restrained coral glow behind the map, the map itself untouched`, /(rgba\(255, 78, 78, 0\.3\)|color\(srgb 1 0\.30\d* 0\.30\d* \/ 0\.3\))/.test(e.mapShadow) &&
-    e.mapFilter === 'none' && e.mapOpacity === '1', e.mapShadow);
-  check(`${tag} the map is supporting evidence after the figures, outside the explorer, with its line, the brands beside it and the full map on request`,
-    e.market.title === 'The whole market your stack is chosen from' && e.market.line === HOME.marketLine && e.market.open === 'View the full market map' &&
-    e.market.href === 'assets/media/martechmap-2026.jpg' && fs.existsSync(path.join(SITE, e.market.href)) && e.market.dialogImg === e.market.href &&
-    e.market.afterFigures && e.market.brandsInside && e.market.outsideExplorer, JSON.stringify(e.market));
-  check(`${tag} one enquiry under the explorer, outside the tabs: ${HOME.cta.button}`, e.cta.title === HOME.cta.title && e.cta.text === HOME.cta.text &&
-    e.cta.button === HOME.cta.button && e.cta.href === 'contact.html' && e.cta.coral && e.cta.below && e.cta.outside, JSON.stringify(e.cta));
-  check(`${tag} map stays whole at 16:9`, 
-    e.map.ok && Math.abs(e.map.ratio - 16 / 9) < 0.01 && Math.abs(e.map.boxRatio - 16 / 9) < 0.01 && e.map.fit !== 'cover' &&
-    /chiefmartec and MartechTribe/.test(e.map.alt), `${Math.round(e.map.box.w)}x${Math.round(e.map.box.h)}`);
+  check(`${tag} the research section ends with the figures and the brands: no map, caption, enquiry strip or link (version 2.13.2)`,
+    e.gone === 0 && e.details === 0 && e.links.length === 0 && e.foot.order && !/Sources|has benchmarked|market map|Discuss your martech/.test(e.visibleText),
+    JSON.stringify({ gone: e.gone, links: e.links, order: e.foot.order }));
+  check(`${tag} balanced white space: the explorer, the figures and the brands evenly spaced, and as much room after the brands as above the heading`,
+    e.foot.toFigures >= 40 && e.foot.toBrands >= 40 && Math.abs(e.foot.toFigures - e.foot.toBrands) <= 16 && e.foot.toEnd >= 48 && Math.abs(e.foot.toEnd - e.foot.top) <= 2 &&
+    Math.abs(e.foot.toNext - e.foot.toEnd) <= 2, JSON.stringify(e.foot));
   if (vp.width >= 1000) {
     check(`${tag} research introduction in two balanced columns, the explorer below it at the full content width`,
       e.copyBox.r <= e.tellsBox.l && Math.abs(e.copyBox.w - e.tellsBox.w) < 2 && Math.abs(e.copyBox.t - e.tellsBox.t) <= 12 && e.introBox.b <= e.rxBox.t &&
@@ -1084,7 +1067,7 @@ async function apiChecks() {
     if (vp.name === 'desktop') {
       await page.locator('.approach').screenshot({ path: path.join(SHOTS, 'four-ways.png') });
       await page.locator('#workshops').screenshot({ path: path.join(SHOTS, 'workshops.png') });
-      await page.locator('#evidence').screenshot({ path: path.join(SHOTS, 'research-and-map.png') });
+      await page.locator('#evidence').screenshot({ path: path.join(SHOTS, 'research.png') });
       await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
       await fullCube(8000);
       await page.locator('.device-card').screenshot({ path: path.join(SHOTS, 'cube-rest.png') });
@@ -1121,33 +1104,12 @@ async function apiChecks() {
           await page.screenshot({ path: path.join(SHOTS, 'focus-header.png'), clip: { x: 0, y: 0, width: 1440, height: 110 } });
         }
       }
-      const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', 'Your position', 'Next', 'Discuss your martech priorit', 'View the full market map', 'Let’s Talk',
+      const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', 'Your position', 'Next', 'Let’s Talk',
         'Growth Lab, back to top', 'Privacy', 'Website terms', 'Growth Lab on LinkedIn (open'];
       check('[home desktop] keyboard order follows the page and every stop shows a ring', stops.every((s) => s.ring) &&
         JSON.stringify(stops.map((s) => s.label)) === JSON.stringify(expected), stops.map((s) => s.label + (s.ring ? '' : ' (no ring)')).join(' > '));
 
-      // The full market map: it opens over the page from the existing 1600 px image, takes focus, and Escape, the
-      // close button or a click outside it closes it, with focus back on the link
-      await page.click('.map-open');
-      await page.waitForFunction(() => { const i = document.querySelector('.map-dialog img'); return i.complete && i.naturalWidth > 0; }, null, { timeout: 5000 }).catch(() => {});
-      const opened = await page.evaluate(() => { const d = document.querySelector('.map-dialog'), i = d.querySelector('img'), r = i.getBoundingClientRect();
-        return { open: d.open, modal: d.matches(':modal'), natural: i.naturalWidth, width: Math.round(r.width), height: Math.round(r.height), vw: innerWidth, vh: innerHeight,
-          focus: document.activeElement.className, credit: d.querySelector('.map-credit').textContent.trim() }; });
-      await page.screenshot({ path: path.join(SHOTS, 'market-map-full.png') });
-      await page.keyboard.press('Escape');
-      await page.waitForTimeout(150);
-      const closed = await page.evaluate(() => ({ open: document.querySelector('.map-dialog').open, focus: document.activeElement.className }));
-      await page.click('.map-open'); await page.click('.map-close'); await page.waitForTimeout(150);
-      const closedByButton = await page.evaluate(() => !document.querySelector('.map-dialog').open && document.activeElement.classList.contains('map-open'));
-      check('[home desktop] View the full market map opens the 1600 px map over the page, larger than in the section, and closes with Escape or its button, focus returning',
-        opened.open && opened.modal && opened.natural === 1600 && opened.width >= 1000 && opened.height <= opened.vh && opened.focus === 'map-close' &&
-        opened.credit === HOME.credit && !closed.open && closed.focus === 'map-open' && closedByButton, JSON.stringify({ opened, closed, closedByButton }));
-
-      // All three actions open the contact view
-      await page.click('#evidence .rx-cta .btn-coral');
-      await page.waitForURL(/contact\.html$/);
-      check('[home desktop] Discuss your martech priorities opens the contact view', (await page.textContent('h1')).trim() === CONTACT.h1);
-      await page.goBack();
+      // Both actions open the contact view
       await page.click('.site-header .btn-dark');
       await page.waitForURL(/contact\.html$/);
       check('[home desktop] the header Let’s Talk opens the contact view', (await page.textContent('h1')).trim() === CONTACT.h1);
@@ -1516,14 +1478,14 @@ async function apiChecks() {
     const pv = await pp.evaluate(async () => { await document.fonts.ready; return {
       geist: document.fonts.check('600 16px Geist'), overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       external: [...document.querySelectorAll('link[href], script[src]')].map((e) => e.getAttribute('href') || e.getAttribute('src')),
-      imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img):not(.platforms img):not(.map-dialog img)')].map((i) => i.complete && i.naturalWidth > 0),
+      imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img):not(.platforms img)')].map((i) => i.complete && i.naturalWidth > 0),
       brands: [...document.querySelectorAll('.brands img')].map((i) => i.complete && i.naturalWidth > 0 && i.getAttribute('src').startsWith('assets/brands/')),
       platforms: [...document.querySelectorAll('.platforms img')].map((i) => i.complete && i.naturalWidth > 0 && i.getAttribute('src').startsWith('assets/platforms/')),
       logos: [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')].map((i) => i.complete && i.naturalWidth > 0),
       actions: [...document.querySelectorAll('.btn')].map((a) => a.getAttribute('href')), mail: document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').length }; });
     check('[preview] homepage self contained: Geist, images from published files, no overflow, no requests out', pv.geist && pv.overflow <= 0 &&
-      pv.external.length === 0 && perr.length === 0 && pv.imgs.length === 3 && pv.imgs.every(Boolean) && pv.brands.length === 4 && pv.brands.every(Boolean) && pv.platforms.length === PLATFORMS_PRESENT.length && pv.platforms.every(Boolean) && pv.logos.length === LOGOS_PRESENT.length && pv.logos.every(Boolean) && external.length === 0, JSON.stringify({ ...pv, external }));
-    check('[preview] all three actions open the published contact view', pv.actions.length === 3 && pv.actions.every((h) => h === 'contact.html') &&
+      pv.external.length === 0 && perr.length === 0 && pv.imgs.length === 2 && pv.imgs.every(Boolean) && pv.brands.length === 4 && pv.brands.every(Boolean) && pv.platforms.length === PLATFORMS_PRESENT.length && pv.platforms.every(Boolean) && pv.logos.length === LOGOS_PRESENT.length && pv.logos.every(Boolean) && external.length === 0, JSON.stringify({ ...pv, external }));
+    check('[preview] both actions open the published contact view', pv.actions.length === 2 && pv.actions.every((h) => h === 'contact.html') &&
       fs.existsSync(path.join(previewDir, 'contact.html')) && pv.mail === 0);
     await pctx.close();
     fs.unlinkSync(path.join(previewDir, '_wrapped.html'));
@@ -1572,7 +1534,7 @@ async function apiChecks() {
       for (const i of document.querySelectorAll('img')) { i.scrollIntoView(); await i.decode().catch(() => {}); }
       return { geist: document.fonts.check('600 16px Geist'), cube: !document.getElementById('device').className.includes('pre-build'),
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-        imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img):not(.platforms img):not(.map-dialog img)')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/jpeg')),
+        imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img):not(.platforms img)')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/jpeg')),
         brands: [...document.querySelectorAll('.brands img')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/png;base64,')),
         platforms: [...document.querySelectorAll('.platforms img')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/png;base64,')),
         logos: [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')].map((i) => i.complete && i.naturalWidth > 0 && /^data:image\/(svg\+xml|png);base64,/.test(i.src)),
@@ -1582,7 +1544,7 @@ async function apiChecks() {
     });
     const missing = bv.files.filter((h) => !fs.existsSync(path.join(browserDir, h)));
     check('[browser file] homepage opens from a folder: Geist, cube, images built in, links resolve, no requests', bv.geist && bv.cube && bv.overflow <= 0 &&
-      bv.imgs.length === 3 && bv.imgs.every(Boolean) && bv.brands.length === 4 && bv.brands.every(Boolean) && bv.platforms.length === PLATFORMS_PRESENT.length && bv.platforms.every(Boolean) && bv.logos.length === LOGOS_PRESENT.length && bv.logos.every(Boolean) && missing.length === 0 && requests.length === 0 && berr.length === 0 &&
+      bv.imgs.length === 2 && bv.imgs.every(Boolean) && bv.brands.length === 4 && bv.brands.every(Boolean) && bv.platforms.length === PLATFORMS_PRESENT.length && bv.platforms.every(Boolean) && bv.logos.length === LOGOS_PRESENT.length && bv.logos.every(Boolean) && missing.length === 0 && requests.length === 0 && berr.length === 0 &&
       bv.actions.every((h) => h === 'growth-lab-contact.html') && bv.external.length === 0,
       JSON.stringify({ ...bv, imgs: bv.imgs.length, missing, requests, errors: berr }));
     await bp.goto('file://' + path.join(browserDir, 'growth-lab-contact.html'));

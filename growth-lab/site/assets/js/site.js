@@ -247,26 +247,8 @@
     show(0);
   }
 
-  /* The full MartechMap in a dialog over the page, from the existing 1600 px image. Without the script the link
-     opens the image itself. Escape, the close button or a click outside the image closes it, and focus returns
-     to the link. */
-  function mapViewer() {
-    var open = document.querySelector('.map-open'), dialog = document.querySelector('.map-dialog');
-    if (!open || !dialog || typeof dialog.showModal !== 'function') { return; }
-    var close = dialog.querySelector('.map-close');
-    open.addEventListener('click', function (e) {
-      e.preventDefault();
-      dialog.showModal();
-      close.focus();
-    });
-    close.addEventListener('click', function () { dialog.close(); });
-    dialog.addEventListener('click', function (e) { if (e.target === dialog) { dialog.close(); } });
-    dialog.addEventListener('close', function () { open.focus(); });
-  }
-
   liveCube();
   researchExplorer();
-  mapViewer();
   liveRune();
   clientStrip();
 })();

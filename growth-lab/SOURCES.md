@@ -23,7 +23,7 @@ Dropped in the shortening, and worth restoring elsewhere if they matter: under F
 
 ## Figures
 
-These are MartechTribe's own figures. They describe MartechTribe's research and the MartechMap, not Growth Lab audits. Since version 2.12 they are on the page again, as one quiet row below the research copy and map (no tiles or counters).
+These are MartechTribe's own figures. They describe MartechTribe's research and the MartechMap, not Growth Lab audits. Since version 2.12 they are on the page again, as one quiet row below the research explorer (no tiles or counters).
 
 | On the page | Where | Source | Notes |
 | --- | --- | --- | --- |
@@ -41,7 +41,7 @@ The research section is Neil's copy of 15 October 2026, word for word: the headi
 
 Copy edits made for house style only: "the world’s largest" (the supplied text read "the world’s the largest").
 
-The map caption is now the credit alone: "Research: MartechTribe. MartechMap © chiefmartec and MartechTribe." The map is MartechMap 2026, a vendor landscape; it is not a chart of the 1,634 benchmarked stacks.
+Since version 2.13.2 (Neil, 16 October 2026) the MartechMap is not on the page. While it was, its caption was the credit alone: "Research: MartechTribe. MartechMap © chiefmartec and MartechTribe." The map is MartechMap 2026, a vendor landscape; it is not a chart of the 1,634 benchmarked stacks.
 
 ## Relationship wording
 
@@ -123,7 +123,7 @@ All taken from the media of the private Life Insurer Lens v10 artifact (https://
 | `neil-botha.jpg` | 192 × 192 | Lens `media/neil.jpg` (200 px), scaled |
 | `frans-riemersma.jpg` | 192 × 192 | Lens `media/frans.jpg` (320 px), scaled |
 
-The 4096 px full map was removed in version 2.4 with the "View the full map" link. Since version 2.13 (Neil, 16 October 2026) "View the full market map" opens the existing 1600 px `martechmap-2026.jpg` in a dialog over the page; no larger file is used. The map now sits below the explorer as supporting evidence, with the line "Independent market research to inform your technology choices."
+The 4096 px full map was removed in version 2.4 with the "View the full map" link. Since version 2.13 (Neil, 16 October 2026) "View the full market map" opens the existing 1600 px `martechmap-2026.jpg` in a dialog over the page; no larger file is used. In version 2.13 the map sat below the explorer as supporting evidence; since version 2.13.2 neither the map nor that link is on the page, and the two files stay in the source.
 
 ## Client logos
 
