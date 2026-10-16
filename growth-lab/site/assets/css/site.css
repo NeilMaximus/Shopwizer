@@ -235,6 +235,8 @@ h1 {
   width: 8px; height: 8px; border-radius: 2px; background: var(--gl-purple);
 }
 .evidence-copy .lede { margin-top: 20px; }
+/* The coral first sentence stands as its own paragraph; "Your stack…" starts on a new line */
+.evidence-copy .lede p + p { margin-top: 0.7em; }
 /* The research heading and the introduction's first sentence in brand coral (Neil, version 2.12). The
    heading is large text (3.25:1 passes); the regular weight sentence is a recorded contrast exception
    (DESIGN_SYSTEM.md, section 11). The rest of the introduction stays ink 2 */

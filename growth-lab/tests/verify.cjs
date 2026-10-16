@@ -336,7 +336,8 @@ async function homeChecks(page, vp) {
       header: { links: [...document.querySelectorAll('.site-header a')].map((a) => `${a.textContent.trim() || a.getAttribute('aria-label')}|${a.getAttribute('href')}|${a.className}`),
         navs: document.querySelectorAll('.site-header nav, .site-header ul').length },
       evidence: { h2: t('#evidence h2'), h2Colour: cs(document.querySelector('#evidence h2')).color, lede: t('#evidence .lede'), leadText: t('#evidence .lede-lead'),
-        leadColour: cs(document.querySelector('#evidence .lede-lead')).color, coralText: [...document.querySelectorAll('#evidence *')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && cs(el).color === 'rgb(255, 78, 78)').map((el) => el.textContent.replace(/\s+/g, ' ').trim()), label: t('#evidence .list-label'),
+        leadColour: cs(document.querySelector('#evidence .lede-lead')).color, leadOwnLine: (() => { const ps = document.querySelectorAll('#evidence .lede p');
+          return ps.length === 2 && ps[0].classList.contains('lede-lead') && ps[1].getBoundingClientRect().top >= ps[0].getBoundingClientRect().bottom; })(), coralText: [...document.querySelectorAll('#evidence *')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && cs(el).color === 'rgb(255, 78, 78)').map((el) => el.textContent.replace(/\s+/g, ' ').trim()), label: t('#evidence .list-label'),
         labelTag: document.querySelector('#evidence .list-label').tagName,
         coral: [...document.querySelectorAll('#evidence *')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && cs(el).color === 'rgb(255, 78, 78)').length,
         mapShadow: cs(map).boxShadow, mapFilter: cs(map).filter, mapOpacity: cs(map).opacity,
@@ -447,8 +448,8 @@ async function homeChecks(page, vp) {
   check(`${tag} research copy word for word: heading, introduction, What it tells you and three bullets`, e.h2 === HOME.evidenceH2 && e.lede === HOME.evidenceLede &&
     e.label === HOME.evidenceLabel && e.labelTag === 'H3' && JSON.stringify(e.benefits) === JSON.stringify(HOME.benefits) &&
     !/Deloitte|Accenture|months\. Or millions/.test(e.visibleText), JSON.stringify([e.h2, e.lede, e.label, e.benefits]));
-  check(`${tag} research heading and the introduction's first sentence in brand coral; the rest of the introduction ink 2, bullets ink, nothing else coral`,
-    e.h2Colour === 'rgb(255, 78, 78)' && e.leadColour === 'rgb(255, 78, 78)' && e.ledeColour === 'rgb(64, 64, 64)' && e.benefitColour === 'rgb(17, 17, 17)' &&
+  check(`${tag} research heading and the introduction's first sentence in brand coral, that sentence on its own line; the rest of the introduction ink 2, bullets ink, nothing else coral`,
+    e.leadOwnLine && e.h2Colour === 'rgb(255, 78, 78)' && e.leadColour === 'rgb(255, 78, 78)' && e.ledeColour === 'rgb(64, 64, 64)' && e.benefitColour === 'rgb(17, 17, 17)' &&
     e.leadText === HOME.evidenceLede.split('. ')[0] + '.' && JSON.stringify(e.coralText) === JSON.stringify([HOME.evidenceH2, e.leadText]), JSON.stringify(e.coralText));
   check(`${tag} MartechTribe's figures word for word, as plain figures (no tiles, boxes or counters)`, e.figuresDl === 'DL' && e.figures.length === 4 &&
     e.figures.every((f, i) => f.num === HOME.figures[i][0] && f.text === HOME.figures[i][1] && f.numColour === 'rgb(17, 17, 17)' && f.numSize >= 30 &&
