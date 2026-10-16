@@ -285,8 +285,9 @@ h1 {
 /* Pull quotes: dark text set off by a 2 px rule in the workshop's accent, no panel */
 .w-quote { display: grid; align-self: start; gap: 10px; margin: 24px 0 0; padding-left: 16px; border-left: 2px solid var(--accent); }
 .w-quote p { font-size: 17px; line-height: 1.5; font-weight: var(--gl-weight-medium); color: var(--gl-ink); text-wrap: pretty; }
-/* Ideal for and You'll leave with, side by side inside the column */
-.w-lists { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: auto; padding-top: 28px; }
+/* Ideal for and You'll leave with, side by side inside the column. Generous space above sets them
+   apart from the quotes as their own group (Neil, version 2.12) */
+.w-lists { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: auto; padding-top: clamp(44px, 4.4vw, 64px); }
 .workshop .value-label {
   display: flex; align-items: center; gap: 8px;
   font-size: var(--gl-text-ui); line-height: 1.4; font-weight: var(--gl-weight-semibold); color: var(--gl-ink);
