@@ -28,15 +28,17 @@ growth-lab/
     privacy.html        the approved privacy notice, as published
     terms.html          the approved website terms, as published
     vercel.json         headers and caching
+    robots.txt, sitemap.xml  what search engines crawl, and the two public pages
     assets/css          tokens.css (copied) and site.css
     assets/js/site.js   cube build, rune breathing and the logo strip
     assets/js/contact.js  contact form behaviour
     assets/fonts/geist  Geist variable woff2 (Latin, 400 to 700) and OFL licence
     favicon.svg         the mark
-    assets/brand        logo, rune and mark SVGs
+    assets/brand        logo, rune and mark SVGs, the email logo and the link preview image (growthlab-og.png)
     assets/media        MartechMap 2026 (800 and 1600 px) and the two portraits
     assets/clients      genuine client logos for the strip (black on transparent), added when supplied
-  scripts/              build.py, build_font.py, extract_rune.py, gen_cube_svg.py
+  scripts/              build.py, build_font.py, extract_rune.py, gen_cube_svg.py, logo_to_black.py,
+                        render_share.cjs (WhatsApp images), render_og_image.cjs (link preview image)
   tests/verify.cjs      Playwright checks, the contact function's tests and screenshots
   dist/                 build output (git ignored): preview, browser files, zip, screenshots
 ```

@@ -8,7 +8,7 @@ logo colour becomes solid ink, white details inside the logo become clear, and a
 their softness. Pale noise below 12 is dropped and anything darker than 200 (or the optional solid
 value) is fully opaque, which evens out gradients. A lower solid value turns a pale logo colour, such
 as a pink crest, into solid ink so the white detail inside it stays legible. The empty margin is
-trimmed and the result scaled down to max_height_px (120 by default). The artwork is never redrawn, retyped or reshaped. Record every converted file in
+trimmed and the result scaled down to max_height_px (72 by default, enough for the largest logo size on a 2x screen). The artwork is never redrawn, retyped or reshaped. Record every converted file in
 SOURCES.md. Needs Pillow and NumPy.
 """
 import pathlib
@@ -21,7 +21,7 @@ INK_RGB = (17, 17, 17)
 FLOOR, SOLID = 12, 200
 
 
-def convert(src, dst, max_height=120, solid=SOLID):
+def convert(src, dst, max_height=72, solid=SOLID):
     im = Image.open(src).convert("RGBA")
     flat = Image.new("RGBA", im.size, (255, 255, 255, 255))
     flat.alpha_composite(im)
@@ -42,6 +42,6 @@ def convert(src, dst, max_height=120, solid=SOLID):
 
 
 if __name__ == "__main__":
-    size = convert(pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2]), int(sys.argv[3]) if len(sys.argv) > 3 else 120,
+    size = convert(pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2]), int(sys.argv[3]) if len(sys.argv) > 3 else 72,
                    int(sys.argv[4]) if len(sys.argv) > 4 else SOLID)
     print(sys.argv[2], f"{size[0]} x {size[1]} px")

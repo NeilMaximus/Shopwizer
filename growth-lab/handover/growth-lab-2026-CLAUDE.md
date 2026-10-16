@@ -33,6 +33,7 @@ Do not hand edit `public/` on its own: the next release from the source would si
 - **Client logos:** genuine artwork only, never redrawn, typeset or substituted. Six of twelve are present.
 - **Contact form: sending is real or it is off.** `api/contact.mjs` fails closed. With no reCAPTCHA and Resend keys on Vercel, the contact view says online enquiries are not connected and points to hello@growthlab.co.za and +27 84 504 0505. Never add a fake send, and never describe the form as working until the keys are set and an end to end send is verified. Never reuse another site's keys or phone number.
 - **Legal honesty:** never invent entity details, registration numbers or policies. The approved privacy notice and website terms (published 14 October 2026) come from the source's `legal/` folder and `site/privacy.html` and `site/terms.html`; change them there, with Neil's approval.
+- **Search and sharing:** each public page carries its title, description, canonical address, link preview tags and the 1200 x 630 `public/assets/brand/growthlab-og.png`; the homepage has one JSON-LD block taken from the approved privacy notice; `public/robots.txt` and `public/sitemap.xml` list the public pages, and the legal pages stay `noindex` in `vercel.json`. All of it comes from the source build.
 - **Do not** change DNS or MX records (they carry Google Workspace mail), create accounts, buy anything or commit secrets.
 
 ## Working with Neil

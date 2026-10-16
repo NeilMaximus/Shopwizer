@@ -143,7 +143,11 @@ def client_strip(manifest=ROOT / "config" / "client-logos.json", folder=CLIENTS,
         '          </ul>\n'
         '        </div>\n'
         '      </div>\n'
-        '    </div>\n')
+        '    </div>\n'
+        # The strip takes its single moving row before the first paint, so nothing below it jumps when
+        # site.js starts the loop; without the script, or with reduced motion, the logos wrap and stand still
+        "    <script>(function () { var s = document.currentScript.previousElementSibling; if (s && s.animate && "
+        "!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) { s.classList.add('is-moving'); } })();</script>\n")
     return markup, missing
 
 
@@ -245,6 +249,10 @@ def offline_contact(page_html):
     return page_html.replace('data-mode="live"', 'data-mode="preview"')
 
 
+# Search and link preview tags point at growthlab.co.za, so only the real site carries them
+SEARCH_TAGS = re.compile(r'\s*(?:<link rel="canonical"[^>]*>|<meta (?:property="og:|name="twitter:)[^>]*>|<script type="application/ld\+json">.*?</script>)', re.S)
+
+
 def build_preview():
     """Pages for the private Claude artifact. Its viewer cannot follow email or phone links reliably
     and can show a blank page after one, so the preview shows addresses and numbers as plain
@@ -256,9 +264,10 @@ def build_preview():
     head = re.search(r"<head>(.*?)</head>", page, re.S).group(1)
     body = re.search(r"<body>(.*?)</body>", page, re.S).group(1)
     head = re.sub(r'\s*<meta (charset|name="viewport")[^>]*>', "", head)
+    head = SEARCH_TAGS.sub("", head)
     (out / "index.html").write_text(head.strip() + "\n" + body.strip() + "\n", encoding="utf8")
     for name in ("contact.html", "privacy.html", "terms.html"):
-        other = inline_assets((SITE / name).read_text(encoding="utf8"))
+        other = SEARCH_TAGS.sub("", inline_assets((SITE / name).read_text(encoding="utf8")))
         if name == "contact.html":
             other = offline_contact(other)
         other = re.sub(r'<a href="(?:mailto|tel):[^"]+">([^<]+)</a>', r"\1", other)

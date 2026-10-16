@@ -23,7 +23,8 @@ const { pathToFileURL } = require('url');
 let contactApi = null; // api/contact.mjs is an ES module, imported when the run starts
 
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
-  '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.json': 'application/json', '.txt': 'text/plain', '.jpg': 'image/jpeg' };
+  '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.json': 'application/json', '.txt': 'text/plain', '.jpg': 'image/jpeg',
+  '.png': 'image/png', '.xml': 'application/xml' };
 const EXPECTED_TOKENS = { '--gl-purple': '#7761FF', '--gl-coral': '#FF4E4E', '--gl-amber': '#FEBC2E',
   '--gl-white': '#FFFFFF', '--gl-panel': '#F5F5F5', '--gl-ink': '#111111', '--gl-black': '#111111',
   '--gl-error': '#C42B2B', '--gl-field-line': '#8A8A8A' };
@@ -698,6 +699,92 @@ async function carouselChecks(page, vp) {
   await page.click('.rc-dot >> nth=0'); await settle(0);
 }
 
+/* Search and sharing (version 2.12.1, 16 October 2026): each page names itself for Google and for link
+   previews, the homepage says who Growth Lab is in structured data taken from the approved privacy notice,
+   and robots.txt and the sitemap list only the two public pages (the legal pages stay noindex). */
+const SITE_URL = 'https://growthlab.co.za/';
+const privacyText = fs.readFileSync(path.join(SITE, 'privacy.html'), 'utf8').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+const OG_IMAGE = SITE_URL + 'assets/brand/growthlab-og.png';
+async function searchChecks(page, base) {
+  const head = (url) => page.goto(base + url, { waitUntil: 'domcontentloaded' }).then(() => page.evaluate(() => {
+    const meta = (k) => { const m = document.querySelector(`meta[property="${k}"], meta[name="${k}"]`); return m ? m.content : null; };
+    const ld = [...document.querySelectorAll('script[type="application/ld+json"]')].map((s) => { try { return JSON.parse(s.textContent); } catch (e) { return 'invalid'; } });
+    return { title: document.title, description: meta('description'), canonical: (document.querySelector('link[rel="canonical"]') || {}).href || null,
+      og: Object.fromEntries(['og:type', 'og:site_name', 'og:locale', 'og:title', 'og:description', 'og:url', 'og:image', 'og:image:width', 'og:image:height', 'og:image:alt'].map((k) => [k, meta(k)])),
+      card: meta('twitter:card'), ld, robots: meta('robots'), h1: document.querySelectorAll('h1').length };
+  }));
+  const pages = [['', SITE_URL, 'Make Your Martech Pay | Growth Lab'], ['contact.html', SITE_URL + 'contact.html', 'Contact Growth Lab']];
+  for (const [url, canonical, title] of pages) {
+    const h = await head(url);
+    const tag = `[search ${url || 'home'}]`;
+    check(`${tag} title names Growth Lab, one h1, a description of 150 characters or so, and a canonical address on growthlab.co.za`,
+      h.title === title && h.h1 === 1 && h.description && h.description.length >= 70 && h.description.length <= 165 && h.canonical === canonical && h.robots === null,
+      JSON.stringify({ title: h.title, h1: h.h1, description: h.description && h.description.length, canonical: h.canonical, robots: h.robots }));
+    check(`${tag} link previews: Open Graph title, description, address and the 1200 x 630 image, with a large card`,
+      h.og['og:type'] === 'website' && h.og['og:site_name'] === 'Growth Lab' && h.og['og:locale'] === 'en_ZA' && h.og['og:title'] === h.title &&
+      h.og['og:description'] === h.description && h.og['og:url'] === canonical && h.og['og:image'] === OG_IMAGE &&
+      h.og['og:image:width'] === '1200' && h.og['og:image:height'] === '630' && !!h.og['og:image:alt'] && h.card === 'summary_large_image', JSON.stringify(h.og));
+    if (!url) {
+      const org = h.ld[0] || {};
+      check(`${tag} structured data names Growth Lab, its legal entity and its address exactly as the approved privacy notice does, with no email or phone`,
+        h.ld.length === 1 && org['@context'] === 'https://schema.org' && org['@type'] === 'ProfessionalService' && org.name === 'Growth Lab' &&
+        org.legalName === 'Future Island (Pty) Ltd' && org.url === SITE_URL && org.image === OG_IMAGE &&
+        org.logo === SITE_URL + 'assets/brand/growthlab-email-logo-v1.png' && org.description === h.description &&
+        privacyText.includes([org.address.streetAddress, org.address.addressLocality, org.address.postalCode].join(', ')) && org.address.addressCountry === 'ZA' &&
+        JSON.stringify(org.sameAs) === JSON.stringify(['https://www.linkedin.com/company/growth-lab-za/']) && !('email' in org) && !('telephone' in org), JSON.stringify(org));
+    }
+  }
+  const og = fs.readFileSync(path.join(SITE, 'assets/brand/growthlab-og.png'));
+  check('[search] the link preview image is a 1200 x 630 PNG under 200 KB', og.readUInt32BE(16) === 1200 && og.readUInt32BE(20) === 630 && og.length < 200 * 1024, `${og.readUInt32BE(16)}x${og.readUInt32BE(20)}, ${Math.round(og.length / 1024)} KB`);
+  const robots = await (await page.request.get(base + 'robots.txt')).text();
+  const sitemap = await (await page.request.get(base + 'sitemap.xml')).text();
+  const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  check('[search] robots.txt lets every crawler in and points to the sitemap', /^User-agent: \*$/m.test(robots) && /^Allow: \/$/m.test(robots) && !/^Disallow: \/\S/m.test(robots) && robots.includes(`Sitemap: ${SITE_URL}sitemap.xml`), robots);
+  check('[search] the sitemap lists the homepage and the contact view only, each with a date', JSON.stringify(locs) === JSON.stringify([SITE_URL, SITE_URL + 'contact.html']) &&
+    (sitemap.match(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/g) || []).length === 2, locs.join(', '));
+  const vercel = JSON.parse(fs.readFileSync(path.join(SITE, 'vercel.json'), 'utf8'));
+  const rule = (src) => (vercel.headers.find((h) => h.source === src) || { headers: [] }).headers.map((x) => `${x.key}: ${x.value}`).join('; ');
+  check('[search] the legal pages stay out of search results and logo images are cached for a day',
+    rule('/privacy.html') === 'X-Robots-Tag: noindex, nofollow' && rule('/terms.html') === 'X-Robots-Tag: noindex, nofollow' &&
+    /max-age=86400/.test(rule('/assets/(clients|brands|platforms)/(.*)')), rule('/assets/(clients|brands|platforms)/(.*)'));
+  // Logo files no larger than they are ever shown: 72 px covers the tallest logo (30 px) on a 2x screen
+  const tall = [];
+  for (const dir of ['clients', 'brands', 'platforms']) {
+    for (const f of fs.readdirSync(path.join(SITE, 'assets', dir)).filter((n) => n.endsWith('.png'))) {
+      const h = fs.readFileSync(path.join(SITE, 'assets', dir, f)).readUInt32BE(20);
+      if (h > 72) tall.push(`${dir}/${f} ${h}px`);
+    }
+  }
+  check('[search] logo images are at most 72 px high, enough for a 2x screen and no heavier', tall.length === 0, tall.join(', ') || 'all within 72 px');
+}
+
+/* The research story on the screens South African visitors use most (StatCounter, desktop, 2026): at
+   1920 x 1080, 1536 x 864 and a 1440 x 900 Mac, the heading, introduction, example and its controls are
+   all in one window once the section reaches the top. Each viewport is the screen less the browser. */
+const FIT_SCREENS = [['1920 x 1080', 1920, 940], ['1536 x 864', 1536, 730], ['1440 x 900', 1440, 790]];
+async function fitChecks(browser, base) {
+  const seen = [];
+  for (const [name, width, height] of FIT_SCREENS) {
+    const page = await browser.newPage({ viewport: { width, height } });
+    await page.goto(base, { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    const m = await page.evaluate(() => {
+      const r = (s) => document.querySelector(s).getBoundingClientRect();
+      const h2 = r('#evidence-title'), rc = r('.rc'), ctl = r('.rc-controls'), copy = r('.evidence-copy');
+      return Math.round(Math.max(ctl.bottom, copy.bottom) - Math.min(h2.top, rc.top));
+    });
+    seen.push([name, height, m]);
+    if (width === 1536) {
+      await page.evaluate(() => { const el = document.querySelector('#evidence-title'); window.scrollTo(0, el.getBoundingClientRect().top + scrollY - 24); });
+      await page.waitForTimeout(200);
+      await page.screenshot({ path: path.join(SHOTS, 'research-fit-1536x864.png') });
+    }
+    await page.close();
+  }
+  check('[fit] the research story, heading to carousel controls, fits one window on the most used desktop screens',
+    seen.every(([, h, m]) => m <= h - 24), seen.map(([n, h, m]) => `${n}: ${m} of ${h} px`).join(', '));
+}
+
 async function fillContact(page, entry) {
   await page.fill('#f-name', entry.name);
   await page.fill('#f-company', entry.company);
@@ -835,6 +922,13 @@ async function apiChecks() {
   contactApi = await import(pathToFileURL(path.join(SITE, 'api', 'contact.mjs')).href);
 
   await apiChecks();
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await ctx.newPage();
+    await searchChecks(page, base);
+    await ctx.close();
+    await fitChecks(browser, base);
+  }
 
   // The homepage at desktop, laptop, tablet and phone widths
   for (const vp of VIEWPORTS) {

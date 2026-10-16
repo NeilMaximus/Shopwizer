@@ -84,12 +84,12 @@ Back on the page since 16 October 2026 (version 2.12, Neil), rebuilt in Growth L
 
 ## Leading solutions logos
 
-The row "We work across the leading solutions" after "Experience that moves you forward" (Neil, 16 October 2026). Platforms and order are Neil's (Salesforce, Adobe, MoEngage, Databricks, Snowflake) plus Microsoft, Google and HubSpot, which Claude added as the other most common platforms in South African marketing stacks: **Neil to confirm Growth Lab works across each.** Config: `config/platform-logos.json`.
+The row "We work across the leading solutions" after "Experience that moves you forward" (Neil, 16 October 2026). Platforms are Neil's (Salesforce, Adobe, MoEngage, Databricks, Snowflake) plus Microsoft and Google, which Claude added as other common platforms in South African marketing stacks: **Neil to confirm Growth Lab works across each.** HubSpot, also added by Claude, was replaced with MoEngage at Neil's request on 16 October 2026: Growth Lab is a MoEngage partner (Neil). The row never uses the word partner. Config: `config/platform-logos.json`.
 
 | Platform | File | Source | Converted |
 | --- | --- | --- | --- |
-| Salesforce, Adobe, Microsoft, Google, HubSpot, Databricks, Snowflake | `site/assets/platforms/<name>.png` | SVG Logos by Gil Barbara (https://github.com/gilbarbara/logos), a CC0 collection of company logos, taken from the npm package `@iconify-json/logos` 1.2.16 on 16 October 2026 (the network here allows only the npm registry) | Rendered at 400 px high, then `scripts/logo_to_black.py IN OUT 120 120`: ink on transparent, white details clear, 120 px high |
-| MoEngage | not yet present | Needs MoEngage's own logo (its brand kit, or the logo from one of the MoEngage decks in Neil's Drive) | The same conversion |
+| Salesforce, Adobe, Microsoft, Google, Databricks, Snowflake | `site/assets/platforms/<name>.png` | SVG Logos by Gil Barbara (https://github.com/gilbarbara/logos), a CC0 collection of company logos, taken from the npm package `@iconify-json/logos` 1.2.16 on 16 October 2026 (the network here allows only the npm registry) | Rendered at 400 px high, then `scripts/logo_to_black.py IN OUT 120 120`: ink on transparent, white details clear, 120 px high; scaled to 72 px high on 16 October 2026 (version 2.12.1), the size the row needs on a 2x screen |
+| MoEngage | `site/assets/platforms/moengage.png` (375 × 59 px) | MoEngage's own wordmark, the logo image embedded in MoEngage's deck `MoEngage_AbsaAfricaRegions.pdf` in Neil's Drive, extracted unchanged on 16 October 2026 (the network here cannot reach MoEngage's brand kit); Neil supplied the same wordmark as an image | Its own transparency mask, set in ink on transparent: the artwork is not redrawn, retyped or reshaped |
 
 The collection's CC0 licence covers the collection, not the trademarks: each logo remains its owner's trademark. Check every logo against the vendor's current official artwork and brand guidelines before release (`PRELAUNCH.md`).
 
@@ -155,6 +155,8 @@ Shown small, in ink, after "Research used by 200+ global brands, including" (Nei
 | Unilever | `unilever.png` (440 × 120 px) | 632 × 356 px WebP, blue U and wordmark on white | The fine detail inside the U softens at small sizes |
 
 Confirm with MartechTribe, and where needed with the brands, that these logos may be shown (`PRELAUNCH.md`).
+
+**Link preview image.** `site/assets/brand/growthlab-og.png` (1200 × 630 px) is rendered by `scripts/render_og_image.cjs` from the verified `growthlab-logo.svg`, the homepage H1 and the brand tokens, 16 October 2026 (version 2.12.1). It carries no other text, figure or image.
 
 **Growth Lab email logo.** `site/assets/brand/growthlab-email-logo-v1.png` (840 × 198 px, black on transparent) is rendered unchanged from the verified `growthlab-logo.svg` by `scripts/render_email_logo.cjs`, 14 October 2026. No other source.
 

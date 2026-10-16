@@ -24,7 +24,8 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+/* The scrollbar's space is kept from the first paint, so nothing slides sideways when it appears (Windows) */
+html { scroll-behavior: smooth; scrollbar-gutter: stable; -webkit-text-size-adjust: 100%; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body {
   margin: 0;
@@ -253,13 +254,13 @@ h1 {
 .rc-track:focus-visible { outline-offset: 4px; border-radius: var(--gl-radius-panel); }
 /* Every example is the same size, so nothing jumps as the visitor moves through them: the credit sits at
    the foot of each card and the map is centred in its card */
-.rc-slide { display: flex; flex-direction: column; flex: 0 0 100%; min-width: 0; scroll-snap-align: start; padding: clamp(20px, 2.6vw, 32px); }
+.rc-slide { display: flex; flex-direction: column; flex: 0 0 100%; min-width: 0; scroll-snap-align: start; padding: clamp(20px, 1.6vw, 24px); }
 .rc-title { font-size: clamp(19px, 1.6vw, 21px); line-height: 1.3; letter-spacing: -0.01em; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 .rc-lede { margin-top: 6px; font-size: var(--gl-text-ui); line-height: 1.5; color: var(--gl-ink-2); }
-.rc-credit { margin-top: auto; padding-top: 14px; font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3); }
+.rc-credit { margin-top: auto; padding-top: 10px; font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3); }
 /* Controls (version 2.12, round 4): soft filled round paddles, as on current product galleries, and a
    pagination pill that stretches for the example in view. No borders, no outlines until focused */
-.rc-controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; }
+.rc-controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; }
 .rc-controls[hidden] { display: none; }
 .rc-dots { display: flex; align-items: center; }
 .rc-dot { width: 24px; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; border-radius: var(--gl-radius-pill); transition: width 0.3s var(--gl-ease); }
@@ -291,6 +292,9 @@ h1 {
   position: relative; aspect-ratio: 5 / 4; background: var(--gl-white);
   border-radius: 12px; box-shadow: 0 0 0 1px var(--gl-line);
 }
+/* Above 640 px the chart is 3:2, so every example, with the controls, fits the second most common
+   laptop screen (1536 x 864, about 730 px of page in view); phones keep 5:4 */
+@media (min-width: 641px) { .mx-plot { aspect-ratio: 3 / 2; } }
 .mx-line { position: absolute; background: var(--gl-line); }
 .mx-v { left: var(--mx-x); top: 0; bottom: 0; width: 1px; }
 .mx-h { top: var(--mx-y); left: 0; right: 0; height: 1px; }
@@ -323,7 +327,7 @@ h1 {
 
 /* What each position means: four white cards laid out like the matrix */
 .quads { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 12px; margin-top: 16px; }
-.quad { display: flex; flex-direction: column; min-width: 0; padding: 18px; border-radius: 14px; background: var(--gl-white); }
+.quad { display: flex; flex-direction: column; min-width: 0; padding: 16px; border-radius: 14px; background: var(--gl-white); }
 .quad-tag { display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 1.2; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 /* Each position has its own icon on a tile in its matrix colour: layers for Overbuilt, a bolt for
    Powerhouse, a target for Precision, a foundation with room to build for Underbuilt */
@@ -332,20 +336,19 @@ h1 {
 .q-icon svg { width: 20px; height: 20px; }
 .quad-what { margin-top: 12px; font-size: 16px; line-height: 1.35; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-wrap: balance; }
 .quad-why { margin-top: 6px; margin-bottom: 14px; font-size: 14px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
-.quad-eg { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--gl-line); }
-.eg-label { font-size: 12.5px; line-height: 1.3; color: var(--gl-ink-3); }
+.quad-eg { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--gl-line); }
 .eg-names { display: flex; flex-wrap: wrap; gap: 6px; }
 .eg-names span { padding: 3px 10px; border-radius: var(--gl-radius-pill); background: var(--gl-panel); font-size: 13px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 
 /* Your Apex Score: three short points, then the example score */
-.rc-points { display: grid; gap: 6px; margin-top: 12px; }
+.rc-points { display: grid; gap: 6px; margin-top: 10px; }
 .rc-points li { position: relative; padding-left: 18px; font-size: var(--gl-text-ui); line-height: 1.45; color: var(--gl-ink-2); }
 .rc-points li::before { content: ""; position: absolute; left: 1px; top: calc(0.725em - 3px); width: 6px; height: 6px; border-radius: 2px; background: var(--gl-purple); }
-.score { margin-top: 16px; padding: 20px; border-radius: 14px; background: var(--gl-white); }
+.score { margin-top: 14px; padding: 16px 18px; border-radius: 14px; background: var(--gl-white); }
 .score-head { font-size: 17px; line-height: 1.35; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-align: center; }
 .score-head strong { font-size: 1.35em; font-weight: var(--gl-weight-bold); }
 /* The meter shows the gap at a glance: purple is today, coral is what fixing the areas below adds */
-.meter { position: relative; height: 10px; margin: 14px auto 0; max-width: 420px; border-radius: var(--gl-radius-pill); background: var(--gl-line); overflow: hidden; }
+.meter { position: relative; height: 10px; margin: 12px auto 0; max-width: 420px; border-radius: var(--gl-radius-pill); background: var(--gl-line); overflow: hidden; }
 .meter span { position: absolute; top: 0; bottom: 0; }
 .meter-now { left: 0; width: var(--now); background: var(--gl-purple); }
 .meter-gain { left: var(--now); width: var(--gain); background: var(--gl-coral); }
@@ -356,7 +359,7 @@ h1 {
 .mk-gain::before { background: var(--gl-coral); }
 /* The two lists read as a table (Neil, 16 October 2026): a rule in the list's colour under each heading,
    a hairline between areas and a hairline between the two lists */
-.score-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 0; margin-top: 20px; padding-top: 22px; border-top: 1px solid var(--gl-line); }
+.score-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 0; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--gl-line); }
 .score-fix { padding-right: 24px; }
 .score-strong { padding-left: 24px; border-left: 1px solid var(--gl-line); }
 .score-col h4 { display: flex; align-items: center; gap: 8px; justify-content: space-between; padding-bottom: 10px; border-bottom: 2px solid var(--score-accent); font-size: 13.5px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
@@ -366,7 +369,7 @@ h1 {
 .score-fix { --score-accent: var(--gl-coral); }
 .score-strong { --score-accent: var(--gl-purple); }
 .score-col ul { display: grid; }
-.score-col li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; grid-template-areas: "icon name pts" "icon how pts"; column-gap: 12px; row-gap: 3px; align-items: center; padding-block: 14px; }
+.score-col li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; grid-template-areas: "icon name pts" "icon how pts"; column-gap: 12px; row-gap: 3px; align-items: center; padding-block: 11px; }
 .score-col li + li { border-top: 1px solid var(--gl-line); }
 .score-col li:last-child { padding-bottom: 0; }
 .s-icon { grid-area: icon; width: 22px; height: 22px; color: var(--score-accent); align-self: start; margin-top: 1px; }
