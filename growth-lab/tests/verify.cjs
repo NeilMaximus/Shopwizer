@@ -48,7 +48,8 @@ const HOME = {
     ['15,505', 'solutions analysed. The whole market, including the ones your vendor does not mention.'],
     ['1,345', 'features indexed daily across 49 categories. Current to the day, not last year’s report.'],
     ['9 years', 'of independent research.']],
-  figuresNote: 'Research used by 200+ global brands, including Standard Bank, Vodafone, Philips and Unilever.',
+  figuresNote: 'Research used by 200+ global brands, including',
+  brands: ['Standard Bank', 'Vodafone', 'Philips', 'Unilever'],
   credit: 'Research: MartechTribe. MartechMap © chiefmartec and MartechTribe.',
   workshopsH2: 'See the opportunity. Know where to act.',
   workshopsLede: 'Use cross-industry research and your own data to identify opportunities, prioritise investment and plan the next steps.',
@@ -351,6 +352,15 @@ async function homeChecks(page, vp) {
           numSize: parseFloat(cs(f.querySelector('dt')).fontSize), numColour: cs(f.querySelector('dt')).color,
           card: [cs(f).backgroundColor, cs(f).boxShadow, cs(f).borderTopWidth].join(' '), borderLeft: `${cs(f).borderLeftWidth} ${cs(f).borderLeftStyle}` })),
         figuresDl: document.querySelector('#evidence .figures').tagName, note: t('#evidence .figures-note'),
+        brands: (() => { const list = document.querySelector('#evidence .brands-list'), note = document.querySelector('#evidence .figures-note');
+          const imgs = [...list.querySelectorAll('img')], top = [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')];
+          return { labelled: list.getAttribute('aria-labelledby') === note.id, alts: imgs.map((i) => i.alt), ok: imgs.every((i) => i.complete && i.naturalWidth > 0),
+            ratio: imgs.every((i) => Math.abs((i.getBoundingClientRect().width / i.getBoundingClientRect().height) / (i.naturalWidth / i.naturalHeight) - 1) < 0.02),
+            local: imgs.every((i) => /^(assets\/brands\/[a-z-]+\.png|data:image\/png)/.test(i.getAttribute('src'))),
+            heights: imgs.map((i) => Math.round(i.getBoundingClientRect().height)),
+            topMean: top.length ? top.reduce((a, i) => a + i.getBoundingClientRect().height, 0) / top.length : 30,
+            topBase: parseFloat(getComputedStyle(document.querySelector('.clients') || document.body).getPropertyValue('--logo-h')) || 30,
+            afterNote: imgs.every((i) => i.getBoundingClientRect().left >= note.getBoundingClientRect().right - 1 || i.getBoundingClientRect().top >= note.getBoundingClientRect().bottom - 1) }; })(),
         figuresBelowMap: document.querySelector('#evidence .figures').getBoundingClientRect().top >= document.querySelector('#evidence figcaption').getBoundingClientRect().bottom,
         map: { ok: map.complete && map.naturalWidth > 0, ratio: map.naturalWidth / map.naturalHeight, boxRatio: map.getBoundingClientRect().width / map.getBoundingClientRect().height,
           fit: cs(map).objectFit, alt: map.alt, box: box(map) }, copyBox: box(document.querySelector('.evidence-copy')) },
@@ -454,6 +464,11 @@ async function homeChecks(page, vp) {
   check(`${tag} MartechTribe's figures word for word, as plain figures (no tiles, boxes or counters)`, e.figuresDl === 'DL' && e.figures.length === 4 &&
     e.figures.every((f, i) => f.num === HOME.figures[i][0] && f.text === HOME.figures[i][1] && f.numColour === 'rgb(17, 17, 17)' && f.numSize >= 30 &&
       f.card === 'rgba(0, 0, 0, 0) none 0px') && e.note === HOME.figuresNote && e.figuresBelowMap, e.figures.map((f) => `${f.num} ${f.numSize}px`).join(', '));
+  check(`${tag} "including" is followed by the four genuine brand logos in ink, labelled for screen readers, unstretched and smaller than the client logos`,
+    JSON.stringify(e.brands.alts) === JSON.stringify(HOME.brands) && e.brands.labelled && e.brands.ok && e.brands.ratio && e.brands.local && e.brands.afterNote &&
+    e.brands.heights.every((h) => h >= 10 && h <= e.brands.topBase) &&
+    e.brands.heights.reduce((a, h) => a + h, 0) / e.brands.heights.length <= 0.8 * e.brands.topMean,
+    `${e.brands.heights.join('/')} px against ${Math.round(e.brands.topMean)} px on average at the top (base ${e.brands.topBase} px)`);
   if (vp.width >= 1000) check(`${tag} figures in one row split by hairlines`, new Set(e.figures.map((f) => Math.round(f.box.t))).size === 1 &&
     e.figures[0].borderLeft === '0px none' && e.figures.slice(1).every((f) => f.borderLeft === '1px solid'));
   check(`${tag} the map carries only its credit: no figures, categories or benchmark in the caption`, e.figcaption === HOME.credit && e.credit === HOME.credit && e.figBelow &&
@@ -686,21 +701,8 @@ async function apiChecks() {
       const folded = await page.waitForFunction((ft) => document.querySelector('.f-top').getAttribute('points') !== ft &&
         document.getElementById('device').classList.contains('building'), finalTop, { timeout: 6000 }).then(() => true, () => false);
       check('[home desktop] cube loops: rests on the full cube, folds back to the core and grows again', folded && await fullCube(6000));
-      const toggleState = () => page.evaluate(() => { const t = document.querySelector('.cube-toggle');
-        return { shown: !t.hidden, label: t.getAttribute('aria-label'), text: t.innerText.trim(), points: document.querySelector('.f-top').getAttribute('points'),
-          on: document.querySelectorAll('#device .out.on').length }; });
-      const before = await toggleState();
-      await page.click('.cube-toggle');
-      const p0 = await page.getAttribute('.f-top', 'points');
-      await page.waitForTimeout(1500);
-      const paused = await toggleState();
-      await page.click('.cube-toggle');
-      const resumed = await page.waitForFunction((ft) => document.querySelector('.f-top').getAttribute('points') !== ft, finalTop, { timeout: 4000 }).then(() => true, () => false);
-      const after = await toggleState();
-      await page.evaluate(() => document.activeElement.blur());
-      check('[home desktop] cube pause control holds the full cube, plays it again, and says what it will do', before.shown && before.label === 'Pause the cube animation' &&
-        before.text === 'Pause' && p0 === finalTop && paused.points === finalTop && paused.on === 3 && paused.label === 'Play the cube animation' && paused.text === 'Play' &&
-        resumed && after.label === 'Pause the cube animation' && after.text === 'Pause', JSON.stringify({ before: before.label, paused: [paused.label, paused.on], resumed }));
+      check('[home desktop] no pause buttons on the cube or the logo strip (Neil, 16 October 2026)',
+        await page.evaluate(() => document.querySelectorAll('.cube-toggle, .clients-toggle, .device-card button, .clients button').length === 0));
       await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
       await page.waitForTimeout(300);
       const away0 = await page.getAttribute('.f-top', 'points');
@@ -776,7 +778,7 @@ async function apiChecks() {
           await page.screenshot({ path: path.join(SHOTS, 'focus-header.png'), clip: { x: 0, y: 0, width: 1440, height: 110 } });
         }
       }
-      const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', 'Pause the cube animation', ...(LOGOS_PRESENT.length ? ['Pause the client logos'] : []), 'Let’s Talk',
+      const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', 'Let’s Talk',
         'Growth Lab, back to top', 'Privacy', 'Website terms'];
       check('[home desktop] keyboard order follows the page and every stop shows a ring', stops.every((s) => s.ring) &&
         JSON.stringify(stops.map((s) => s.label)) === JSON.stringify(expected), stops.map((s) => s.label + (s.ring ? '' : ' (no ring)')).join(' > '));
@@ -1016,7 +1018,7 @@ async function apiChecks() {
       const clones = sets.slice(1);
       const imgs = [...sets[0].querySelectorAll('img')];
       return {
-        moving: strip.classList.contains('is-moving'), toggle: !strip.querySelector('.clients-toggle').hidden, speed, kf, iterations: anim.effect.getTiming().iterations,
+        moving: strip.classList.contains('is-moving'), speed, kf, iterations: anim.effect.getTiming().iterations,
         easing: anim.effect.getTiming().easing, period: sets[0].getBoundingClientRect().width + gap,
         sameSets: sets.every((st) => Math.abs(st.getBoundingClientRect().width - sets[0].getBoundingClientRect().width) < 0.5 &&
           [...st.querySelectorAll('img')].map((i) => i.getAttribute('src')).join() === imgs.map((i) => i.getAttribute('src')).join()),
@@ -1030,45 +1032,24 @@ async function apiChecks() {
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       };
     });
-    check(`${tag} moves left to right at about ${vp.speed} px a second, linear and endless`, m.moving && m.toggle && m.speed > vp.speed * 0.92 && m.speed < vp.speed * 1.08 &&
+    check(`${tag} moves left to right at about ${vp.speed} px a second, linear and endless`, m.moving && m.speed > vp.speed * 0.92 && m.speed < vp.speed * 1.08 &&
       m.iterations === Infinity && m.easing === 'linear', `${m.speed.toFixed(1)} px/s`);
     check(`${tag} seamless loop: travels exactly one identical set, copies cover the view`, Math.abs(m.kf[0] + m.period) < 0.5 && m.kf[1] === 0 && m.sameSets && m.cover >= 0,
       `travel ${(-m.kf[0]).toFixed(1)}px, set plus gap ${m.period.toFixed(1)}px, spare ${Math.round(m.cover)}px`);
     check(`${tag} screen readers hear each client once: one labelled list, copies hidden and inert`, m.named === 12 && m.list === 'Clients' && m.clonesHidden, `${m.named} named`);
     check(`${tag} one stable row, logos never stretched, no page overflow`, m.rows === 1 && m.rowHeights === 1 && m.ratios && m.overflow <= 0, `overflow ${m.overflow}`);
 
-    // Pause control, hover and focus
-    const pos = () => page.evaluate(() => new DOMMatrix(getComputedStyle(document.querySelector('.clients-track')).transform).m41);
-    const state = () => page.evaluate(() => ({ play: document.querySelector('.clients-track').getAnimations()[0].playState,
-      text: document.querySelector('.clients-toggle').innerText.trim(), label: document.querySelector('.clients-toggle').getAttribute('aria-label') }));
-    await page.mouse.move(vp.width / 2, vp.height - 5);
-    await page.locator('.clients-toggle').scrollIntoViewIfNeeded();
-    await page.locator('.clients-toggle').click();
-    await page.mouse.move(2, 2);
-    await page.evaluate(() => document.activeElement.blur());
-    const p1 = await state(), a1 = await pos();
-    await page.waitForTimeout(700);
-    const a2 = await pos();
-    await page.locator('.clients-toggle').click();
-    await page.mouse.move(2, 2);
-    await page.evaluate(() => document.activeElement.blur());
-    await page.waitForTimeout(300);
-    const p2 = await state();
-    check(`${tag} pause button stops and restarts it, and says what it will do`, p1.play === 'paused' && a1 === a2 && p1.text === 'Play' && p1.label === 'Play the client logos' &&
-      p2.play === 'running' && p2.text === 'Pause' && p2.label === 'Pause the client logos', JSON.stringify([p1, p2]));
+    // Hover and off screen (no pause button since 16 October 2026)
+    const state = () => page.evaluate(() => ({ play: document.querySelector('.clients-track').getAnimations()[0].playState }));
+    check(`${tag} no pause button on the strip`, await page.evaluate(() => document.querySelectorAll('.clients button').length === 0));
     if (vp.name === 'desktop') {
+      await page.locator('.clients-viewport').scrollIntoViewIfNeeded();
       await page.hover('.clients-viewport');
       const hovered = (await state()).play;
       await page.mouse.move(2, 2);
       await page.waitForTimeout(100);
       const left = (await state()).play;
-      await page.focus('.cube-toggle');
-      await page.keyboard.press('Tab');
-      const focus = await page.evaluate(() => ({ cls: document.activeElement.className, ring: getComputedStyle(document.activeElement).outlineStyle,
-        h: document.activeElement.getBoundingClientRect().height }));
-      const focused = (await state()).play;
-      check('[strip] holds still on hover and on keyboard focus; the control is next in the tab order with a ring', hovered === 'paused' && left === 'running' &&
-        focus.cls === 'clients-toggle' && focus.ring !== 'none' && focus.h >= 24 && focused === 'paused', JSON.stringify({ hovered, left, focus, focused }));
+      check('[strip] holds still on hover and moves again after', hovered === 'paused' && left === 'running', JSON.stringify({ hovered, left }));
       await page.evaluate(() => document.activeElement.blur());
       // Instant scrolls: the page scrolls smoothly, and a long smooth scroll back would outlast the wait
       await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
@@ -1094,11 +1075,11 @@ async function apiChecks() {
       const strip = document.querySelector('.clients'), set = strip.querySelector('.clients-set');
       const imgs = [...set.querySelectorAll('img')];
       return { anims: strip.querySelector('.clients-track').getAnimations().length, sets: strip.querySelectorAll('.clients-set').length, moving: strip.classList.contains('is-moving'),
-        toggle: strip.querySelector('.clients-toggle').hidden, rows: new Set(imgs.map((i) => Math.round(i.getBoundingClientRect().top))).size,
+        rows: new Set(imgs.map((i) => Math.round(i.getBoundingClientRect().top))).size,
         inside: imgs.every((i) => i.getBoundingClientRect().left >= 0 && i.getBoundingClientRect().right <= document.documentElement.clientWidth),
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
     });
-    check('[strip reduced motion] logos stand still and wrap, no copies, no control, nothing off screen', r.anims === 0 && r.sets === 1 && !r.moving && r.toggle &&
+    check('[strip reduced motion] logos stand still and wrap, no copies, nothing off screen', r.anims === 0 && r.sets === 1 && !r.moving &&
       r.rows > 1 && r.inside && r.overflow <= 0, JSON.stringify(r));
     const hero = await page.evaluate(() => document.querySelector('.hero').getBoundingClientRect().bottom + scrollY);
     await page.screenshot({ path: path.join(SHOTS, 'strip-test-shapes-reduced-motion-mobile.png'), clip: { x: 0, y: Math.max(0, hero - 520), width: 390, height: 600 } });
@@ -1136,10 +1117,9 @@ async function apiChecks() {
     await rp.waitForTimeout(150);
     const rTop = await rp.getAttribute('.f-top', 'points');
     const rBuilding = await rp.evaluate(() => document.getElementById('device').className);
-    const rToggle = await rp.evaluate(() => document.querySelector('.cube-toggle').hidden);
     await rp.waitForTimeout(1500);
     const rStill = (await rp.getAttribute('.f-top', 'points')) === finalTop;
-    check('[reduced motion] cube shows its final state at once, stays still and has no pause control', rTop === finalTop && rStill && rToggle &&
+    check('[reduced motion] cube shows its final state at once and stays still', rTop === finalTop && rStill &&
       !/building|pre-build/.test(rBuilding), rBuilding);
     await rp.locator('.rune-stage').scrollIntoViewIfNeeded();
     await rp.waitForTimeout(1500);
@@ -1166,11 +1146,12 @@ async function apiChecks() {
     const pv = await pp.evaluate(async () => { await document.fonts.ready; return {
       geist: document.fonts.check('600 16px Geist'), overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       external: [...document.querySelectorAll('link[href], script[src]')].map((e) => e.getAttribute('href') || e.getAttribute('src')),
-      imgs: [...document.querySelectorAll('img:not(.clients img)')].map((i) => i.complete && i.naturalWidth > 0),
+      imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img)')].map((i) => i.complete && i.naturalWidth > 0),
+      brands: [...document.querySelectorAll('.brands img')].map((i) => i.complete && i.naturalWidth > 0 && i.getAttribute('src').startsWith('assets/brands/')),
       logos: [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')].map((i) => i.complete && i.naturalWidth > 0),
       actions: [...document.querySelectorAll('.btn')].map((a) => a.getAttribute('href')), mail: document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').length }; });
     check('[preview] homepage self contained: Geist, images from published files, no overflow, no requests out', pv.geist && pv.overflow <= 0 &&
-      pv.external.length === 0 && perr.length === 0 && pv.imgs.length === 3 && pv.imgs.every(Boolean) && pv.logos.length === LOGOS_PRESENT.length && pv.logos.every(Boolean) && external.length === 0, JSON.stringify({ ...pv, external }));
+      pv.external.length === 0 && perr.length === 0 && pv.imgs.length === 3 && pv.imgs.every(Boolean) && pv.brands.length === 4 && pv.brands.every(Boolean) && pv.logos.length === LOGOS_PRESENT.length && pv.logos.every(Boolean) && external.length === 0, JSON.stringify({ ...pv, external }));
     check('[preview] both actions open the published contact view', pv.actions.length === 2 && pv.actions.every((h) => h === 'contact.html') &&
       fs.existsSync(path.join(previewDir, 'contact.html')) && pv.mail === 0);
     await pctx.close();
@@ -1220,7 +1201,8 @@ async function apiChecks() {
       for (const i of document.querySelectorAll('img')) { i.scrollIntoView(); await i.decode().catch(() => {}); }
       return { geist: document.fonts.check('600 16px Geist'), cube: !document.getElementById('device').className.includes('pre-build'),
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-        imgs: [...document.querySelectorAll('img:not(.clients img)')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/jpeg')),
+        imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img)')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/jpeg')),
+        brands: [...document.querySelectorAll('.brands img')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/png;base64,')),
         logos: [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')].map((i) => i.complete && i.naturalWidth > 0 && /^data:image\/(svg\+xml|png);base64,/.test(i.src)),
         files: [...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => !/^(#|mailto:|tel:|https:)/.test(h)),
         external: [...document.querySelectorAll('a[href^="http"]')].map((a) => a.getAttribute('href')),
@@ -1228,7 +1210,7 @@ async function apiChecks() {
     });
     const missing = bv.files.filter((h) => !fs.existsSync(path.join(browserDir, h)));
     check('[browser file] homepage opens from a folder: Geist, cube, images built in, links resolve, no requests', bv.geist && bv.cube && bv.overflow <= 0 &&
-      bv.imgs.length === 3 && bv.imgs.every(Boolean) && bv.logos.length === LOGOS_PRESENT.length && bv.logos.every(Boolean) && missing.length === 0 && requests.length === 0 && berr.length === 0 &&
+      bv.imgs.length === 3 && bv.imgs.every(Boolean) && bv.brands.length === 4 && bv.brands.every(Boolean) && bv.logos.length === LOGOS_PRESENT.length && bv.logos.every(Boolean) && missing.length === 0 && requests.length === 0 && berr.length === 0 &&
       bv.actions.every((h) => h === 'growth-lab-contact.html') && bv.external.length === 0,
       JSON.stringify({ ...bv, imgs: bv.imgs.length, missing, requests, errors: berr }));
     await bp.goto('file://' + path.join(browserDir, 'growth-lab-contact.html'));

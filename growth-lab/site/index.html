@@ -64,11 +64,6 @@
             <p class="out">Grow revenue<br> more efficiently.</p>
           </div>
         </figure>
-        <button class="cube-toggle" type="button" aria-label="Pause the cube animation" hidden>
-          <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg>
-          <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.4v9.2L12.6 8z"/></svg>
-          <span class="cube-toggle-text">Pause</span>
-        </button>
         <script>(function () { var d = document.getElementById('device'); if (d && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) { d.classList.add('pre-build'); setTimeout(function () { d.classList.remove('pre-build'); }, 4000); } })();</script>
       </div>
       <div class="lead">
@@ -93,11 +88,6 @@
           </ul>
         </div>
       </div>
-      <button class="clients-toggle" type="button" aria-label="Pause the client logos" hidden>
-        <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg>
-        <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.4v9.2L12.6 8z"/></svg>
-        <span class="clients-toggle-text">Pause</span>
-      </button>
     </div>
     <!-- client-logos:end -->
   </section>
@@ -227,7 +217,15 @@
             <dd><strong>of independent research.</strong></dd>
           </div>
         </dl>
-        <p class="figures-note">Research used by 200+ global brands, including Standard Bank, Vodafone, Philips and Unilever.</p>
+        <div class="brands">
+          <p class="figures-note" id="brands-note">Research used by 200+ global brands, including</p>
+          <ul class="brands-list" role="list" aria-labelledby="brands-note">
+            <li><img src="assets/brands/standard-bank.png" width="288" height="73" alt="Standard Bank" style="--brand-h: 22px" loading="lazy" decoding="async"></li>
+            <li><img src="assets/brands/vodafone.png" width="137" height="120" alt="Vodafone" style="--brand-h: 30px" loading="lazy" decoding="async"></li>
+            <li><img src="assets/brands/philips.png" width="653" height="120" alt="Philips" style="--brand-h: 14px" loading="lazy" decoding="async"></li>
+            <li><img src="assets/brands/unilever.png" width="440" height="120" alt="Unilever" style="--brand-h: 24px" loading="lazy" decoding="async"></li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>

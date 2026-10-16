@@ -227,11 +227,6 @@ def client_strip(manifest=ROOT / "config" / "client-logos.json", folder=CLIENTS,
         '          </ul>\n'
         '        </div>\n'
         '      </div>\n'
-        '      <button class="clients-toggle" type="button" aria-label="Pause the client logos" hidden>\n'
-        '        <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg>\n'
-        '        <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.4v9.2L12.6 8z"/></svg>\n'
-        '        <span class="clients-toggle-text">Pause</span>\n'
-        '      </button>\n'
         '    </div>\n')
     return markup, missing
 
@@ -279,6 +274,7 @@ def build_preview():
     shutil.copytree(SITE / "assets" / "media", out / "assets" / "media")
     if any(CLIENTS.glob("*.*")):
         shutil.copytree(CLIENTS, out / "assets" / "clients")
+    shutil.copytree(SITE / "assets" / "brands", out / "assets" / "brands")
     for f in out.glob("*.html"):
         text = f.read_text(encoding="utf8")
         assert "mailto:" not in text and "tel:" not in text, f"email or phone link left in preview {f.name}"
@@ -301,6 +297,8 @@ def inline_images(page_html):
         return f'src="data:{kind};base64,' + base64.b64encode(f.read_bytes()).decode() + '"'
     page_html = re.sub(r'\s(srcset|sizes)="[^"]*"', "", page_html)
     page_html = re.sub(r'src="assets/clients/([\w.-]+\.(?:svg|png))"', client_uri, page_html)
+    page_html = re.sub(r'src="assets/brands/([\w.-]+\.png)"', lambda m: 'src="data:image/png;base64,' +
+                       base64.b64encode((SITE / "assets" / "brands" / m.group(1)).read_bytes()).decode() + '"', page_html)
     return re.sub(r'src="assets/media/([\w.-]+\.jpg)"', data_uri, page_html)
 
 

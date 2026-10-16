@@ -31,7 +31,7 @@ These are MartechTribe's own figures. They describe MartechTribe's research and 
 | 15,505 solutions analysed | Second figure | https://martechtribe.com/ (15,505 solutions), checked 14 October 2026, and State of Martech 2026, Brinker and Riemersma | The MartechMap 2026 count. Never 1,500,505, which was a typo in a draft brief |
 | 1,345 features indexed daily across 49 categories | Third figure | https://martechtribe.com/ (1,345 features, 49 categories), checked 14 October 2026 | "Indexed daily" and "Current to the day" are Neil's wording: confirm with MartechTribe. The 49 categories stay out of the map caption |
 | 9 years of independent research | Fourth figure | https://martechtribe.com/ (9 years; research since 2017), checked 14 October 2026 | This figure ages: it becomes 10 years in 2027. Update it with the as at date, or return to "since 2017" |
-| Research used by 200+ global brands, including Standard Bank, Vodafone, Philips and Unilever | Line under the figures | https://martechtribe.com/ (200+ brands), checked 14 October 2026 | The four named brands are Neil's copy and have not been checked against a public source here: confirm with MartechTribe that each may be named |
+| Research used by 200+ global brands, including (then the logos of Standard Bank, Vodafone, Philips and Unilever) | Line under the figures | https://martechtribe.com/ (200+ brands), checked 14 October 2026 | The four brands are Neil's choice and have not been checked against a public source here: confirm with MartechTribe that each may be named and its logo shown. Logo files below, under Research brand logos |
 
 ## Research copy
 
@@ -126,6 +126,19 @@ Neil's folder `/Users/neilbotha/Desktop/Client logos/client-logos` holds black a
 | Multiply | https://www.multiply.co.za/static-assets/images/multiply-logo.svg | Missing: host blocked; awaiting Neil's file |
 | Budget Insurance | https://blobs.digitalcdn.co.za/production-budget-marketing/Angular/assets/Images/logo.svg | In use, `budget-insurance.png` (400 × 108 px). Supplied by Neil in this session, 14 October 2026, as a white knockout PNG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged. It arrived twice as identical files |
 | First for Women | https://www.firstforwomen.co.za/img/logo.png | In use, `first-for-women.png` (400 × 104 px). Supplied by Neil in this session, 14 October 2026, as a white knockout PNG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged. The flower inside the crest is only faintly present in the supplied file; replace it with a cleaner black original when available |
+
+## Research brand logos
+
+Shown small, in ink, after "Research used by 200+ global brands, including" (Neil, 16 October 2026). They are brands that use MartechTribe's research, not Growth Lab clients. Neil attached each as a colour image in this session on 16 October 2026; `scripts/logo_to_black.py` turned each into ink on transparent (opacity from each pixel's distance from white, so white details inside the logo stay clear), trimmed the empty margin and scaled it to at most 120 px high. Nothing was redrawn, retyped or reshaped.
+
+| Brand | File in `site/assets/brands/` | Supplied as | Notes |
+| --- | --- | --- | --- |
+| Standard Bank | `standard-bank.png` (288 × 73 px) | 320 × 320 px PNG, blue shield and wordmark on white | The smallest source: sharp enough at 22 px; a vector file would be better |
+| Vodafone | `vodafone.png` (137 × 120 px) | 1125 × 633 px WebP, red stacked lockup on white | The white speech mark inside the circle is left clear |
+| Philips | `philips.png` (653 × 120 px) | 1500 × 1000 px WebP, blue wordmark on white | |
+| Unilever | `unilever.png` (440 × 120 px) | 632 × 356 px WebP, blue U and wordmark on white | The fine detail inside the U softens at small sizes |
+
+Confirm with MartechTribe, and where needed with the brands, that these logos may be shown (`PRELAUNCH.md`).
 
 **Growth Lab email logo.** `site/assets/brand/growthlab-email-logo-v1.png` (840 × 198 px, black on transparent) is rendered unchanged from the verified `growthlab-logo.svg` by `scripts/render_email_logo.cjs`, 14 October 2026. No other source.
 
