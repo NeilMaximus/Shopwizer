@@ -11,7 +11,7 @@ The GrowthLab OS direction is retired: 03-blueprint/direction-brief.md, the wind
 - `docs/site/DESIGN_SYSTEM.md` (version 2.11) is the design law for the live site. Read it before changing anything in `public/` or `api/`. Its rules are durable and supersede every earlier Growth Lab website direction.
 - `docs/site/SOURCES.md`: every figure, logo source and licence. `docs/site/PRELAUNCH.md`: open items. `docs/site/DEPLOY.md`: the release mapping, checks and rollback.
 - Paths in `docs/site/` follow the source layout: its `site/` folder is `public/` plus `api/` here.
-- The editable source (tokens, build script, tests, the approved legal texts) is the `growth-lab/` folder of neilmaximus/shopwizer. Release 2.12 (16 October 2026) came from branch `growth-lab-2.12-copy`, source commit e8d51b6; release 2.11 from branch `growth-lab-design-system`, commit 5e3f6bc, archived in the GrowthLab shared drive under Brand Assets / Website / 2026-10-14 Production Release. `public/`, `api/` and `vercel.json` here are build output from it: change the source and release again, never these files directly.
+- The editable source (tokens, build script, tests, the approved legal texts) is the `growth-lab/` folder of neilmaximus/shopwizer. Release 2.12.1 (16 October 2026, commit 63d2566 here) came from branch `growth-lab-2.12-copy`, source commit ae2b7db, and release 2.12 (commit a09bd7b here) from source commit e8d51b6; release 2.11 from branch `growth-lab-design-system`, commit 5e3f6bc, archived in the GrowthLab shared drive under Brand Assets / Website / 2026-10-14 Production Release. `public/`, `api/` and `vercel.json` here are build output from it: change the source and release again, never these files directly.
 
 ## How to change the live site
 

@@ -376,6 +376,7 @@ Version 2.12.1 (16 October 2026), so Google indexes the site correctly and links
 
 ## Change log
 
+- **2.12.1, 16 October 2026, released to growthlab.co.za (Neil).** Growth-Lab-2026 commit 63d2566, deployment `dpl_ACK51GxLAh6kP1ymoBjQxY85sNjP`; the live homepage matches the build byte for byte.
 - **2.12.1, 16 October 2026, fit, search and speed (Neil).** The research story (heading, introduction, card and controls) fits one window on the most used desktop screens, 1920 x 1080, 1536 x 864 and a 1440 x 900 Mac: the score points are shorter, the "In this example" labels are gone, the matrix is 3:2 on desktop, and the card's padding, credit line and controls gap are a little tighter, while the score table keeps its spacing. Search and sharing basics (section 18): titles with the brand, canonical addresses, link preview tags and image, structured data, `robots.txt` and a sitemap. Speed: logo files no larger than they are shown, a day's caching for them, and no layout shift on load. MoEngage replaces HubSpot in the leading solutions row (Neil: Growth Lab is a MoEngage partner), with MoEngage's own wordmark. WhatsApp images re-rendered.
 
 - **2.12, 16 October 2026, score notes (Neil).** "Use it better" and "Add features" read as flat on their own, so each area's note now says what is happening in plain words (for example "Tools in place, but underused"), and the key under the lists is gone.
