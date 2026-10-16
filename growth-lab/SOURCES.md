@@ -125,7 +125,7 @@ Neil's folder `/Users/neilbotha/Desktop/Client logos/client-logos` holds black a
 | Telesure | https://tihsa.co.za/wp-content/uploads/2024/06/TIH-logo_without-descriptor.png | Missing: host blocked; awaiting Neil's file |
 | Multiply | https://www.multiply.co.za/static-assets/images/multiply-logo.svg | Missing: host blocked; awaiting Neil's file |
 | Budget Insurance | https://blobs.digitalcdn.co.za/production-budget-marketing/Angular/assets/Images/logo.svg | In use, `budget-insurance.png` (400 × 108 px). Supplied by Neil in this session, 14 October 2026, as a white knockout PNG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged. It arrived twice as identical files |
-| First for Women | https://www.firstforwomen.co.za/img/logo.png | In use, `first-for-women.png` (400 × 104 px). Supplied by Neil in this session, 14 October 2026, as a white knockout PNG (a white box with the logo cut out); converted to ink on transparent with `scripts/knockout_to_black.py`, geometry unchanged. The flower inside the crest is only faintly present in the supplied file; replace it with a cleaner black original when available |
+| First for Women | https://www.firstforwomen.co.za/img/logo.png | In use, `first-for-women.png` (771 × 200 px). Replaced on 16 October 2026 with Neil's new colour PNG (1276 × 348 px: black frame and wordmark, pink crest, white flower), converted to ink on transparent with `scripts/logo_to_black.py` at solid value 100, so the pink crest becomes solid ink and the white flower stays clear and legible. Nothing redrawn. The earlier file, converted on 14 October from a white knockout, showed the flower only faintly |
 
 ## Research brand logos
 

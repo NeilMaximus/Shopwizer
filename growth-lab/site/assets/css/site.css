@@ -255,7 +255,7 @@ h1 {
 /* "Research used by 200+ global brands, including" then four small genuine logos in ink, smaller than
    the client logos at the top of the page (Neil, version 2.12). Each logo has its own optical height
    (--brand-h) so the four carry similar weight; never stretched, recoloured beyond ink or redrawn */
-.brands { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; margin-top: 32px; }
+.brands { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; margin-top: clamp(48px, 5vw, 72px); }
 .brands-list { display: flex; flex-wrap: wrap; align-items: center; gap: 14px clamp(20px, 3vw, 40px); }
 .brands-list li { display: flex; align-items: center; height: 32px; }
 .brands-list img { display: block; width: auto; height: calc(var(--brand-h, 20px) * var(--brand-scale, 1)); max-width: none; }
