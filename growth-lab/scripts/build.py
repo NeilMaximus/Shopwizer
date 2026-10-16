@@ -324,6 +324,10 @@ def build_browser():
         page = page.replace('href="./"', f'href="{BROWSER_NAMES["index.html"]}"')
         for src, dst in BROWSER_NAMES.items():
             page = page.replace(f'href="{src}"', f'href="{dst}"')
+        # The full map opens in its dialog from the image built into the file; there is no image file beside it,
+        # so its link points at the map in the section and the "new tab" link is left out
+        page = re.sub(r'\s*<a class="map-new-tab"[^>]*>[^<]*</a>', "", page)
+        page = page.replace('href="assets/media/martechmap-2026.jpg"', 'href="#research-map"')
         assert not re.search(r'(src|href|srcset)="assets/', page), f"unresolved asset path in browser file {target}"
         (out / target).write_text(page, encoding="utf8")
     return out

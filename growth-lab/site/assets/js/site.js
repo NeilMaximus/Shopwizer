@@ -193,67 +193,80 @@
     apply();
   }
 
-  /* Research explorer (version 2.13). Four named tabs at the top of the panel and one view at a time below
-     them, with a Next button at the foot of each view's words, so the whole story is visible at a glance
-     and easy to step through. The tabs follow the ARIA tabs pattern: the arrow keys, Home and End move
-     between them. Above 640 px every view shares the size of the tallest (CSS), so nothing below moves.
-     Without this script every view shows in turn. It never moves on its own (DESIGN_SYSTEM.md, section 11). */
+  /* Research explorer (version 2.13). Four named tabs at the top of the panel, one view at a time, and Previous
+     and Next at its foot. Every view sits in the same grid cell, so the frame keeps the tallest view's height at
+     any width and nothing below it moves; the views not shown are made invisible and inert, never given the
+     hidden attribute. The tabs follow the ARIA tabs pattern (arrow keys, Home and End). Without this script every
+     view shows in turn. It never moves on its own (DESIGN_SYSTEM.md, section 11). */
   function researchExplorer() {
     var rx = document.querySelector('.rx');
     if (!rx) { return; }
     var list = rx.querySelector('.rx-tabs'), tabs = rx.querySelectorAll('.rx-tab'), views = rx.querySelectorAll('.rx-view');
-    var current = 0;
-    function show(i, focusTab) {
-      i = Math.max(0, Math.min(tabs.length - 1, i));
-      for (var t = 0; t < tabs.length; t++) {
+    var nav = rx.querySelector('.rx-nav'), prev = rx.querySelector('.rx-prev'), next = rx.querySelector('.rx-next');
+    var count = rx.querySelector('.rx-count'), status = rx.querySelector('.rx-status');
+    var last = tabs.length - 1, current = 0;
+    function show(i, how) {
+      i = Math.max(0, Math.min(last, i));
+      var had = document.activeElement;
+      for (var t = 0; t <= last; t++) {
         var on = t === i;
         tabs[t].setAttribute('aria-selected', on ? 'true' : 'false');
         tabs[t].tabIndex = on ? 0 : -1;
-        views[t].hidden = !on;
+        views[t].setAttribute('data-active', on ? 'true' : 'false');
+        if (on) { views[t].removeAttribute('inert'); } else { views[t].setAttribute('inert', ''); }
       }
       current = i;
-      if (focusTab) { tabs[i].focus(); }
+      prev.disabled = i === 0;
+      next.disabled = i === last;
+      count.textContent = (i + 1) + ' of ' + tabs.length;
+      if (how === 'tab') { tabs[i].focus(); }
+      if (how === 'step') {
+        status.textContent = tabs[i].textContent.trim() + ', ' + (i + 1) + ' of ' + tabs.length;
+        // A button that has just become unavailable hands focus to the other one
+        if (had && had.disabled) { (had === next ? prev : next).focus(); }
+        // On a long phone screen, bring the start of the new view into sight
+        if (rx.getBoundingClientRect().top < 0) { rx.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' }); }
+      }
     }
     Array.prototype.forEach.call(tabs, function (tab, i) {
-      var view = views[i];
-      view.setAttribute('role', 'tabpanel');
-      view.setAttribute('aria-labelledby', tab.id);
-      // A view with a Next button is reached through it; the last view takes focus itself
-      view.tabIndex = view.querySelector('.rx-next') ? -1 : 0;
+      views[i].setAttribute('role', 'tabpanel');
+      views[i].setAttribute('aria-labelledby', tab.id);
       tab.addEventListener('click', function () { show(i); });
     });
     list.addEventListener('keydown', function (e) {
-      var keys = { ArrowRight: current + 1, ArrowLeft: current - 1, Home: 0, End: tabs.length - 1 };
+      var keys = { ArrowRight: current + 1, ArrowLeft: current - 1, Home: 0, End: last };
       if (!(e.key in keys)) { return; }
       e.preventDefault();
-      show((keys[e.key] + tabs.length) % tabs.length, true);
+      show((keys[e.key] + tabs.length) % tabs.length, 'tab');
     });
-    Array.prototype.forEach.call(rx.querySelectorAll('.rx-next'), function (btn) {
-      btn.hidden = false;
-      btn.addEventListener('click', function () {
-        show(current + 1);
-        // Keep the tabs in view, and carry focus to the view now showing so a screen reader reads it
-        if (rx.getBoundingClientRect().top < 0) { rx.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' }); }
-        views[current].focus({ preventScroll: true });
-      });
-    });
-    // The MartechMap sits in the last view: fetch it as the panel comes near, so it is ready when asked for
-    var lazy = rx.querySelectorAll('img[loading="lazy"]');
-    if (lazy.length && 'IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        if (!entries[entries.length - 1].isIntersecting) { return; }
-        Array.prototype.forEach.call(lazy, function (img) { img.loading = 'eager'; });
-        io.disconnect();
-      }, { rootMargin: '600px 0px' });
-      io.observe(rx);
-    }
+    prev.addEventListener('click', function () { show(current - 1, 'step'); });
+    next.addEventListener('click', function () { show(current + 1, 'step'); });
     rx.classList.add('is-tabbed');
     list.hidden = false;
+    nav.hidden = false;
     show(0);
+  }
+
+  /* The full MartechMap in a dialog over the page, from the existing 1600 px image. Without the script the link
+     opens the image itself. Escape, the close button or a click outside the image closes it, and focus returns
+     to the link. */
+  function mapViewer() {
+    var open = document.querySelector('.map-open'), dialog = document.querySelector('.map-dialog');
+    if (!open || !dialog || typeof dialog.showModal !== 'function') { return; }
+    var close = dialog.querySelector('.map-close');
+    open.addEventListener('click', function (e) {
+      e.preventDefault();
+      dialog.showModal();
+      close.focus();
+    });
+    close.addEventListener('click', function () { dialog.close(); });
+    dialog.addEventListener('click', function (e) { if (e.target === dialog) { dialog.close(); } });
+    dialog.addEventListener('close', function () { open.focus(); });
   }
 
   liveCube();
   researchExplorer();
+  mapViewer();
   liveRune();
   clientStrip();
 })();

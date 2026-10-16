@@ -42,9 +42,10 @@ const HOME = {
   heroLead: 'Growth Lab helps you win more customers, keep them longer and grow more efficiently by making better use of your marketing technology, customer data and AI. We help you get more from the platforms you already own, identify where further investment will make a difference, and put the improvements into practice.',
   waysH2: 'Four ways to work with Growth Lab',
   evidenceH2: 'What 1,634 real martech stacks can tell you about yours.',
-  evidenceLede: 'Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses. Your stack, your spend and your plans, measured against how the top performers in your industry actually built theirs.',
-  evidenceLabel: 'What it tells you',
-  benefits: ['Where you sit against the top performers in your industry', 'Which of your platforms overlap, and which gaps are costing you', 'What the outperformers invested in that you have not'],
+  evidenceLede: 'Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses. See how your technology compares with relevant peers, where you could get more from existing platforms and which investments deserve priority.',
+  // The research section's enquiry, under the explorer (version 2.13)
+  cta: { title: 'Where should your next martech investment go?', text: 'We’ll discuss your goals, current platforms and whether a benchmark would help.', button: 'Discuss your martech priorities' },
+  marketLine: 'Independent market research to inform your technology choices.',
   figures: [['1,634', 'real stacks benchmarked. How companies like yours actually built theirs.'],
     ['15,505', 'solutions analysed. The whole market, including the ones your vendor does not mention.'],
     ['1,345', 'features indexed daily across 49 categories. Current to the day, not last year’s report.'],
@@ -61,8 +62,9 @@ const HOME = {
 // Growth Lab colours, what each position means, the Apex Score, then the MartechMap, under four named tabs. Positions and
 // scores come from the data file
 const APEX = JSON.parse(fs.readFileSync(path.join(ROOT, 'config', 'apex-retail-example.json'), 'utf8'));
-const RC_TITLES = ['Where you sit against your industry', 'What each position means', 'Your Apex Score, and what to fix first', 'The whole market your stack is chosen from'];
-const RX_TABS = ['Where you sit', 'What each position means', 'Your Apex Score', 'The whole market'];
+const RC_TITLES = ['Where you sit against relevant peers', 'What your position means', 'Your Apex Score and priorities', 'From findings to implementation'];
+const RX_TABS = ['Your position', 'What it means', 'Your priorities', 'Your next steps'];
+const RX_LABELS = ['Retail example', 'Retail example', 'Illustrative example', 'Illustrative example'];
 const QUAD_COLOURS = { powerhouse: 'rgb(119, 97, 255)', precision: 'rgb(255, 78, 78)', overbuilt: 'rgb(254, 188, 46)', underbuilt: 'rgb(102, 102, 102)' };
 // Four ways to work with Growth Lab, on the black section, in this order, one row each: the service, what you
 // get, then what we look at. Shortened copy (Neil, 15 October 2026). No 01 to 04 numbers on the page
@@ -355,18 +357,20 @@ async function homeChecks(page, vp) {
       evidence: { h2: t('#evidence h2'), h2Colour: cs(document.querySelector('#evidence h2')).color, lede: [...document.querySelectorAll('#evidence .lede')].map((l) => l.textContent.replace(/\s+/g, ' ').trim()).join(' '), leadText: t('#evidence .lede-lead'),
         leadColour: cs(document.querySelector('#evidence .lede-lead')).color, leadOwnLine: (() => { const ps = document.querySelectorAll('#evidence .lede');
           return ps.length === 2 && ps[0].tagName === 'P' && ps[0].classList.contains('lede-lead') && ps[1].tagName === 'P' && !ps[1].classList.contains('lede-lead'); })(), coralText: [...document.querySelectorAll('#evidence *')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && cs(el).color === 'rgb(255, 78, 78)').map((el) => el.textContent.replace(/\s+/g, ' ').trim()), label: t('#evidence .list-label'),
-        labelTag: document.querySelector('#evidence .list-label').tagName,
         coral: [...document.querySelectorAll('#evidence *')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && cs(el).color === 'rgb(255, 78, 78)').length,
         mapShadow: cs(map).boxShadow, mapFilter: cs(map).filter, mapOpacity: cs(map).opacity,
-        benefits: [...document.querySelectorAll('#evidence .benefits li')].map((l) => l.textContent.trim()),
-        benefitColour: cs(document.querySelector('#evidence .benefits li')).color, ledeColour: cs(document.querySelector('#evidence .evidence-tells .lede')).color,
+        ledeColour: cs(document.querySelector('#evidence .evidence-tells .lede:not(.lede-lead)')).color, lists: document.querySelectorAll('#evidence .benefits, #evidence .list-label').length,
+        cta: (() => { const c = document.querySelector('#evidence .rx-cta'), a = c.querySelector('a'), rx = document.querySelector('#evidence .rx');
+          return { title: t('.rx-cta-title', c), text: t('.rx-cta-copy p', c), button: a.textContent.trim(), href: a.getAttribute('href'), coral: a.classList.contains('btn-coral'),
+            below: c.getBoundingClientRect().top >= rx.getBoundingClientRect().bottom && c.getBoundingClientRect().top - rx.getBoundingClientRect().bottom <= 48, outside: !rx.contains(c) }; })(),
+        market: (() => { const m = document.querySelector('#evidence .market'), open = m.querySelector('.map-open'), dlg = document.querySelector('#evidence .map-dialog');
+          return { title: t('.market-title', m), line: t('.market-line', m), open: open.textContent.trim(), href: open.getAttribute('href'),
+            dialogImg: dlg.querySelector('img').getAttribute('src'), afterFigures: m.getBoundingClientRect().top >= document.querySelector('#evidence .figures').getBoundingClientRect().bottom,
+            brandsInside: !!m.querySelector('.brands'), outsideExplorer: !document.querySelector('.rx').contains(m) }; })(),
         details: document.querySelectorAll('#evidence details, #evidence summary, #evidence .sources, #evidence .proof').length,
-        links: document.querySelectorAll('#evidence a').length, visibleText: document.querySelector('#evidence').innerText,
+        links: [...document.querySelectorAll('#evidence a')].map((a) => a.getAttribute('href')), visibleText: document.querySelector('#evidence').innerText,
         figcaption: t('#evidence figcaption'), credit: t('#evidence .map-credit'),
-        // The map sits in the explorer's last view: open it while measuring, then put it back
-        figBelow: (() => { const vw = map.closest('.rx-view'), was = vw.hidden; vw.hidden = false;
-          const ok = document.querySelector('#evidence figcaption').getBoundingClientRect().top >= map.getBoundingClientRect().bottom && map.getBoundingClientRect().height > 0;
-          vw.hidden = was; return ok; })(),
+        figBelow: document.querySelector('#evidence figcaption').getBoundingClientRect().top >= map.getBoundingClientRect().bottom && map.getBoundingClientRect().height > 0,
         figures: [...document.querySelectorAll('#evidence .figures .fig')].map((f) => ({ num: t('dt', f), text: t('dd', f), box: box(f),
           numSize: parseFloat(cs(f.querySelector('dt')).fontSize), numColour: cs(f.querySelector('dt')).color,
           card: [cs(f).backgroundColor, cs(f).boxShadow, cs(f).borderTopWidth].join(' '), borderLeft: `${cs(f).borderLeftWidth} ${cs(f).borderLeftStyle}` })),
@@ -381,29 +385,32 @@ async function homeChecks(page, vp) {
             topBase: parseFloat(getComputedStyle(document.querySelector('.clients') || document.body).getPropertyValue('--logo-h')) || 30,
             afterNote: imgs.every((i) => i.getBoundingClientRect().left >= note.getBoundingClientRect().right - 1 || i.getBoundingClientRect().top >= note.getBoundingClientRect().bottom - 1) }; })(),
         figuresBelowMap: document.querySelector('#evidence .figures').getBoundingClientRect().top >= document.querySelector('#evidence .rx').getBoundingClientRect().bottom,
-        map: (() => { const vw = map.closest('.rx-view'), was = vw.hidden; vw.hidden = false;
-          const out = { ok: map.complete && map.naturalWidth > 0, ratio: map.naturalWidth / map.naturalHeight, boxRatio: map.getBoundingClientRect().width / map.getBoundingClientRect().height,
-            fit: cs(map).objectFit, alt: map.alt, box: box(map) };
-          vw.hidden = was; return out; })(), copyBox: box(document.querySelector('.evidence-copy')), tellsBox: box(document.querySelector('.evidence-tells')), introBox: box(document.querySelector('.evidence-intro')),
+        map: { ok: map.complete && map.naturalWidth > 0, ratio: map.naturalWidth / map.naturalHeight, boxRatio: map.getBoundingClientRect().width / map.getBoundingClientRect().height,
+          fit: cs(map).objectFit, alt: map.alt, box: box(map) }, copyBox: box(document.querySelector('.evidence-copy')), tellsBox: box(document.querySelector('.evidence-tells')), introBox: box(document.querySelector('.evidence-intro')),
         rxBox: box(document.querySelector('#evidence .rx')), figuresW: document.querySelector('#evidence .figures').getBoundingClientRect().width,
         explorer: (() => {
           const rx = document.querySelector('.rx'), list = rx.querySelector('.rx-tabs'), tabs = [...list.querySelectorAll('[role="tab"]')], views = [...rx.querySelectorAll('.rx-view')];
           const rect = (el) => el.getBoundingClientRect();
-          // As the visitor finds it: the tabs at the top, the first view open
+          // As the visitor finds it: the tabs at the top, the first view open, Previous and Next at the foot
           const rxBox = rect(rx), first = views[0];
           const viewHeights = views.map((v) => Math.round(v.offsetHeight));
-          const shown = views.map((v) => !v.hidden && getComputedStyle(v).visibility !== 'hidden' && v.offsetHeight > 0);
+          const shown = views.map((v) => getComputedStyle(v).visibility !== 'hidden' && v.offsetHeight > 0 && !v.inert);
           const tabsAbove = rect(list).bottom <= rect(first).top && rect(list).top - rxBox.top <= 12;
           const marked = list.getAttribute('role') === 'tablist' && !!list.getAttribute('aria-label') && !list.hidden &&
             tabs.every((tb, i) => tb.getAttribute('aria-controls') === views[i].id && views[i].getAttribute('role') === 'tabpanel' && views[i].getAttribute('aria-labelledby') === tb.id) &&
             JSON.stringify(tabs.map((tb) => tb.getAttribute('aria-selected'))) === JSON.stringify(['true', 'false', 'false', 'false']) &&
-            JSON.stringify(tabs.map((tb) => tb.tabIndex)) === JSON.stringify([0, -1, -1, -1]);
+            JSON.stringify(tabs.map((tb) => tb.tabIndex)) === JSON.stringify([0, -1, -1, -1]) && !views.some((v) => v.hasAttribute('hidden'));
           const spill = [...first.querySelectorAll('*')].filter((el) => { const r = rect(el); return r.width > 0 && (r.right > rxBox.right + 0.5 || r.left < rxBox.left - 0.5); })
             .map((el) => el.className.baseVal === undefined ? el.className : 'svg').slice(0, 4);
-          const nexts = views.map((v) => { const b = v.querySelector('.rx-next'); return b && !b.hidden ? b.textContent.replace(/\s+/g, ' ').trim() : null; });
-          // Then every view opened to measure what is inside it, and the explorer put back as it was
-          const was = views.map((v) => v.hidden);
-          views.forEach((v) => { v.hidden = false; });
+          const nav = rx.querySelector('.rx-nav'), prev = nav.querySelector('.rx-prev'), next = nav.querySelector('.rx-next');
+          const navData = { shown: !nav.hidden && rect(nav).height > 0, inside: rect(nav).top >= rect(first).top && rect(nav).bottom <= rxBox.bottom, outsideViews: !views.some((v) => v.contains(nav)),
+            prev: prev.textContent.trim(), next: next.textContent.trim(), prevOff: prev.disabled, nextOff: next.disabled };
+          // Every label sits directly above its picture: the matrix, the cards, the score and the plan
+          const labels = views.map((v) => { const l = v.querySelector('.rx-label'), pic = v.querySelector('.mx-plot, .quads, .score, .plan');
+            return l && pic && rect(l).bottom <= rect(pic).top + 0.5 && rect(pic).top - rect(l).bottom <= 48 ? l.textContent.trim() : null; });
+          // Small type: nothing in the explorer under 12 px
+          const small = [...rx.querySelectorAll('*')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && parseFloat(cs(el).fontSize) < 12)
+            .map((el) => `${el.textContent.trim().slice(0, 20)} ${cs(el).fontSize}`).slice(0, 4);
           const overlap = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
           const plot = rx.querySelector('.mx-plot'), pb = rect(plot);
           const dots = [...plot.querySelectorAll('.mx-dot')].map((d) => { const r = rect(d); return { q: [...d.classList].find((c) => c.startsWith('q-')).slice(2), named: d.classList.contains('is-named'),
@@ -416,24 +423,26 @@ async function homeChecks(page, vp) {
           const axes = [t('.mx-axis-y', rx), t('.mx-axis-x', rx)];
           const quadBoxes = [...rx.querySelectorAll('.quad')].map(rect);
           const goal = rect(plot.querySelector('.mx-goal')), v = rect(plot.querySelector('.mx-v')), h = rect(plot.querySelector('.mx-h'));
-          const row = (li) => ({ name: t('.s-name', li), pts: t('.s-pts', li), icon: li.querySelector('use') ? li.querySelector('use').getAttribute('href') : '' });
+          const row = (li) => ({ name: t('.s-name', li), pts: li.querySelector('.s-pts') ? t('.s-pts', li) : null, icon: li.querySelector('use') ? li.querySelector('use').getAttribute('href') : '' });
           const meter = rect(rx.querySelector('.meter')), now = rect(rx.querySelector('.meter-now')), gain = rect(rx.querySelector('.meter-gain'));
-          const out = { titles: views.map((vw) => t('.rc-title', vw)), tabs: tabs.map((tb) => tb.textContent.trim()), marked, tabsAbove, shown, viewHeights, spill, nexts,
+          return { titles: views.map((vw) => t('.rc-title', vw)), tabs: tabs.map((tb) => tb.textContent.trim()), marked, tabsAbove, shown, viewHeights, spill, nav: navData, labels, small,
+            ledes: views.map((vw) => [...vw.querySelectorAll('.rx-text .rc-lede')].map((l) => l.textContent.replace(/\s+/g, ' ').trim())),
             dots, divider: { x: (v.left - pb.left) / pb.width * 100, y: (h.top - pb.top) / pb.height * 100 },
             namesInside: names.every((r) => r.left >= pb.left - 0.5 && r.right <= pb.right + 0.5 && r.top >= pb.top - 0.5 && r.bottom <= pb.bottom + 0.5),
             namesClear: names.every((r, i) => names.every((o, j) => i === j || !overlap(r, o)) && allDots.every((d) => !overlap(r, d))),
             tint: { colour: cs(plot.querySelector('.mx-goal')).backgroundColor, ok: Math.abs(goal.left - v.left) <= 1 && Math.abs(goal.right - pb.right) <= 1 && Math.abs(goal.top - pb.top) <= 1 && Math.abs(goal.bottom - h.top) <= 1 },
             leaders, callouts, axes,
             quads: [...rx.querySelectorAll('.quad')].map((q) => { const icon = q.querySelector('.q-icon'), use = icon && icon.querySelector('use');
-              return { q: icon ? [...icon.classList].find((c) => c.startsWith('q-') && c !== 'q-icon').slice(2) : '', icon: use ? use.getAttribute('href') : '',
+              return { q: icon ? [...icon.classList].find((c) => c.startsWith('q-') && c !== 'q-icon').slice(2) : '', icon: use ? use.getAttribute('href') : '', why: t('.quad-why', q),
                 iconDefined: !!(use && document.querySelector(use.getAttribute('href'))), names: [...q.querySelectorAll('.eg-names span')].map((n) => n.textContent.trim()) }; }),
             quadsSameSize: quadBoxes.every((b) => Math.abs(b.width - quadBoxes[0].width) < 1 && Math.abs(b.height - quadBoxes[0].height) < 1),
-            head: t('.score-head', rx), fix: [...rx.querySelectorAll('.score-fix li')].map(row), strong: [...rx.querySelectorAll('.score-strong li')].map(row),
+            stats: [...rx.querySelectorAll('.score-stat')].map((st) => st.textContent.replace(/\s+/g, ' ').trim()), fixHead: t('.score-fix h4', rx), strongHead: t('.score-strong h4', rx),
+            fix: [...rx.querySelectorAll('.score-fix li')].map(row), strong: [...rx.querySelectorAll('.score-strong li')].map(row),
             iconsDefined: [...rx.querySelectorAll('.s-icon use, .rx-ico use')].every((u) => !!document.querySelector(u.getAttribute('href'))),
             meter: { now: now.width / meter.width, gain: gain.width / meter.width, joined: Math.abs(gain.left - now.right) < 1 },
-            images: [...rx.querySelectorAll('img')].map((i) => i.closest('.rx-view').id) };
-          views.forEach((vw, i) => { vw.hidden = was[i]; });
-          return out;
+            plan: [...rx.querySelectorAll('.plan-step')].map((st) => ({ phase: t('.plan-phase', st), priority: t('.plan-priority', st), action: t('.plan-action', st),
+              owner: t('.plan-owner', st).replace(/^Owner\s*/, '') })),
+            images: [...rx.querySelectorAll('img')].length };
         })() },
       workshops: { h2: t('#workshops h2'), lede: t('#workshops .lede'), disclosure: document.querySelectorAll('#workshops details, #workshops summary').length,
         items: [...document.querySelectorAll('.workshop')].map((w) => {
@@ -552,11 +561,10 @@ async function homeChecks(page, vp) {
     x.header.links[1] === 'Let’s Talk|contact.html|btn btn-dark', x.header.links.join(' ; '));
 
   const e = x.evidence;
-  check(`${tag} research copy word for word: heading, introduction, What it tells you and three bullets`, e.h2 === HOME.evidenceH2 && e.lede === HOME.evidenceLede &&
-    e.label === HOME.evidenceLabel && e.labelTag === 'H3' && JSON.stringify(e.benefits) === JSON.stringify(HOME.benefits) &&
+  check(`${tag} research copy word for word: the heading, its coral line and the one supporting line, with no repeated list`, e.h2 === HOME.evidenceH2 && e.lede === HOME.evidenceLede && e.lists === 0 &&
     !/Deloitte|Accenture|months\. Or millions/.test(e.visibleText), JSON.stringify([e.h2, e.lede, e.label, e.benefits]));
   check(`${tag} research heading and the introduction's first sentence in brand coral, that sentence on its own line; the rest of the introduction ink 2, bullets ink, nothing else coral`,
-    e.leadOwnLine && e.h2Colour === 'rgb(255, 78, 78)' && e.leadColour === 'rgb(255, 78, 78)' && e.ledeColour === 'rgb(64, 64, 64)' && e.benefitColour === 'rgb(17, 17, 17)' &&
+    e.leadOwnLine && e.h2Colour === 'rgb(255, 78, 78)' && e.leadColour === 'rgb(255, 78, 78)' && e.ledeColour === 'rgb(64, 64, 64)' &&
     e.leadText === HOME.evidenceLede.split('. ')[0] + '.' && JSON.stringify(e.coralText) === JSON.stringify([HOME.evidenceH2, e.leadText]), JSON.stringify(e.coralText));
   check(`${tag} MartechTribe's figures word for word, as plain figures (no tiles, boxes or counters)`, e.figuresDl === 'DL' && e.figures.length === 4 &&
     e.figures.every((f, i) => f.num === HOME.figures[i][0] && f.text === HOME.figures[i][1] && f.numColour === 'rgb(17, 17, 17)' && f.numSize >= 30 &&
@@ -569,10 +577,17 @@ async function homeChecks(page, vp) {
   if (vp.width >= 1000) check(`${tag} figures in one row split by hairlines`, new Set(e.figures.map((f) => Math.round(f.box.t))).size === 1 &&
     e.figures[0].borderLeft === '0px none' && e.figures.slice(1).every((f) => f.borderLeft === '1px solid'));
   check(`${tag} the map carries only its credit: no figures, categories or benchmark in the caption`, e.figcaption === HOME.credit && e.credit === HOME.credit && e.figBelow &&
-    e.details === 0 && e.links === 0 && !/Sources|has benchmarked/.test(e.visibleText), e.figcaption);
+    e.details === 0 && JSON.stringify(e.links) === JSON.stringify(['contact.html', 'assets/media/martechmap-2026.jpg', 'assets/media/martechmap-2026.jpg']) &&
+    !/Sources|has benchmarked/.test(e.visibleText), e.links.join(', '));
   check(`${tag} a restrained coral glow behind the map, the map itself untouched`, /(rgba\(255, 78, 78, 0\.3\)|color\(srgb 1 0\.30\d* 0\.30\d* \/ 0\.3\))/.test(e.mapShadow) &&
     e.mapFilter === 'none' && e.mapOpacity === '1', e.mapShadow);
-  check(`${tag} map stays whole at 16:9 with no full map link`, !/View the full map/.test(e.visibleText) &&
+  check(`${tag} the map is supporting evidence after the figures, outside the explorer, with its line, the brands beside it and the full map on request`,
+    e.market.title === 'The whole market your stack is chosen from' && e.market.line === HOME.marketLine && e.market.open === 'View the full market map' &&
+    e.market.href === 'assets/media/martechmap-2026.jpg' && fs.existsSync(path.join(SITE, e.market.href)) && e.market.dialogImg === e.market.href &&
+    e.market.afterFigures && e.market.brandsInside && e.market.outsideExplorer, JSON.stringify(e.market));
+  check(`${tag} one enquiry under the explorer, outside the tabs: ${HOME.cta.button}`, e.cta.title === HOME.cta.title && e.cta.text === HOME.cta.text &&
+    e.cta.button === HOME.cta.button && e.cta.href === 'contact.html' && e.cta.coral && e.cta.below && e.cta.outside, JSON.stringify(e.cta));
+  check(`${tag} map stays whole at 16:9`, 
     e.map.ok && Math.abs(e.map.ratio - 16 / 9) < 0.01 && Math.abs(e.map.boxRatio - 16 / 9) < 0.01 && e.map.fit !== 'cover' &&
     /chiefmartec and MartechTribe/.test(e.map.alt), `${Math.round(e.map.box.w)}x${Math.round(e.map.box.h)}`);
   if (vp.width >= 1000) {
@@ -584,9 +599,14 @@ async function homeChecks(page, vp) {
   }
 
   const c = e.explorer, sc = APEX.scorecard;
-  check(`${tag} research explorer: four named tabs at the top, four views in order, marked up as tabs with the first open`,
+  check(`${tag} research explorer: four named tabs at the top, four views in order, marked up as tabs with the first open and none hidden by attribute`,
     c.marked && c.tabsAbove && JSON.stringify(c.tabs) === JSON.stringify(RX_TABS) && JSON.stringify(c.titles) === JSON.stringify(RC_TITLES) &&
     JSON.stringify(c.shown) === JSON.stringify([true, false, false, false]), `${c.tabs.join(' | ')}; ${c.titles.join(' | ')}`);
+  check(`${tag} Retail example over the matrix and the cards, Illustrative example over the score and the plan`, JSON.stringify(c.labels) === JSON.stringify(RX_LABELS), JSON.stringify(c.labels));
+  check(`${tag} the two dimensions in plain words, the peer comparison explained once, and the score called benchmark alignment, not ROI`,
+    /technology capabilities/.test(c.axes[0]) && /ability to use/.test(c.axes[1]) && /capabilities of its technology/.test(c.ledes[0][0]) && /ability to use them/.test(c.ledes[0][0]) &&
+    /relevant industry peers/.test(c.ledes[0][1]) && /1,634/.test(c.ledes[0][1]) && c.ledes.flat().filter((l) => /relevant industry peers/.test(l)).length === 1 &&
+    /benchmark alignment, not ROI or a revenue forecast/.test(c.ledes[2][0]), JSON.stringify(c.ledes));
   check(`${tag} matrix: all ${APEX.retailers.length} retailers placed from the data, in their quadrant colours`, c.dots.length === APEX.retailers.length &&
     APEX.retailers.every((r) => c.dots.some((d) => d.q === r.quadrant && Math.abs(d.x - r.x) < 1 && Math.abs(d.y - r.y) < 1)) &&
     c.dots.every((d) => d.colour === QUAD_COLOURS[d.q]) && Math.abs(c.divider.x - APEX.dividers.x) < 0.5 && Math.abs(c.divider.y - APEX.dividers.y) < 0.5, `${c.dots.length} dots`);
@@ -599,24 +619,31 @@ async function homeChecks(page, vp) {
     APEX.examples.every((x) => { const r = APEX.retailers.find((rr) => rr.name === x.name), n = c.callouts.find((cc) => cc.name === x.name);
       return !!n && Math.abs(n.x - x.callout[0]) < 1 && Math.abs(n.y - x.callout[1]) < 1 &&
         c.leaders.some((l) => l[0] === r.x && l[1] === r.y && l[2] === x.callout[0] && l[3] === x.callout[1]); }));
-  check(`${tag} matrix axes use MartechTribe's terms: Martech presence and Martech performance`,
-    JSON.stringify(c.axes) === JSON.stringify(['Martech presence', 'Martech performance']), c.axes.join(' / '));
+  check(`${tag} matrix axes keep MartechTribe's terms, Martech presence and Martech performance, with their plain meanings`,
+    JSON.stringify(c.axes) === JSON.stringify(['Martech presence: technology capabilities', 'Martech performance: ability to use the technology']), c.axes.join(' / '));
   check(`${tag} matrix: the Powerhouse quadrant, where the outperformers sit, is tinted`, c.tint.ok && c.tint.colour !== 'rgba(0, 0, 0, 0)', c.tint.colour);
-  check(`${tag} positions: four cards of one size, each with its own icon and its highlighted retailers`, c.quads.length === 4 && c.quadsSameSize &&
-    c.quads.every((q) => q.icon === `#i-${q.q}` && q.iconDefined) &&
+  check(`${tag} positions: four cards of one size, each with its own icon, its retailers and what it could mean for priorities, never "buy more"`, c.quads.length === 4 && c.quadsSameSize &&
+    c.quads.every((q) => q.icon === `#i-${q.q}` && q.iconDefined && q.why && !/\b(buy|bigger|biggest|more technology)\b/i.test(q.why)) &&
     Object.keys(QUAD_COLOURS).every((qq) => JSON.stringify(c.quads.find((q) => q.q === qq).names.slice().sort()) ===
       JSON.stringify(APEX.examples.filter((x) => x.quadrant === qq).map((x) => x.name).sort())), c.quads.map((q) => `${q.q}: ${q.names.join(' + ')}`).join(' | '));
-  if (vp.width > 640) check(`${tag} every view in the explorer is the same size, so nothing below it moves`, new Set(c.viewHeights).size === 1, c.viewHeights.join(', '));
+  check(`${tag} every view in the explorer shares one frame, so nothing below it moves`, new Set(c.viewHeights).size === 1, c.viewHeights.join(', '));
   const pts = (rows) => rows.map((r) => `${r[0]} +${r[1]}`);
-  check(`${tag} score: ${sc.now} today and ${sc.possible} within reach, the fixes add up and the meter shows both`, c.head === `You are at ${sc.now}/100. You can reach ${sc.possible}/100.` &&
-    JSON.stringify(c.fix.map((r) => `${r.name} ${r.pts}`)) === JSON.stringify(pts(sc.fix)) && JSON.stringify(c.strong.map((r) => `${r.name} ${r.pts}`)) === JSON.stringify(pts(sc.strong)) &&
+  check(`${tag} score: "Example starting score: ${sc.now}/100" and "Potential score: ${sc.possible}/100", the three priorities add up and the meter shows both`,
+    JSON.stringify(c.stats) === JSON.stringify([`Example starting score: ${sc.now}/100`, `Potential score: ${sc.possible}/100`]) &&
+    JSON.stringify(c.fix.map((r) => `${r.name} ${r.pts}`)) === JSON.stringify(pts(sc.fix)) && c.fixHead === `Priority improvements+${sc.possible - sc.now} points` &&
+    JSON.stringify(c.strong.map((r) => r.name)) === JSON.stringify(sc.strong.map((r) => r[0])) && c.strong.every((r) => r.pts === null) && c.strongHead === 'Already strong' &&
     sc.fix.reduce((a, r) => a + r[1], 0) === sc.possible - sc.now && Math.abs(c.meter.now - sc.now / 100) < 0.01 && Math.abs(c.meter.gain - (sc.possible - sc.now) / 100) < 0.01 && c.meter.joined,
-    `meter ${(c.meter.now * 100).toFixed(1)} + ${(c.meter.gain * 100).toFixed(1)}`);
-  check(`${tag} score areas and tabs carry plain icons, not technology logos; the only image in the explorer is the MartechMap`,
-    [...c.fix, ...c.strong].every((r) => /^#i-/.test(r.icon)) && c.iconsDefined && JSON.stringify(c.images) === JSON.stringify(['rc-map']), c.images.join(', '));
-  check(`${tag} each of the first three views ends with a Next button naming the view after it, and nothing spills out of the panel`,
-    JSON.stringify(c.nexts) === JSON.stringify(RX_TABS.slice(1).map((n) => `Next ${n}`).concat([null])) && c.spill.length === 0,
-    c.nexts.join(' | ') + (c.spill.length ? '; spill: ' + c.spill.join(', ') : ''));
+    `${c.stats.join(' | ')}; meter ${(c.meter.now * 100).toFixed(1)} + ${(c.meter.gain * 100).toFixed(1)}`);
+  check(`${tag} next steps: an illustrative plan of priorities, actions, role owners and phases in order, with no dates, money, percentages or results`,
+    c.plan.length === 4 && c.plan.every((st) => /^Phase [1-3]$/.test(st.phase) && st.priority && st.action && st.owner) &&
+    c.plan.map((st) => +st.phase.slice(-1)).every((n, i, all) => i === 0 || n >= all[i - 1]) &&
+    JSON.stringify(c.plan.slice(0, 3).map((st) => st.priority)) === JSON.stringify(sc.fix.map((r) => r[0])) &&
+    !c.plan.some((st) => /\d{4}|R\s?\d|\$|%|ROI|saving|guarantee|month|week|days?\b/i.test(st.action + st.owner)), c.plan.map((st) => `${st.phase}: ${st.priority} (${st.owner})`).join(' | '));
+  check(`${tag} score areas and tabs carry plain icons, not technology logos; no images inside the explorer`,
+    [...c.fix, ...c.strong].every((r) => /^#i-/.test(r.icon)) && c.iconsDefined && c.images === 0, `${c.images} images`);
+  check(`${tag} Previous and Next sit at the foot of the panel, outside the views: Previous unavailable on the first view, and no type under 12 px`,
+    c.nav.shown && c.nav.inside && c.nav.outsideViews && c.nav.prev === 'Previous' && c.nav.next === 'Next' && c.nav.prevOff && !c.nav.nextOff &&
+    c.spill.length === 0 && c.small.length === 0, JSON.stringify(c.nav) + (c.spill.length ? '; spill: ' + c.spill.join(', ') : '') + (c.small.length ? '; small: ' + c.small.join(', ') : ''));
 
   const w = x.workshops;
   check(`${tag} workshops: See the opportunity. Know where to act., with the new support line`, w.h2 === HOME.workshopsH2 && w.lede === HOME.workshopsLede, w.lede);
@@ -676,17 +703,20 @@ async function homeChecks(page, vp) {
 }
 
 
-// The explorer changes only when asked: it waits, then a tab, the Next button and the arrow, Home and End keys each
-// open one view, mark its tab and carry focus with them; above 640 px the panel keeps one size throughout
+// The explorer changes only when asked: it waits, then a tab, Previous and Next and the arrow, Home and End keys each
+// open one view and mark its tab. At any width the panel keeps one size, Previous and Next keep their place and size, and
+// the figures below never move
 async function explorerChecks(page, vp) {
   const tag = `[home ${vp.name}]`;
   const state = () => page.evaluate(() => {
     const rx = document.querySelector('.rx'), tabs = [...rx.querySelectorAll('[role="tab"]')], views = [...rx.querySelectorAll('.rx-view')];
-    const a = document.activeElement;
+    const prev = rx.querySelector('.rx-prev'), next = rx.querySelector('.rx-next'), a = document.activeElement;
+    const r = (el) => { const b = el.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.top + scrollY), Math.round(b.width), Math.round(b.height)].join(','); };
     return { tab: tabs.findIndex((tb) => tb.getAttribute('aria-selected') === 'true'),
-      shown: views.map((v, i) => (!v.hidden && getComputedStyle(v).visibility !== 'hidden' && v.offsetHeight > 0 ? i : -1)).filter((i) => i >= 0),
-      focus: !a ? '' : a.classList.contains('rx-tab') ? `tab ${tabs.indexOf(a) + 1}` : a.classList.contains('rx-view') ? `view ${views.indexOf(a) + 1}` : a.tagName,
-      height: Math.round(rx.getBoundingClientRect().height) };
+      shown: views.map((v, i) => (getComputedStyle(v).visibility !== 'hidden' && !v.inert ? i : -1)).filter((i) => i >= 0),
+      focus: !a ? '' : a.classList.contains('rx-tab') ? `tab ${tabs.indexOf(a) + 1}` : a === next ? 'next' : a === prev ? 'prev' : a.tagName,
+      frame: r(rx), prevBox: r(prev), nextBox: r(next), below: Math.round(document.querySelector('#evidence .figures').getBoundingClientRect().top + scrollY),
+      prevOff: prev.disabled, nextOff: next.disabled };
   });
   const settle = () => page.waitForTimeout(350);
   await page.locator('.rx').scrollIntoViewIfNeeded();
@@ -695,19 +725,27 @@ async function explorerChecks(page, vp) {
   const later = await state();
   check(`${tag} the explorer never moves on its own`, start.tab === 0 && later.tab === 0 && JSON.stringify(later.shown) === '[0]', JSON.stringify(later));
   const steps = [];
-  await page.click('.rx-tab >> nth=3'); await settle(); steps.push(['tab 4', 3, null, await state()]);
-  await page.click('.rx-tab >> nth=0'); await settle(); steps.push(['tab 1', 0, null, await state()]);
-  await page.click('#rc-matrix .rx-next'); await settle(); steps.push(['next', 1, 'view 2', await state()]);
-  await page.focus('.rx-tab[aria-selected="true"]'); await page.keyboard.press('ArrowRight'); await settle(); steps.push(['arrow right', 2, 'tab 3', await state()]);
-  await page.keyboard.press('End'); await settle(); steps.push(['End', 3, 'tab 4', await state()]);
-  await page.keyboard.press('ArrowRight'); await settle(); steps.push(['arrow right from the last', 0, 'tab 1', await state()]);
-  await page.keyboard.press('ArrowLeft'); await settle(); steps.push(['arrow left from the first', 3, 'tab 4', await state()]);
-  await page.keyboard.press('Home'); await settle(); steps.push(['Home', 0, 'tab 1', await state()]);
-  check(`${tag} tabs, the Next button and the arrow, Home and End keys each open one view, mark its tab and carry focus with it`,
-    steps.every(([, want, focus, st]) => st.tab === want && JSON.stringify(st.shown) === JSON.stringify([want]) && (!focus || st.focus === focus)),
+  const go = async (how, want, focus, act) => { await act(); await settle(); steps.push([how, want, focus, await state()]); };
+  await go('tab 4', 3, null, () => page.click('.rx-tab >> nth=3'));
+  await go('tab 1', 0, null, () => page.click('.rx-tab >> nth=0'));
+  await go('Next', 1, 'next', () => page.click('.rx-next'));
+  await go('Previous back to the first, focus handed to Next', 0, 'next', () => page.click('.rx-prev'));
+  await go('arrow right', 1, 'tab 2', async () => { await page.focus('.rx-tab[aria-selected="true"]'); await page.keyboard.press('ArrowRight'); });
+  await go('End', 3, 'tab 4', () => page.keyboard.press('End'));
+  await go('arrow right from the last', 0, 'tab 1', () => page.keyboard.press('ArrowRight'));
+  await go('arrow left from the first', 3, 'tab 4', () => page.keyboard.press('ArrowLeft'));
+  await go('Home', 0, 'tab 1', () => page.keyboard.press('Home'));
+  await go('Next', 1, 'next', () => page.click('.rx-next'));
+  await go('Next', 2, 'next', () => page.click('.rx-next'));
+  await go('Next to the last, focus handed to Previous', 3, 'prev', () => page.click('.rx-next'));
+  check(`${tag} tabs, Previous and Next and the arrow, Home and End keys each open one view, mark its tab and keep focus where it can act`,
+    steps.every(([, want, focus, st]) => st.tab === want && JSON.stringify(st.shown) === JSON.stringify([want]) && (!focus || st.focus === focus) &&
+      st.prevOff === (want === 0) && st.nextOff === (want === 3)),
     steps.map(([how, , , st]) => `${how} > ${st.tab + 1} (${st.focus})`).join(', '));
-  if (vp.width > 640) check(`${tag} the explorer keeps one size whichever view is open`, steps.every(([, , , st]) => st.height === start.height),
-    `${start.height} px; ${steps.map(([, , , st]) => st.height).join(', ')}`);
+  const same = (k) => steps.every(([, , , st]) => st[k] === start[k]);
+  check(`${tag} switching views changes nothing around them: one frame, Previous and Next in one place and size, the figures below still`,
+    same('frame') && same('prevBox') && same('nextBox') && same('below'),
+    `frame ${start.frame}; ${[...new Set(steps.map(([, , , st]) => `${st.frame} | ${st.prevBox} | ${st.nextBox} | ${st.below}`))].join(' / ')}`);
   // Screenshots in a window tall enough for the whole panel, so the capture never resizes the page
   await page.setViewportSize({ width: vp.width, height: Math.max(vp.height, 2000) });
   for (let i = 0; i < 4; i++) {
@@ -806,12 +844,36 @@ async function fitChecks(browser, base) {
   const nj = await page.evaluate(() => {
     const views = [...document.querySelectorAll('.rx-view')];
     return { tabs: document.querySelector('.rx-tabs').hidden && document.querySelector('.rx-tabs').getBoundingClientRect().height === 0,
-      next: [...document.querySelectorAll('.rx-next')].every((b) => b.getBoundingClientRect().height === 0),
+      next: document.querySelector('.rx-nav').hidden && document.querySelector('.rx-nav').getBoundingClientRect().height === 0,
       views: views.map((v) => v.offsetHeight > 0 && getComputedStyle(v).visibility === 'visible'),
       inTurn: views.every((v, i) => i === 0 || v.getBoundingClientRect().top >= views[i - 1].getBoundingClientRect().bottom) };
   });
-  check('[no script] every research view shows in turn, with no tabs or Next buttons that would do nothing', nj.tabs && nj.next && nj.views.every(Boolean) && nj.inTurn, JSON.stringify(nj));
+  check('[no script] every research view shows in turn, with no tabs or Previous and Next that would do nothing', nj.tabs && nj.next && nj.views.every(Boolean) && nj.inTurn, JSON.stringify(nj));
   await ctx.close();
+
+  /* The preview host's own reset (16 October 2026): Neil saw the matrix and position views taller than the others in
+     the Claude preview. Hosts often force anything with the hidden attribute to display: none, and the 2.13 draft hid
+     views that way. Under that reset, at desktop, tablet and phone widths, every view must still share one frame and
+     nothing below may move */
+  const reset = '[hidden]:where(:not([hidden="until-found"])) { display: none !important; }';
+  const under = [];
+  for (const [width, height] of [[1280, 800], [834, 1112], [390, 844]]) {
+    const hp = await browser.newPage({ viewport: { width, height } });
+    await hp.goto(base, { waitUntil: 'load' });
+    await hp.addStyleTag({ content: reset });
+    await hp.evaluate(() => document.fonts.ready);
+    const seen = [];
+    for (let i = 0; i < 4; i++) {
+      await hp.click(`.rx-tab >> nth=${i}`);
+      await hp.waitForTimeout(350);
+      seen.push(await hp.evaluate(() => [Math.round(document.querySelector('.rx').getBoundingClientRect().height),
+        Math.round(document.querySelector('#evidence .figures').getBoundingClientRect().top + scrollY)].join('/')));
+    }
+    under.push([width, seen]);
+    await hp.close();
+  }
+  check('[host reset] with a page reset that hides anything marked hidden, every view still shares one frame at 1280, 834 and 390 px',
+    under.every(([, seen]) => new Set(seen).size === 1), under.map(([w, seen]) => `${w}: ${seen.join(', ')}`).join('; '));
 }
 
 async function fillContact(page, entry) {
@@ -995,7 +1057,7 @@ async function apiChecks() {
     await pageChecks(page, `[home ${vp.name}]`, { sizing });
     await loadImages(page);
     await homeChecks(page, vp);
-    if (vp.name === 'desktop' || vp.name === 'mobile') await explorerChecks(page, vp);
+    await explorerChecks(page, vp);
 
     // Rune breathing: it runs by default while on screen and drifts far enough to see at this width
     await page.locator('.rune-stage').scrollIntoViewIfNeeded();
@@ -1059,12 +1121,33 @@ async function apiChecks() {
           await page.screenshot({ path: path.join(SHOTS, 'focus-header.png'), clip: { x: 0, y: 0, width: 1440, height: 110 } });
         }
       }
-      const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', 'Where you sit', 'Next What each position mean', 'Let’s Talk',
+      const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', 'Your position', 'Next', 'Discuss your martech priorit', 'View the full market map', 'Let’s Talk',
         'Growth Lab, back to top', 'Privacy', 'Website terms', 'Growth Lab on LinkedIn (open'];
       check('[home desktop] keyboard order follows the page and every stop shows a ring', stops.every((s) => s.ring) &&
         JSON.stringify(stops.map((s) => s.label)) === JSON.stringify(expected), stops.map((s) => s.label + (s.ring ? '' : ' (no ring)')).join(' > '));
 
-      // Both actions open the contact view
+      // The full market map: it opens over the page from the existing 1600 px image, takes focus, and Escape, the
+      // close button or a click outside it closes it, with focus back on the link
+      await page.click('.map-open');
+      await page.waitForFunction(() => { const i = document.querySelector('.map-dialog img'); return i.complete && i.naturalWidth > 0; }, null, { timeout: 5000 }).catch(() => {});
+      const opened = await page.evaluate(() => { const d = document.querySelector('.map-dialog'), i = d.querySelector('img'), r = i.getBoundingClientRect();
+        return { open: d.open, modal: d.matches(':modal'), natural: i.naturalWidth, width: Math.round(r.width), height: Math.round(r.height), vw: innerWidth, vh: innerHeight,
+          focus: document.activeElement.className, credit: d.querySelector('.map-credit').textContent.trim() }; });
+      await page.screenshot({ path: path.join(SHOTS, 'market-map-full.png') });
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(150);
+      const closed = await page.evaluate(() => ({ open: document.querySelector('.map-dialog').open, focus: document.activeElement.className }));
+      await page.click('.map-open'); await page.click('.map-close'); await page.waitForTimeout(150);
+      const closedByButton = await page.evaluate(() => !document.querySelector('.map-dialog').open && document.activeElement.classList.contains('map-open'));
+      check('[home desktop] View the full market map opens the 1600 px map over the page, larger than in the section, and closes with Escape or its button, focus returning',
+        opened.open && opened.modal && opened.natural === 1600 && opened.width >= 1000 && opened.height <= opened.vh && opened.focus === 'map-close' &&
+        opened.credit === HOME.credit && !closed.open && closed.focus === 'map-open' && closedByButton, JSON.stringify({ opened, closed, closedByButton }));
+
+      // All three actions open the contact view
+      await page.click('#evidence .rx-cta .btn-coral');
+      await page.waitForURL(/contact\.html$/);
+      check('[home desktop] Discuss your martech priorities opens the contact view', (await page.textContent('h1')).trim() === CONTACT.h1);
+      await page.goBack();
       await page.click('.site-header .btn-dark');
       await page.waitForURL(/contact\.html$/);
       check('[home desktop] the header Let’s Talk opens the contact view', (await page.textContent('h1')).trim() === CONTACT.h1);
@@ -1440,7 +1523,7 @@ async function apiChecks() {
       actions: [...document.querySelectorAll('.btn')].map((a) => a.getAttribute('href')), mail: document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').length }; });
     check('[preview] homepage self contained: Geist, images from published files, no overflow, no requests out', pv.geist && pv.overflow <= 0 &&
       pv.external.length === 0 && perr.length === 0 && pv.imgs.length === 3 && pv.imgs.every(Boolean) && pv.brands.length === 4 && pv.brands.every(Boolean) && pv.platforms.length === PLATFORMS_PRESENT.length && pv.platforms.every(Boolean) && pv.logos.length === LOGOS_PRESENT.length && pv.logos.every(Boolean) && external.length === 0, JSON.stringify({ ...pv, external }));
-    check('[preview] both actions open the published contact view', pv.actions.length === 2 && pv.actions.every((h) => h === 'contact.html') &&
+    check('[preview] all three actions open the published contact view', pv.actions.length === 3 && pv.actions.every((h) => h === 'contact.html') &&
       fs.existsSync(path.join(previewDir, 'contact.html')) && pv.mail === 0);
     await pctx.close();
     fs.unlinkSync(path.join(previewDir, '_wrapped.html'));

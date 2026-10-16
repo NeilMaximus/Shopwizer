@@ -212,24 +212,17 @@ h1 {
 
 /* Evidence: what the benchmark tells you beside the MartechMap, then MartechTribe's figures in one quiet
    row split by hairlines (no tiles, boxes or counters), then the brands that use the research */
-/* The introduction in two balanced columns above the research explorer (version 2.13): the heading and its
-   coral first sentence on the left, the rest of the introduction and what it tells you on the right */
+/* The introduction in two columns above the research explorer (version 2.13): the heading on the left, its
+   coral line and one supporting line on the right */
 .evidence-intro { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px clamp(40px, 6vw, 96px); align-items: start; }
 .evidence-tells { padding-top: 6px; }
 .evidence-tells .lede { margin-top: 0; }
-.benefits { margin-top: 22px; display: grid; gap: 12px; }
-.benefits li { position: relative; padding-left: 24px; font-size: 18px; line-height: 1.45; font-weight: var(--gl-weight-regular); color: var(--gl-ink); text-wrap: pretty; }
-.benefits li::before {
-  content: ""; position: absolute; left: 1px; top: calc(0.725em - 4px);
-  width: 8px; height: 8px; border-radius: 2px; background: var(--gl-purple);
-}
+.evidence-tells .lede + .lede { margin-top: 14px; }
 .evidence-copy .lede { margin-top: 20px; }
 /* The research heading and the introduction's first sentence in brand coral (Neil, version 2.12). The
    heading is large text (3.25:1 passes); the regular weight sentence is a recorded contrast exception
    (DESIGN_SYSTEM.md, section 11). The rest of the introduction stays ink 2 */
-.evidence .evidence-copy h2, .evidence-copy .lede-lead { color: var(--gl-coral); }
-.list-label { margin-top: 28px; font-size: var(--gl-text-ui); line-height: 1.4; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
-.evidence-tells .benefits { margin-top: 12px; }
+.evidence .evidence-copy h2, .evidence .lede-lead { color: var(--gl-coral); }
 .nowrap { white-space: nowrap; }
 .map { min-width: 0; }
 /* Vendor artwork: shown whole at its own 16 by 9 with the credit band it carries, never cropped or
@@ -241,14 +234,18 @@ h1 {
      sits outside the image, so the map itself is never tinted */
   box-shadow: 0 0 0 1px var(--gl-line), 0 10px 44px -6px color-mix(in srgb, var(--gl-coral) 30%, transparent);
 }
-/* Research explorer (version 2.13, replacing the carousel at Neil's request): MartechTribe's Apex Martech
-   Matrix retail example rebuilt in Growth Lab colours, then the MartechMap, as four views on one light grey
-   panel at the full content width. Four named tabs sit at the top, so the visitor sees the whole story at a
-   glance; a Next button at the foot of each view carries them through it. It changes only when the visitor
-   asks. Without JavaScript the tabs stay hidden and every view shows in turn.
-   Quadrant colours: Powerhouse purple, Precision coral, Overbuilt amber (with a grey ring, as amber is faint
-   on white), Underbuilt ink 3 */
-.rx { margin-top: clamp(40px, 5vw, 64px); padding: 8px; border-radius: var(--gl-radius-panel); background: var(--gl-panel); scroll-margin-top: 16px; }
+/* Research explorer (version 2.13, Neil, 16 October 2026): four named views of MartechTribe's Apex Martech
+   Matrix retail example on one light grey panel at the full content width: your position, what it means, your
+   priorities and your next steps. Four tabs sit at the top and Previous and Next at the foot. Every view shares
+   one frame at any width: the views share one grid cell, so the frame takes the tallest view's height after fonts
+   and images load, and the inactive ones are only made invisible (never the hidden attribute, which a page reset
+   can turn into display: none). It changes only when the visitor asks; without JavaScript every view shows in turn.
+   Quadrant colours: Powerhouse purple, Precision coral, Overbuilt amber (with a grey ring, as amber is faint on
+   white), Underbuilt ink 3 */
+.rx {
+  --rx-pad: clamp(16px, 2.8vw, 40px); --rx-gap: clamp(32px, 4vw, 56px);
+  position: relative; margin-top: clamp(40px, 5vw, 64px); padding: 8px; border-radius: var(--gl-radius-panel); background: var(--gl-panel); scroll-margin-top: 16px;
+}
 .rx-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
 .rx-tabs[hidden] { display: none; }
 .rx-tab {
@@ -262,58 +259,76 @@ h1 {
 .rx-ico { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--gl-white); color: var(--gl-ink-2); transition: background-color 0.2s, color 0.2s; }
 .rx-ico svg { width: 19px; height: 19px; }
 .rx-tab[aria-selected="true"] .rx-ico { background: var(--gl-purple); color: var(--gl-white); }
-.rx-tab:focus-visible, .rx-next:focus-visible { outline: 2px solid var(--gl-purple-strong); outline-offset: 2px; }
-.rx-views { display: grid; padding: clamp(20px, 2vw, 26px) clamp(18px, 2.8vw, 40px) clamp(20px, 2.6vw, 32px); }
-/* One view: its words, its picture and the way on. Phones and tablets stack them; from 1000 px the words sit
-   beside the picture */
-.rx-view { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "text" "visual" "credit" "next"; gap: 20px; min-width: 0; }
-.rx-view > .rc-credit { grid-area: credit; margin-top: -8px; padding-top: 0; }
-.rx-view[hidden] { display: none; }
+.rx-tab:focus-visible, .rx-step:focus-visible { outline: 2px solid var(--gl-purple-strong); outline-offset: 2px; }
+.rx-views { display: grid; padding: clamp(20px, 2vw, 26px) var(--rx-pad) clamp(18px, 2.2vw, 26px); }
+/* One view: its words, its picture and its credit. Phones and tablets stack them; from 1000 px the words sit beside
+   the picture */
+.rx-view { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "text" "visual" "credit"; align-content: start; gap: 18px; min-width: 0; }
+.rx:not(.is-tabbed) .rx-view { grid-template-rows: none; }
 .rx-view + .rx-view { margin-top: 56px; }
 .rx-view:focus-visible { outline: 2px solid var(--gl-purple-strong); outline-offset: 8px; border-radius: 12px; }
 .rx-text { grid-area: text; min-width: 0; }
 .rx-visual { grid-area: visual; display: flex; flex-direction: column; min-width: 0; }
+.rx-view > .rc-credit { grid-area: credit; margin-top: -6px; padding-top: 0; }
 .rc-title { font-size: clamp(20px, 1.7vw, 24px); line-height: 1.25; letter-spacing: -0.015em; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-wrap: balance; }
 .rc-lede { margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--gl-ink-2); text-wrap: pretty; }
-/* The matrix view opens by saying it is one industry's example, so no one reads the benchmark as retail only */
-.rc-lede strong { font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
+.rc-lede + .rc-lede { margin-top: 12px; }
 .rc-credit { margin-top: auto; padding-top: 12px; font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3); }
-.rx-next {
-  grid-area: next; justify-self: start; display: inline-flex; align-items: center; gap: 14px; min-height: 52px; padding: 6px 6px 6px 18px;
-  border: 0; border-radius: var(--gl-radius-pill); background: var(--gl-white); box-shadow: 0 0 0 1px var(--gl-line); cursor: pointer;
-  font: inherit; text-align: left; color: var(--gl-ink); transition: box-shadow 0.2s;
+/* Retail example or Illustrative example, directly above the picture it describes */
+.rx-label {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 5px 12px 5px 10px;
+  border-radius: var(--gl-radius-pill); background: var(--gl-white); box-shadow: 0 0 0 1px var(--gl-line);
+  font-size: 14px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink);
 }
-.rx-next[hidden] { display: none; }
-.rx-next:hover { box-shadow: 0 0 0 1px var(--gl-purple-soft); }
-.rx-next-text { display: flex; flex-direction: column; font-size: 15px; line-height: 1.3; font-weight: var(--gl-weight-semibold); }
-.rx-next-text small { font-size: 12.5px; font-weight: var(--gl-weight-medium); color: var(--gl-ink-3); }
-.rx-arrow { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--gl-purple); color: var(--gl-white); transition: background-color 0.2s, transform 0.2s var(--gl-ease); }
+.rx-label::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--gl-purple); }
+/* Previous and Next: one place and one size, whichever view is open */
+.rx-nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; padding: 0 clamp(16px, 2.8vw, 40px) clamp(16px, 2.2vw, 24px); }
+.rx-nav[hidden] { display: none; }
+.rx-step {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 150px; height: 48px; padding: 0 14px;
+  border: 0; border-radius: var(--gl-radius-pill); cursor: pointer;
+  font: inherit; font-size: 15px; line-height: 1; font-weight: var(--gl-weight-semibold);
+  transition: background-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+.rx-prev { justify-self: start; background: var(--gl-white); color: var(--gl-ink); box-shadow: 0 0 0 1px var(--gl-line); }
+.rx-prev:hover:not([disabled]) { box-shadow: 0 0 0 1px var(--gl-purple-soft); }
+.rx-next { justify-self: end; background: var(--gl-purple); color: var(--gl-white); }
+.rx-next:hover:not([disabled]) { background: color-mix(in srgb, var(--gl-purple) 85%, var(--gl-ink)); }
+.rx-step[disabled] { cursor: default; opacity: 0.4; }
+.rx-arrow { display: grid; place-items: center; }
 .rx-arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.rx-next:hover .rx-arrow { background: color-mix(in srgb, var(--gl-purple) 85%, var(--gl-ink)); transform: translateX(2px); }
-/* With the script, one view at a time */
-.rx.is-tabbed .rx-view { margin-top: 0; }
-.rx.is-tabbed .rx-view:not([hidden]) { animation: rx-in 0.28s var(--gl-ease); }
+.rx-count { white-space: nowrap; font-size: 14px; line-height: 1.3; font-weight: var(--gl-weight-medium); color: var(--gl-ink-3); text-align: center; }
+/* With the script: every view in one grid cell, one visible */
+.rx.is-tabbed .rx-view { grid-area: 1 / 1; margin-top: 0; }
+.rx.is-tabbed .rx-view[data-active="false"] { visibility: hidden; }
+.rx.is-tabbed .rx-view[data-active="true"] { animation: rx-in 0.28s var(--gl-ease); }
 @keyframes rx-in { from { opacity: 0; } }
-@media (min-width: 641px) {
-  /* Every view shares the size of the tallest, so nothing below the panel moves when the visitor changes view */
-  .rx.is-tabbed .rx-view { grid-area: 1 / 1; }
-  .rx.is-tabbed .rx-view[hidden] { display: grid; visibility: hidden; }
-}
 @media (min-width: 1000px) {
   .rx-view {
-    grid-template-columns: minmax(0, 0.32fr) minmax(0, 0.68fr); grid-template-rows: auto 1fr auto auto;
-    grid-template-areas: "text visual" ". visual" "credit visual" "next visual"; column-gap: clamp(32px, 4vw, 56px); row-gap: 20px;
+    grid-template-columns: minmax(0, 0.32fr) minmax(0, 0.68fr); grid-template-rows: auto 1fr auto 48px;
+    grid-template-areas: "text visual" ". visual" "credit visual" "nav visual"; align-content: stretch; column-gap: var(--rx-gap); row-gap: 20px;
   }
   .rx-view > .rc-credit { margin-top: 0; }
-  /* Beside its words the chart is a little wider than tall, so every view, with the tabs, fits a 1366 x 768
-     laptop screen */
+  /* Previous and Next sit at the foot of the words column, in the space every view keeps free for them, so they
+     stay in one place and the panel stays short enough for a 1366 x 768 screen */
+  .rx-nav {
+    position: absolute; left: calc(8px + var(--rx-pad)); bottom: calc(8px + clamp(18px, 2.2vw, 26px));
+    width: calc((100% - 16px - 2 * var(--rx-pad) - var(--rx-gap)) * 0.32); grid-template-columns: auto auto; justify-content: start; gap: 10px; padding: 0;
+  }
+  .rx-nav .rx-count { display: none; }
+  .rx-step { width: 136px; }
+  /* Beside its words the chart is a little wider than tall, so the panel fits a 1366 x 768 laptop screen */
   .rx-view .mx-plot { aspect-ratio: 16 / 10; }
-  .rx-next { align-self: end; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .rx-tab, .rx-ico, .rx-next, .rx-arrow { transition: none; }
-  .rx.is-tabbed .rx-view:not([hidden]) { animation: none; }
+  .rx-tab, .rx-ico, .rx-step { transition: none; }
+  .rx.is-tabbed .rx-view[data-active="true"] { animation: none; }
 }
+
+/* One enquiry, under the explorer whichever view is open */
+.rx-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 40px; margin-top: 28px; padding-inline: clamp(16px, 2.8vw, 40px); }
+.rx-cta-title { font-size: clamp(21px, 1.9vw, 26px); line-height: 1.25; letter-spacing: -0.015em; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-wrap: balance; }
+.rx-cta-copy p { margin-top: 6px; font-size: 17px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
 
 /* Quadrant colours, shared by the matrix, its tags and the position cards */
 .q-powerhouse { background: var(--gl-purple); }
@@ -323,6 +338,9 @@ h1 {
 
 /* The matrix: a white plot on the panel, dots at their measured positions, the four examples named */
 .matrix { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 8px; }
+.mx-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 16px; }
+.mx-top .rx-label { margin-bottom: 0; }
+.mx-plain { font-weight: var(--gl-weight-regular); color: var(--gl-ink-2); }
 .mx-plot {
   position: relative; aspect-ratio: 5 / 4; background: var(--gl-white);
   border-radius: 12px; box-shadow: 0 0 0 1px var(--gl-line);
@@ -362,60 +380,93 @@ h1 {
 
 /* What each position means: four white cards laid out like the matrix */
 .quads { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 12px; }
-.quad { display: flex; flex-direction: column; min-width: 0; padding: 16px; border-radius: 14px; background: var(--gl-white); }
-.quad-tag { display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 1.2; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
+/* Each card: the position and its retailers on one row, then what it is and what it could mean for priorities */
+.quad { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "tag eg" "what what" "why why"; align-content: start; column-gap: 10px; min-width: 0; padding: 16px; border-radius: 14px; background: var(--gl-white); }
+.quad-tag { grid-area: tag; display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 1.2; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 /* Each position has its own icon on a tile in its matrix colour: layers for Overbuilt, a bolt for
    Powerhouse, a target for Precision, a foundation with room to build for Underbuilt */
 .q-icon { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; color: var(--gl-white); }
 .q-icon.q-overbuilt { color: var(--gl-ink); }
 .q-icon svg { width: 20px; height: 20px; }
-.quad-what { margin-top: 12px; font-size: 16px; line-height: 1.35; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-wrap: balance; }
-.quad-why { margin-top: 6px; margin-bottom: 14px; font-size: 14px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
-.quad-eg { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--gl-line); }
+.quad-what { grid-area: what; margin-top: 12px; font-size: 16px; line-height: 1.35; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-wrap: balance; }
+.quad-why { grid-area: why; margin-top: 6px; font-weight: var(--gl-weight-regular); font-size: 14px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
+.quad-eg { grid-area: eg; align-self: center; margin: 0; padding: 0; border: 0; }
 .eg-names { display: flex; flex-wrap: wrap; gap: 6px; }
 .eg-names span { padding: 3px 10px; border-radius: var(--gl-radius-pill); background: var(--gl-panel); font-size: 13px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 
 /* Your Apex Score: three short points, then the example score */
-.rc-points { display: grid; gap: 10px; margin-top: 14px; }
-.rc-points li { position: relative; padding-left: 18px; font-size: 16px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
-.rc-points li::before { content: ""; position: absolute; left: 1px; top: calc(0.725em - 3px); width: 6px; height: 6px; border-radius: 2px; background: var(--gl-purple); }
 .score { padding: 18px 20px; border-radius: 14px; background: var(--gl-white); }
-.score-head { font-size: 17px; line-height: 1.35; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-align: center; }
-.score-head strong { font-size: 1.35em; font-weight: var(--gl-weight-bold); }
-/* The meter shows the gap at a glance: purple is today, coral is what fixing the areas below adds */
-.meter { position: relative; height: 10px; margin: 12px auto 0; max-width: 420px; border-radius: var(--gl-radius-pill); background: var(--gl-line); overflow: hidden; }
+/* The two scores side by side, then the meter: purple to the starting score, coral for the points the three
+   priority improvements add (63 + 24 = 87). The score is benchmark alignment, never ROI or revenue */
+.score-head { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; }
+.score-stat { display: flex; flex-direction: column; gap: 2px; font-size: 15px; line-height: 1.3; font-weight: var(--gl-weight-medium); color: var(--gl-ink-2); }
+.score-label { display: inline-flex; align-items: center; gap: 8px; }
+.score-label::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--gl-purple); }
+.score-goal .score-label::before { background: var(--gl-coral); }
+.score-value { font-size: 15px; color: var(--gl-ink-2); }
+.score-value strong { font-size: 30px; line-height: 1.15; letter-spacing: -0.02em; font-weight: var(--gl-weight-bold); color: var(--gl-ink); }
+.meter { position: relative; height: 12px; margin-top: 14px; border-radius: var(--gl-radius-pill); background: var(--gl-line); overflow: hidden; }
 .meter span { position: absolute; top: 0; bottom: 0; }
 .meter-now { left: 0; width: var(--now); background: var(--gl-purple); }
 .meter-gain { left: var(--now); width: var(--gain); background: var(--gl-coral); }
-.meter-key { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; margin-top: 10px; font-size: 12.5px; line-height: 1.4; color: var(--gl-ink-3); }
-.meter-key span { display: inline-flex; align-items: center; gap: 7px; }
-.meter-key span::before { content: ""; width: 10px; height: 10px; border-radius: 3px; }
-.mk-now::before { background: var(--gl-purple); }
-.mk-gain::before { background: var(--gl-coral); }
 /* The two lists read as a table (Neil, 16 October 2026): a rule in the list's colour under each heading,
    a hairline between areas and a hairline between the two lists */
 .score-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 0; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--gl-line); }
 .score-fix { padding-right: 24px; }
 .score-strong { padding-left: 24px; border-left: 1px solid var(--gl-line); }
-.score-col h4 { display: flex; align-items: center; gap: 8px; justify-content: space-between; padding-bottom: 10px; border-bottom: 2px solid var(--score-accent); font-size: 13.5px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
+.score-col h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; justify-content: space-between; padding-bottom: 10px; border-bottom: 2px solid var(--score-accent); font-size: 15px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 .score-col h4 span { display: flex; align-items: center; gap: 8px; }
 .score-col h4 span::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--score-accent); }
-.score-col h4 small { font-size: 11.5px; font-weight: var(--gl-weight-medium); color: var(--gl-ink-3); }
+.score-col h4 small { white-space: nowrap; font-size: 14px; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 .score-fix { --score-accent: var(--gl-coral); }
 .score-strong { --score-accent: var(--gl-purple); }
 .score-col ul { display: grid; }
 .score-col li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; grid-template-areas: "icon name pts" "icon how pts"; column-gap: 12px; row-gap: 3px; align-items: center; padding-block: 11px; }
 .score-col li + li { border-top: 1px solid var(--gl-line); }
+.score-strong li { grid-template-columns: 22px minmax(0, 1fr); grid-template-areas: "icon name"; }
 .score-col li:last-child { padding-bottom: 0; }
-.s-icon { grid-area: icon; width: 22px; height: 22px; color: var(--score-accent); align-self: start; margin-top: 1px; }
-.s-name { grid-area: name; font-size: 14px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
-.s-how { grid-area: how; font-size: 12.5px; line-height: 1.35; color: var(--gl-ink-3); text-wrap: pretty; }
+.s-icon { grid-area: icon; width: 22px; height: 22px; color: var(--score-accent); align-self: start; margin-top: 0; }
+.s-name { grid-area: name; font-size: 15px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
+.s-how { grid-area: how; font-size: 14px; line-height: 1.4; color: var(--gl-ink-2); text-wrap: pretty; }
 .s-pts {
   grid-area: pts; min-width: 38px; padding: 3px 8px; border-radius: var(--gl-radius-pill); text-align: center;
   font-size: 13px; font-weight: var(--gl-weight-bold); color: var(--gl-ink); background: color-mix(in srgb, var(--score-accent) 16%, var(--gl-white));
 }
 
 /* The credit under the map is small print */
+/* Your next steps: an illustrative plan, each step with its phase, priority, action and owner. No dates, results or
+   savings are ever given */
+.plan { display: grid; gap: 10px; }
+.plan-step { display: grid; grid-template-columns: 88px minmax(0, 1fr) 168px; align-items: center; gap: 8px 18px; padding: 14px 18px; border-radius: 14px; background: var(--gl-white); }
+.plan-phase { justify-self: start; padding: 4px 10px; border-radius: var(--gl-radius-pill); background: var(--gl-purple-soft); font-size: 13.5px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); white-space: nowrap; }
+.plan-priority { font-size: 15px; line-height: 1.35; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
+.plan-action { margin-top: 3px; font-size: 14.5px; line-height: 1.45; color: var(--gl-ink-2); text-wrap: pretty; }
+.plan-owner { display: flex; flex-direction: column; gap: 2px; font-size: 14.5px; line-height: 1.35; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
+.plan-owner small { font-size: 13px; font-weight: var(--gl-weight-medium); color: var(--gl-ink-3); }
+
+/* The MartechMap as supporting evidence beside the research credentials (version 2.13): a compact image, its line
+   and credit, and the full map on request */
+.market { display: grid; grid-template-columns: minmax(0, 0.44fr) minmax(0, 0.56fr); align-items: center; gap: 32px clamp(32px, 4.5vw, 64px); margin-top: clamp(40px, 5vw, 64px); padding-top: clamp(32px, 4vw, 48px); border-top: 1px solid var(--gl-line); }
+.market-title { font-size: clamp(20px, 1.7vw, 22px); line-height: 1.3; letter-spacing: -0.01em; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
+.market-line { margin-top: 8px; font-size: 17px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
+.map-open {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 16px; padding: 0 18px;
+  border-radius: var(--gl-radius-pill); background: var(--gl-white); box-shadow: 0 0 0 1px var(--gl-line);
+  font-size: 15px; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-decoration: none; transition: box-shadow 0.2s;
+}
+.map-open:hover { box-shadow: 0 0 0 1px var(--gl-purple); }
+.map-open:focus-visible, .map-close:focus-visible, .map-new-tab:focus-visible { outline: 2px solid var(--gl-purple-strong); outline-offset: 2px; }
+.map-open svg, .map-close svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.market .brands { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--gl-line); }
+.map-dialog { width: min(1600px, calc(100vw - 32px)); max-width: none; max-height: calc(100vh - 32px); padding: 0; border: 0; border-radius: 16px; background: var(--gl-white); color: var(--gl-ink); overflow: auto; }
+.map-dialog::backdrop { background: rgb(17 17 17 / 0.82); }
+.map-dialog-bar { display: flex; align-items: center; gap: 12px 20px; padding: 10px 10px 10px 20px; border-bottom: 1px solid var(--gl-line); }
+.map-dialog-bar h3 { margin-right: auto; font-size: 17px; font-weight: var(--gl-weight-semibold); }
+.map-new-tab { font-size: 15px; font-weight: var(--gl-weight-medium); color: var(--gl-purple-strong); text-underline-offset: 3px; }
+.map-close { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: var(--gl-panel); color: var(--gl-ink); cursor: pointer; }
+.map-close:hover { background: var(--gl-panel-strong); }
+.map-dialog img { display: block; width: 100%; height: auto; max-height: calc(100vh - 150px); object-fit: contain; background: var(--gl-panel); }
+.map-dialog .map-credit { padding: 10px 20px 14px; }
 .map figcaption { margin-top: 14px; }
 .map-credit { font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3); }
 .figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: clamp(48px, 6vw, 80px); }
@@ -619,6 +670,7 @@ h1 {
   .ways { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: clamp(48px, 7vw, 64px); }
   .evidence-intro { grid-template-columns: minmax(0, 1fr); }
   .evidence-tells { padding-top: 0; }
+  .market { grid-template-columns: minmax(0, 1fr); }
   .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; }
   .fig:nth-child(odd) { padding-left: 0; border-left: 0; }
   .fig:nth-child(even) { padding-right: 0; }
@@ -643,10 +695,18 @@ h1 {
   .score-strong { padding: 24px 0 0; border-left: 0; border-top: 1px solid var(--gl-line); }
   /* On a phone the four tabs sit two by two, and each view keeps its own height */
   .rx-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rx-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rx-nav .rx-count { display: none; }
+  .rx-step { width: 100%; }
+  .score { padding: 16px; }
+  .score-head { grid-template-columns: minmax(0, 1fr); }
+  .plan-step { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "phase owner" "what what"; padding: 14px 16px; }
+  .plan-phase { grid-area: phase; }
+  .plan-what { grid-area: what; }
+  .plan-owner { grid-area: owner; text-align: right; align-items: flex-end; }
   .rx-tab { min-height: 52px; gap: 10px; padding: 8px 10px 8px 8px; font-size: 14px; border-radius: 18px; }
   .rx-ico { width: 30px; height: 30px; border-radius: 9px; }
   .rx-ico svg { width: 17px; height: 17px; }
-  .score-head span { display: block; }
   .mx-name, .mx-tag { font-size: 11px; }
   .mx-tag-overbuilt, .mx-tag-powerhouse { top: 8px; }
   .mx-tag-underbuilt, .mx-tag-precision { bottom: 8px; }
