@@ -363,7 +363,10 @@ async function homeChecks(page, vp) {
         details: document.querySelectorAll('#evidence details, #evidence summary, #evidence .sources, #evidence .proof').length,
         links: document.querySelectorAll('#evidence a').length, visibleText: document.querySelector('#evidence').innerText,
         figcaption: t('#evidence figcaption'), credit: t('#evidence .map-credit'),
-        figBelow: document.querySelector('#evidence figcaption').getBoundingClientRect().top >= map.getBoundingClientRect().bottom,
+        // The map sits in the explorer's last view: open it while measuring, then put it back
+        figBelow: (() => { const vw = map.closest('.rx-view'), was = vw.hidden; vw.hidden = false;
+          const ok = document.querySelector('#evidence figcaption').getBoundingClientRect().top >= map.getBoundingClientRect().bottom && map.getBoundingClientRect().height > 0;
+          vw.hidden = was; return ok; })(),
         figures: [...document.querySelectorAll('#evidence .figures .fig')].map((f) => ({ num: t('dt', f), text: t('dd', f), box: box(f),
           numSize: parseFloat(cs(f.querySelector('dt')).fontSize), numColour: cs(f.querySelector('dt')).color,
           card: [cs(f).backgroundColor, cs(f).boxShadow, cs(f).borderTopWidth].join(' '), borderLeft: `${cs(f).borderLeftWidth} ${cs(f).borderLeftStyle}` })),
@@ -378,8 +381,10 @@ async function homeChecks(page, vp) {
             topBase: parseFloat(getComputedStyle(document.querySelector('.clients') || document.body).getPropertyValue('--logo-h')) || 30,
             afterNote: imgs.every((i) => i.getBoundingClientRect().left >= note.getBoundingClientRect().right - 1 || i.getBoundingClientRect().top >= note.getBoundingClientRect().bottom - 1) }; })(),
         figuresBelowMap: document.querySelector('#evidence .figures').getBoundingClientRect().top >= document.querySelector('#evidence .rx').getBoundingClientRect().bottom,
-        map: { ok: map.complete && map.naturalWidth > 0, ratio: map.naturalWidth / map.naturalHeight, boxRatio: map.getBoundingClientRect().width / map.getBoundingClientRect().height,
-          fit: cs(map).objectFit, alt: map.alt, box: box(map) }, copyBox: box(document.querySelector('.evidence-copy')), tellsBox: box(document.querySelector('.evidence-tells')), introBox: box(document.querySelector('.evidence-intro')),
+        map: (() => { const vw = map.closest('.rx-view'), was = vw.hidden; vw.hidden = false;
+          const out = { ok: map.complete && map.naturalWidth > 0, ratio: map.naturalWidth / map.naturalHeight, boxRatio: map.getBoundingClientRect().width / map.getBoundingClientRect().height,
+            fit: cs(map).objectFit, alt: map.alt, box: box(map) };
+          vw.hidden = was; return out; })(), copyBox: box(document.querySelector('.evidence-copy')), tellsBox: box(document.querySelector('.evidence-tells')), introBox: box(document.querySelector('.evidence-intro')),
         rxBox: box(document.querySelector('#evidence .rx')), figuresW: document.querySelector('#evidence .figures').getBoundingClientRect().width,
         explorer: (() => {
           const rx = document.querySelector('.rx'), list = rx.querySelector('.rx-tabs'), tabs = [...list.querySelectorAll('[role="tab"]')], views = [...rx.querySelectorAll('.rx-view')];
