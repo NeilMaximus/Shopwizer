@@ -24,6 +24,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 DIST = ROOT / "dist"
 CLIENTS = SITE / "assets" / "clients"
+PLATFORMS = SITE / "assets" / "platforms"
 
 
 def sync_tokens():
@@ -243,6 +244,37 @@ def render_client_logos():
     return missing
 
 
+def platform_row(source=ROOT / "config" / "platform-logos.json"):
+    """Markup for the leading solutions row: each platform's own logo in ink, in the configured order,
+    at its optical height. Only logos present in site/assets/platforms/ appear; the rest are named."""
+    cfg = json.loads(source.read_text(encoding="utf8"))
+    items, missing = [], []
+    for logo in cfg["logos"]:
+        f = PLATFORMS / f'{logo["file"]}.png'
+        if not f.exists():
+            missing.append(logo["name"])
+            continue
+        # Width and height from the file, so the row keeps its shape while the lazy logos load
+        w, h = struct.unpack(">II", f.read_bytes()[16:24])
+        width = round(logo["height"] * w / h)
+        items.append(f'            <li style="--logo-h: {logo["height"]}px"><img src="assets/platforms/{f.name}" alt="{html.escape(logo["name"])}" '
+                     f'width="{width}" height="{logo["height"]}" loading="lazy" decoding="async"></li>\n')
+    markup = ('          <ul class="platforms-list" role="list" aria-labelledby="platforms-title">\n' + "".join(items) + '          </ul>\n')
+    return markup, missing, len(cfg["logos"])
+
+
+def render_platform_row():
+    """Writes the leading solutions row into site/index.html between its markers."""
+    markup, missing, total = platform_row()
+    path = SITE / "index.html"
+    page = path.read_text(encoding="utf8")
+    page, n = re.subn(r"(          <!-- platform-logos:start -->\n).*?(          <!-- platform-logos:end -->)",
+                      lambda m: m.group(1) + markup + m.group(2), page, flags=re.S)
+    assert n == 1, "index.html lost its platform-logos markers"
+    path.write_text(page, encoding="utf8")
+    return missing, total
+
+
 QUADRANTS = {"powerhouse": "Powerhouse", "overbuilt": "Overbuilt", "precision": "Precision", "underbuilt": "Underbuilt"}
 
 
@@ -323,6 +355,7 @@ def build_preview():
     if any(CLIENTS.glob("*.*")):
         shutil.copytree(CLIENTS, out / "assets" / "clients")
     shutil.copytree(SITE / "assets" / "brands", out / "assets" / "brands")
+    shutil.copytree(PLATFORMS, out / "assets" / "platforms")
     for f in out.glob("*.html"):
         text = f.read_text(encoding="utf8")
         assert "mailto:" not in text and "tel:" not in text, f"email or phone link left in preview {f.name}"
@@ -345,8 +378,9 @@ def inline_images(page_html):
         return f'src="data:{kind};base64,' + base64.b64encode(f.read_bytes()).decode() + '"'
     page_html = re.sub(r'\s(srcset|sizes)="[^"]*"', "", page_html)
     page_html = re.sub(r'src="assets/clients/([\w.-]+\.(?:svg|png))"', client_uri, page_html)
-    page_html = re.sub(r'src="assets/brands/([\w.-]+\.png)"', lambda m: 'src="data:image/png;base64,' +
-                       base64.b64encode((SITE / "assets" / "brands" / m.group(1)).read_bytes()).decode() + '"', page_html)
+    for folder in ("brands", "platforms"):
+        page_html = re.sub(rf'src="assets/{folder}/([\w.-]+\.png)"', lambda m, d=folder: 'src="data:image/png;base64,' +
+                           base64.b64encode((SITE / "assets" / d / m.group(1)).read_bytes()).decode() + '"', page_html)
     return re.sub(r'src="assets/media/([\w.-]+\.jpg)"', data_uri, page_html)
 
 
@@ -445,6 +479,8 @@ def main(args):
     print("contact phone:", "set" if render_contact_phone() else "pending (config/contact.json)")
     missing = render_client_logos()
     render_apex_matrix()
+    p_missing, p_total = render_platform_row()
+    print(f"platform logos: {p_total - len(p_missing)} of {p_total} present" + (f"; MISSING: {', '.join(p_missing)}" if p_missing else ""))
     total = len(json.loads((ROOT / "config" / "client-logos.json").read_text(encoding="utf8"))["logos"])
     print(f"client logos: {total - len(missing)} of {total} present" + (f"; MISSING: {', '.join(missing)}" if missing else ""))
     legal_page("DRAFT_PRIVACY_NOTICE.md", "privacy.html", "Privacy notice")

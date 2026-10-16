@@ -1,0 +1,14 @@
+{
+  "$comment": "The leading solutions row below \"Experience that moves you forward\" (Neil, 16 October 2026). Rules: DESIGN_SYSTEM.md, section 11. Each logo is the platform's own artwork in ink on a transparent background, never redrawn, retyped, stretched or cropped: put it in site/assets/platforms/<file>.png (converted with scripts/logo_to_black.py) and run python3 scripts/build.py, which writes the row into site/index.html in this order and names any platform still missing. height is the optical height in CSS pixels, chosen so wide wordmarks and compact marks carry similar weight; the row stays smaller than the client logos at the top. Record every source in SOURCES.md.",
+  "title": "We work across the leading solutions",
+  "logos": [
+    {"name": "Salesforce", "file": "salesforce", "height": 28, "source": "SVG Logos (gilbarbara), CC0 collection, via npm @iconify-json/logos 1.2.16, icon salesforce"},
+    {"name": "Adobe", "file": "adobe", "height": 22, "source": "SVG Logos (gilbarbara), CC0 collection, via npm @iconify-json/logos 1.2.16, icon adobe"},
+    {"name": "Microsoft", "file": "microsoft", "height": 21, "source": "SVG Logos (gilbarbara), CC0 collection, via npm @iconify-json/logos 1.2.16, icon microsoft"},
+    {"name": "Google", "file": "google", "height": 25, "source": "SVG Logos (gilbarbara), CC0 collection, via npm @iconify-json/logos 1.2.16, icon google"},
+    {"name": "HubSpot", "file": "hubspot", "height": 23, "source": "SVG Logos (gilbarbara), CC0 collection, via npm @iconify-json/logos 1.2.16, icon hubspot"},
+    {"name": "MoEngage", "file": "moengage", "height": 22, "source": "Not yet supplied: needs MoEngage's own logo file (brand kit or a MoEngage deck)"},
+    {"name": "Databricks", "file": "databricks", "height": 18, "source": "SVG Logos (gilbarbara), CC0 collection, via npm @iconify-json/logos 1.2.16, icon databricks"},
+    {"name": "Snowflake", "file": "snowflake", "height": 21, "source": "SVG Logos (gilbarbara), CC0 collection, via npm @iconify-json/logos 1.2.16, icon snowflake"}
+  ]
+}

@@ -170,6 +170,9 @@ function stripFixturePage() {
 }
 let stripPage = '';
 const LOGOS_PRESENT = CLIENT_MANIFEST.logos.filter((l) => ['.svg', '.png'].some((x) => fs.existsSync(path.join(SITE, 'assets', 'clients', l.file + x))));
+// The leading solutions row (Neil, 16 October 2026): only platforms whose logo file is present appear
+const PLATFORMS = JSON.parse(fs.readFileSync(path.join(ROOT, 'config', 'platform-logos.json'), 'utf8'));
+const PLATFORMS_PRESENT = PLATFORMS.logos.filter((l) => fs.existsSync(path.join(SITE, 'assets', 'platforms', l.file + '.png')));
 
 function serve() {
   return new Promise((resolve) => {
@@ -309,7 +312,7 @@ async function homeChecks(page, vp) {
     const cs = (el) => getComputedStyle(el);
     const box = (el) => { const r = el.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top + scrollY, b: r.bottom + scrollY, w: r.width, h: r.height }; };
     const visible = (el) => el.checkVisibility();
-    const order = ['.approach', '#evidence', '#workshops', '#start', '.rune-stage'].map((s) => document.querySelector(s));
+    const order = ['.approach', '#evidence', '#workshops', '#start', '#platforms', '.rune-stage'].map((s) => document.querySelector(s));
     const colour = (sel, prop) => cs(document.querySelector(sel))[prop];
     const map = document.querySelector('#evidence .map img');
     const small = [];
@@ -323,7 +326,7 @@ async function homeChecks(page, vp) {
       hero: { h1: t('.hero h1'), lead: t('.hero .lead') },
       inOrder: order.every((el, i) => i === 0 || (order[i - 1].compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING)),
       grounds: { hero: colour('.hero', 'backgroundColor'), stages: colour('.approach', 'backgroundColor'),
-        white: ['#evidence', '#workshops', '#start'].map((s) => colour(s, 'backgroundColor')),
+        white: ['#evidence', '#workshops', '#start', '#platforms'].map((s) => colour(s, 'backgroundColor')),
         node: colour('.node', 'backgroundColor'), h2: colour('.way h3', 'color'), tag: colour('.way .tag', 'color'),
         body: colour('.way .body', 'color'), look: colour('.way .look li', 'color'), offer: colour('.way .offer', 'color'),
         label: colour('.way-label', 'color'), rule: colour('.way-get', 'borderTopColor') },
@@ -445,8 +448,25 @@ async function homeChecks(page, vp) {
       mailto: document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').length, copyButtons: document.querySelectorAll('[data-copy]').length,
       emailText: /@/.test(document.body.innerText),
       // Neil approved two positioning phrases (version 2.12 and 2.8); everything else is still screened
-      banned: (document.querySelector('main').innerText.replace('the world’s largest independent benchmark of real martech stacks', '').replace('One of the leading international thinkers in martech', '').match(/richest|world.?s|largest|leading|best in class|unrivalled|\bfees?\b|\bfree\b|\bpric|\bR\s?\d|1,500,505|booked|appointment|confirmed/gi) || []),
+      banned: (document.querySelector('main').innerText.replace('the world’s largest independent benchmark of real martech stacks', '').replace('One of the leading international thinkers in martech', '').replace('We work across the leading solutions', '').match(/richest|world.?s|largest|leading|best in class|unrivalled|\bfees?\b|\bfree\b|\bpric|\bR\s?\d|1,500,505|booked|appointment|confirmed/gi) || []),
       // The retail example lives only in the research carousel (Neil, 16 October 2026)
+      platforms: (() => {
+        const sec = document.getElementById('platforms'), list = sec.querySelector('.platforms-list'), title = sec.querySelector('.platforms-title');
+        const imgs = [...list.querySelectorAll('img')], body = sec.querySelector('.plain-body').getBoundingClientRect(), lb = list.getBoundingClientRect();
+        const rows = new Set(imgs.map((i) => Math.round(i.closest('li').getBoundingClientRect().top)));
+        const top = [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')];
+        return { title: title.textContent.trim(), titleTag: title.tagName, labelled: list.getAttribute('aria-labelledby') === title.id,
+          alts: imgs.map((i) => i.alt), local: imgs.every((i) => i.getAttribute('src').startsWith('assets/platforms/') || i.src.startsWith('data:image/png')),
+          ok: imgs.every((i) => i.complete && i.naturalWidth > 0),
+          ratio: imgs.every((i) => Math.abs(i.getBoundingClientRect().width / i.getBoundingClientRect().height - i.naturalWidth / i.naturalHeight) < 0.06),
+          heights: imgs.map((i) => Math.round(i.getBoundingClientRect().height)),
+          clientBase: parseFloat(getComputedStyle(document.querySelector('.clients') || document.body).getPropertyValue('--logo-h')) || 30,
+          clientMean: top.length ? top.reduce((a, i) => a + i.getBoundingClientRect().height, 0) / top.length : 30,
+          centred: Math.abs((lb.left + lb.right) / 2 - (body.left + body.right) / 2) < 2 && Math.abs((title.getBoundingClientRect().left + title.getBoundingClientRect().right) / 2 - (body.left + body.right) / 2) < 2,
+          hairline: getComputedStyle(sec.querySelector('.plain-body')).borderTopStyle === 'solid', rows: rows.size,
+          above: title.getBoundingClientRect().top - body.top, below: document.querySelector('.rune-stage').getBoundingClientRect().top - lb.bottom,
+          ink: getComputedStyle(sec).backgroundColor };
+      })(),
       retail: document.querySelectorAll('a[href*="martechtribe.com/blog"]').length + (/retail/i.test(document.body.textContent.replace(document.querySelector('.rc').textContent, '')) ? 1 : 0),
       small, primaries: [...document.querySelectorAll('.btn-dark, .btn-coral')].filter(visible).map((b) => Math.round(b.getBoundingClientRect().height)),
       // The cube is drawn frame by frame; only its labels' colour transitions show up here, so they are left out
@@ -499,6 +519,14 @@ async function homeChecks(page, vp) {
   }
   check(`${tag} no 01 to 04 numbering`, x.numbering === 0);
   check(`${tag} sections in order between the stages and the rune`, x.inOrder);
+  const pf = x.platforms;
+  check(`${tag} leading solutions: "${PLATFORMS.title}", then the ${PLATFORMS_PRESENT.length} platform logos present, in order, as a labelled list`,
+    pf.title === PLATFORMS.title && pf.titleTag === 'H2' && pf.labelled && JSON.stringify(pf.alts) === JSON.stringify(PLATFORMS_PRESENT.map((l) => l.name)) && pf.ok && pf.local && pf.ratio,
+    `${pf.alts.join(', ')}${PLATFORMS_PRESENT.length < PLATFORMS.logos.length ? '; missing: ' + PLATFORMS.logos.filter((l) => !PLATFORMS_PRESENT.includes(l)).map((l) => l.name).join(', ') : ''}`);
+  check(`${tag} leading solutions: logos in ink, smaller than the client logos at the top, centred, below a hairline with room above and before the rune`,
+    pf.heights.every((h) => h >= 12 && h <= pf.clientBase) && pf.heights.reduce((a, h) => a + h, 0) / pf.heights.length < pf.clientMean &&
+    pf.centred && pf.hairline && pf.above >= 56 && pf.below >= 72 && pf.ink === 'rgb(255, 255, 255)' && (vp.width < 1000 || pf.rows === 1),
+    `${pf.heights.join('/')} px against ${Math.round(pf.clientMean)} px at the top; ${Math.round(pf.above)} px above, ${Math.round(pf.below)} px to the rune, ${pf.rows} row(s)`);
   check(`${tag} header: real logo and one action, Let’s Talk to the contact view, no menu`, x.header.navs === 0 && x.header.links.length === 2 &&
     x.header.links[1] === 'Let’s Talk|contact.html|btn btn-dark', x.header.links.join(' ; '));
 
@@ -1281,12 +1309,13 @@ async function apiChecks() {
     const pv = await pp.evaluate(async () => { await document.fonts.ready; return {
       geist: document.fonts.check('600 16px Geist'), overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       external: [...document.querySelectorAll('link[href], script[src]')].map((e) => e.getAttribute('href') || e.getAttribute('src')),
-      imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img)')].map((i) => i.complete && i.naturalWidth > 0),
+      imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img):not(.platforms img)')].map((i) => i.complete && i.naturalWidth > 0),
       brands: [...document.querySelectorAll('.brands img')].map((i) => i.complete && i.naturalWidth > 0 && i.getAttribute('src').startsWith('assets/brands/')),
+      platforms: [...document.querySelectorAll('.platforms img')].map((i) => i.complete && i.naturalWidth > 0 && i.getAttribute('src').startsWith('assets/platforms/')),
       logos: [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')].map((i) => i.complete && i.naturalWidth > 0),
       actions: [...document.querySelectorAll('.btn')].map((a) => a.getAttribute('href')), mail: document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').length }; });
     check('[preview] homepage self contained: Geist, images from published files, no overflow, no requests out', pv.geist && pv.overflow <= 0 &&
-      pv.external.length === 0 && perr.length === 0 && pv.imgs.length === 3 && pv.imgs.every(Boolean) && pv.brands.length === 4 && pv.brands.every(Boolean) && pv.logos.length === LOGOS_PRESENT.length && pv.logos.every(Boolean) && external.length === 0, JSON.stringify({ ...pv, external }));
+      pv.external.length === 0 && perr.length === 0 && pv.imgs.length === 3 && pv.imgs.every(Boolean) && pv.brands.length === 4 && pv.brands.every(Boolean) && pv.platforms.length === PLATFORMS_PRESENT.length && pv.platforms.every(Boolean) && pv.logos.length === LOGOS_PRESENT.length && pv.logos.every(Boolean) && external.length === 0, JSON.stringify({ ...pv, external }));
     check('[preview] both actions open the published contact view', pv.actions.length === 2 && pv.actions.every((h) => h === 'contact.html') &&
       fs.existsSync(path.join(previewDir, 'contact.html')) && pv.mail === 0);
     await pctx.close();
@@ -1336,8 +1365,9 @@ async function apiChecks() {
       for (const i of document.querySelectorAll('img')) { i.scrollIntoView(); await i.decode().catch(() => {}); }
       return { geist: document.fonts.check('600 16px Geist'), cube: !document.getElementById('device').className.includes('pre-build'),
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-        imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img)')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/jpeg')),
+        imgs: [...document.querySelectorAll('img:not(.clients img):not(.brands img):not(.platforms img)')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/jpeg')),
         brands: [...document.querySelectorAll('.brands img')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/png;base64,')),
+        platforms: [...document.querySelectorAll('.platforms img')].map((i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('data:image/png;base64,')),
         logos: [...document.querySelectorAll('.clients-set:not([aria-hidden]) img')].map((i) => i.complete && i.naturalWidth > 0 && /^data:image\/(svg\+xml|png);base64,/.test(i.src)),
         files: [...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => !/^(#|mailto:|tel:|https:)/.test(h)),
         external: [...document.querySelectorAll('a[href^="http"]')].map((a) => a.getAttribute('href')),
@@ -1345,7 +1375,7 @@ async function apiChecks() {
     });
     const missing = bv.files.filter((h) => !fs.existsSync(path.join(browserDir, h)));
     check('[browser file] homepage opens from a folder: Geist, cube, images built in, links resolve, no requests', bv.geist && bv.cube && bv.overflow <= 0 &&
-      bv.imgs.length === 3 && bv.imgs.every(Boolean) && bv.brands.length === 4 && bv.brands.every(Boolean) && bv.logos.length === LOGOS_PRESENT.length && bv.logos.every(Boolean) && missing.length === 0 && requests.length === 0 && berr.length === 0 &&
+      bv.imgs.length === 3 && bv.imgs.every(Boolean) && bv.brands.length === 4 && bv.brands.every(Boolean) && bv.platforms.length === PLATFORMS_PRESENT.length && bv.platforms.every(Boolean) && bv.logos.length === LOGOS_PRESENT.length && bv.logos.every(Boolean) && missing.length === 0 && requests.length === 0 && berr.length === 0 &&
       bv.actions.every((h) => h === 'growth-lab-contact.html') && bv.external.length === 0,
       JSON.stringify({ ...bv, imgs: bv.imgs.length, missing, requests, errors: berr }));
     await bp.goto('file://' + path.join(browserDir, 'growth-lab-contact.html'));

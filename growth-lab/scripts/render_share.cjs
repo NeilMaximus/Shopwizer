@@ -34,7 +34,7 @@ const CSS = `
   .share-panel { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 20px; border-radius: 22px; background: var(--gl-panel); }
   .share-panel > .rc-credit, .share-cover > .rc-credit { margin-top: auto; padding-top: 12px; font-size: 12px; }
   .share .rc-title { font-size: 21px; line-height: 1.25; }
-  .share .rc-lede { font-size: 14px; line-height: 1.45; }
+  .share .rc-lede { font-size: 13px; line-height: 1.38; }
 
   /* Cover: the research heading and what it tells you, from the page */
   .share-cover { display: flex; flex-direction: column; flex: 1; padding: 14px 4px 0; }
@@ -49,7 +49,9 @@ const CSS = `
   /* Matrix */
   .share .matrix { margin-top: 10px; }
   .share .mx-name, .share .mx-tag { font-size: 12px; }
-  .share .mx-axis { font-size: 12px; }
+  .share .mx-axis { font-size: 13px; }
+  .share .matrix { row-gap: 5px; padding-top: 4px; }
+  .share .mx-plot { aspect-ratio: 7 / 5; }
 
   /* Positions, two by two as on a desktop */
   .share .quads { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
@@ -83,7 +85,9 @@ const CSS = `
   .share-score .meter-key { font-size: 14px; margin-top: 14px; }
   .share .score-cols { margin-top: 0; padding-top: 0; border-top: 0; row-gap: 14px; }
   .share .score-strong { padding-top: 14px; }
-  .share .score-col ul { gap: 11px; margin-top: 10px; }
+  .share .score-col h4 { padding-bottom: 8px; }
+  .share .score-col ul { gap: 0; margin-top: 0; }
+  .share .score-col li { padding-block: 8px; }
   .share .score-col li { row-gap: 2px; }
   .share .s-name { font-size: 14px; }
   .share .s-how { font-size: 12.5px; }
@@ -156,7 +160,8 @@ server.listen(0, '127.0.0.1', async () => {
       const scoreTop = take('.score', score);
       scoreTop.querySelectorAll('.score-cols, .score-key').forEach((n) => n.remove());
       const scoreRows = take('.score', score);
-      scoreRows.querySelectorAll('.score-head, .meter, .meter-key').forEach((n) => n.remove());
+      // The WhatsApp card keeps the lists only: each area's note already says how the points come
+      scoreRows.querySelectorAll('.score-head, .meter, .meter-key, .score-key').forEach((n) => n.remove());
 
       const deck = document.createElement('div');
       deck.className = 'share-deck';
@@ -185,6 +190,10 @@ server.listen(0, '127.0.0.1', async () => {
       const free = kids[kids.length - 1].top - kids[kids.length - 2].bottom;
       return { name: card.dataset.name, spare: Math.round(limit - lowest + free), wide: card.scrollWidth - card.clientWidth };
     }));
+    if (process.env.SHARE_DEBUG) {
+      console.log(await page.evaluate(() => [...document.querySelectorAll('.share')].map((c) => c.dataset.name + ': ' +
+        [...(c.querySelector('.share-panel') || c.querySelector('.share-cover')).children].map((k) => `${k.className || k.tagName} ${Math.round(k.getBoundingClientRect().height)}`).join(', ')).join('\n')));
+    }
     const bad = overflow.filter((o) => o.spare < 0 || o.wide > 0);
     if (bad.length) { throw new Error('cards overflow: ' + JSON.stringify(bad)); }
 

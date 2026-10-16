@@ -263,18 +263,18 @@ h1 {
 .rc-controls[hidden] { display: none; }
 .rc-dots { display: flex; align-items: center; }
 .rc-dot { width: 24px; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; border-radius: var(--gl-radius-pill); transition: width 0.3s var(--gl-ease); }
-.rc-dot::before { content: ""; width: 8px; height: 8px; border-radius: var(--gl-radius-pill); background: color-mix(in srgb, var(--gl-ink) 22%, var(--gl-white)); transition: width 0.3s var(--gl-ease), background-color 0.2s; }
-.rc-dot:hover::before { background: var(--gl-ink-3); }
+.rc-dot::before { content: ""; width: 8px; height: 8px; border-radius: var(--gl-radius-pill); background: var(--gl-purple-soft); transition: width 0.3s var(--gl-ease), background-color 0.2s; }
+.rc-dot:hover::before { background: color-mix(in srgb, var(--gl-purple) 55%, var(--gl-white)); }
 .rc-dot[aria-current="true"] { width: 44px; }
-.rc-dot[aria-current="true"]::before { width: 28px; background: var(--gl-ink); }
+.rc-dot[aria-current="true"]::before { width: 28px; background: var(--gl-purple); }
 .rc-arrows { display: flex; gap: 10px; }
 .rc-prev, .rc-next {
   width: 44px; height: 44px; display: grid; place-items: center; padding: 0; cursor: pointer;
-  border: 0; border-radius: 50%; background: var(--gl-panel); color: var(--gl-ink); transition: background-color 0.2s, transform 0.15s;
+  border: 0; border-radius: 50%; background: var(--gl-purple); color: var(--gl-white); transition: background-color 0.2s, transform 0.15s;
 }
-.rc-prev:hover:not([disabled]), .rc-next:hover:not([disabled]) { background: var(--gl-line); }
+.rc-prev:hover:not([disabled]), .rc-next:hover:not([disabled]) { background: color-mix(in srgb, var(--gl-purple) 85%, var(--gl-ink)); }
 .rc-prev:active:not([disabled]), .rc-next:active:not([disabled]) { transform: scale(0.94); }
-.rc-prev[disabled], .rc-next[disabled] { cursor: default; color: color-mix(in srgb, var(--gl-ink) 25%, var(--gl-panel)); }
+.rc-prev[disabled], .rc-next[disabled] { cursor: default; background: var(--gl-purple-soft); color: var(--gl-white); }
 .rc-prev svg, .rc-next svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Quadrant colours, shared by the matrix, its tags and the position cards */
@@ -284,9 +284,11 @@ h1 {
 .q-underbuilt { background: var(--gl-ink-3); }
 
 /* The matrix: a white plot on the panel, dots at their measured positions, the four examples named */
-.matrix { display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: 6px; margin-top: 16px; }
+/* The chart sits centred between the line above it and the credit below it (Neil, 16 October 2026) */
+.matrix { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 8px; margin-block: auto; padding-top: 16px; }
+.rc-slide > .matrix ~ .rc-credit { margin-top: 0; }
 .mx-plot {
-  grid-column: 2; position: relative; aspect-ratio: 5 / 4; background: var(--gl-white);
+  position: relative; aspect-ratio: 5 / 4; background: var(--gl-white);
   border-radius: 12px; box-shadow: 0 0 0 1px var(--gl-line);
 }
 .mx-line { position: absolute; background: var(--gl-line); }
@@ -313,10 +315,11 @@ h1 {
 }
 /* The goal: the Powerhouse quadrant, top right, softly tinted */
 .mx-goal { position: absolute; left: var(--mx-x); right: 0; top: 0; bottom: calc(100% - var(--mx-y)); border-top-right-radius: 12px; background: color-mix(in srgb, var(--gl-purple-soft) 35%, var(--gl-white)); }
-.mx-axis { font-size: 12px; line-height: 1.3; font-weight: var(--gl-weight-medium); color: var(--gl-ink-3); }
-.mx-axis::after { content: " →"; }
-.mx-axis-y { grid-column: 1; grid-row: 1; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; align-self: center; }
-.mx-axis-x { grid-column: 2; margin-top: 8px; text-align: center; }
+.mx-axis { display: flex; align-items: center; gap: 6px; font-size: 14px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
+.mx-arrow { flex: none; width: 16px; height: 16px; fill: none; stroke: var(--gl-purple); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+/* Presence reads up the chart, so its label sits above the chart's left edge; performance reads along it, so its label ends at the right */
+.mx-axis-y { justify-content: flex-start; }
+.mx-axis-x { justify-content: flex-end; }
 
 /* What each position means: four white cards laid out like the matrix */
 .quads { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 12px; margin-top: 16px; }
@@ -351,15 +354,21 @@ h1 {
 .meter-key span::before { content: ""; width: 10px; height: 10px; border-radius: 3px; }
 .mk-now::before { background: var(--gl-purple); }
 .mk-gain::before { background: var(--gl-coral); }
-.score-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 40px; margin-top: 20px; padding-top: 22px; border-top: 1px solid var(--gl-line); }
-.score-col h4 { display: flex; align-items: center; gap: 8px; justify-content: space-between; font-size: 13px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
+/* The two lists read as a table (Neil, 16 October 2026): a rule in the list's colour under each heading,
+   a hairline between areas and a hairline between the two lists */
+.score-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 0; margin-top: 20px; padding-top: 22px; border-top: 1px solid var(--gl-line); }
+.score-fix { padding-right: 24px; }
+.score-strong { padding-left: 24px; border-left: 1px solid var(--gl-line); }
+.score-col h4 { display: flex; align-items: center; gap: 8px; justify-content: space-between; padding-bottom: 10px; border-bottom: 2px solid var(--score-accent); font-size: 13.5px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 .score-col h4 span { display: flex; align-items: center; gap: 8px; }
 .score-col h4 span::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--score-accent); }
 .score-col h4 small { font-size: 11.5px; font-weight: var(--gl-weight-medium); color: var(--gl-ink-3); }
 .score-fix { --score-accent: var(--gl-coral); }
 .score-strong { --score-accent: var(--gl-purple); }
-.score-col ul { display: grid; gap: 18px; margin-top: 18px; }
-.score-col li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; grid-template-areas: "icon name pts" "icon how pts"; column-gap: 12px; row-gap: 3px; align-items: center; }
+.score-col ul { display: grid; }
+.score-col li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; grid-template-areas: "icon name pts" "icon how pts"; column-gap: 12px; row-gap: 3px; align-items: center; padding-block: 14px; }
+.score-col li + li { border-top: 1px solid var(--gl-line); }
+.score-col li:last-child { padding-bottom: 0; }
 .s-icon { grid-area: icon; width: 22px; height: 22px; color: var(--score-accent); align-self: start; margin-top: 1px; }
 .s-name { grid-area: name; font-size: 14px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 .s-how { grid-area: how; font-size: 12.5px; line-height: 1.35; color: var(--gl-ink-3); }
@@ -453,6 +462,14 @@ h1 {
 .person .bio { margin-top: 8px; max-width: 40em; font-size: 16px; line-height: 1.55; color: var(--gl-ink-2); text-wrap: pretty; }
 
 /* The rune: oversized, faint, cropped by the hairline above the footer */
+/* Leading solutions (Neil, 16 October 2026): a quiet, centred row of the platforms' own logos in ink,
+   smaller than the client logos at the top, with extra room before the rune */
+.platforms .plain-body { padding-bottom: clamp(72px, 9vw, 128px); text-align: center; }
+.plain .platforms-title { font-size: 17px; line-height: 1.4; letter-spacing: 0; font-weight: var(--gl-weight-medium); color: var(--gl-ink-2); }
+.platforms-list { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 24px clamp(32px, 4.6vw, 60px); margin-top: 32px; }
+.platforms-list li { display: flex; align-items: center; height: 40px; }
+.platforms-list img { display: block; width: auto; height: calc(var(--logo-h, 22px) * var(--platform-scale, 1)); max-width: none; }
+
 .rune-stage {
   --rune-w: min(60vw, 780px);
   position: relative; overflow: hidden;
@@ -585,7 +602,8 @@ h1 {
   .clients { --logo-h: 24px; --clients-gap: 40px; }
   .quads, .score-cols { grid-template-columns: minmax(0, 1fr); }
   .score-cols { row-gap: 24px; }
-  .score-strong { padding-top: 24px; border-top: 1px solid var(--gl-line); }
+  .score-fix { padding-right: 0; }
+  .score-strong { padding: 24px 0 0; border-left: 0; border-top: 1px solid var(--gl-line); }
   /* On a phone the examples differ too much in height to share one size, so the card fits each example */
   .rc-track { align-items: flex-start; }
   .score-head span { display: block; }
@@ -597,6 +615,7 @@ h1 {
   .rc-slide { padding: 18px; }
   /* The research brand logos shrink with the client logos on phones */
   .brands-list { --brand-scale: 0.8; }
+  .platforms-list { --platform-scale: 0.8; gap: 20px 32px; margin-top: 24px; }
   .fields { grid-template-columns: minmax(0, 1fr); }
   .form-actions .btn-coral { width: 100%; }
 }

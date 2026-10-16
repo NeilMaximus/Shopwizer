@@ -252,22 +252,22 @@
   ],
   "_source_cards_note": "The four company cards Neil supplied with the chart (Apex Scores out of 100). Not shown since 16 October 2026, when Neil asked for examples South Africans know. Their scores are never carried over to other companies.",
   "scorecard": {
-    "now": 75,
+    "now": 63,
     "possible": 87,
     "fix": [
       [
         "Events, meetings and webinars",
-        5,
+        10,
         "maturity and features"
       ],
       [
         "Social media marketing",
-        5,
+        10,
         "maturity"
       ],
       [
         "Collaboration",
-        2,
+        4,
         "features"
       ]
     ],
@@ -287,6 +287,45 @@
         1,
         "just above"
       ]
-    ]
+    ],
+    "_note": "Illustration shown on the page and in the WhatsApp images (Neil, 16 October 2026): MartechTribe's sample output moved down to 63 so the uplift reads more strongly, the three fixes scaled in the same proportion (5, 5, 2 to 10, 10, 4) so they still add up to the gap. Credited as an illustrative example, not as MartechTribe's output.",
+    "_source": {
+      "now": 75,
+      "possible": 87,
+      "fix": [
+        [
+          "Events, meetings and webinars",
+          5,
+          "maturity and features"
+        ],
+        [
+          "Social media marketing",
+          5,
+          "maturity"
+        ],
+        [
+          "Collaboration",
+          2,
+          "features"
+        ]
+      ],
+      "strong": [
+        [
+          "Affiliate marketing",
+          0,
+          "at or above"
+        ],
+        [
+          "eCommerce marketing",
+          0,
+          "at or above"
+        ],
+        [
+          "Video ads",
+          1,
+          "just above"
+        ]
+      ]
+    }
   }
 }
