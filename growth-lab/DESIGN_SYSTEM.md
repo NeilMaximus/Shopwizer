@@ -27,7 +27,7 @@ The presentation system for decks keeps its own rules. This document covers the 
 
 1. Concise copy. Every word earns its place. Do not pad, add slogans or invent claims.
 2. A white hero and page with generous space and a clear hierarchy, inspired by the restraint of x.ai/bot, plus one deliberate black section for the four ways to work. The contact view takes its directness from Isoflow's contact page: a clear heading, a few large labelled fields and one button. Draw inspiration only. Never copy either site's layout, typeface, assets, keys or contact details.
-3. One bold device per section: the value cube in the hero, the purple nodes that start each of the four ways to work, the MartechMap beside the research, the rune above the footer. Everything around them stays quiet, including the client logo strip at the foot of the hero.
+3. One bold device per section: the value cube in the hero, the purple nodes that head each of the four ways to work, the MartechMap beside the research, the rune above the footer. Everything around them stays quiet, including the client logo strip at the foot of the hero.
 4. Solid surfaces only. Panels are opaque. No translucency, frosted glass, blur, glows or heavy shadows, with one approved exception: the restrained coral glow behind the MartechMap (section 11).
 5. Motion with a purpose, slow and controlled. Never spinning, bouncing or decorative noise.
 6. One kind of action. Every action on the homepage leads to the contact view.
@@ -46,7 +46,7 @@ The presentation system for decks keeps its own rules. This document covers the 
 | Display (H1, hero) | sized to its column, about 60 px on desktop, 34 px minimum | 600 | minus 0.035em | Two lines on desktop, `text-wrap: balance` |
 | Contact heading (H1) | 48 to 56 px beside the form (three lines), 36 to 60 px stacked | 600 | minus 0.035em | `text-wrap: balance`. Never shrunk to a subheading |
 | Section heading on black (H2) | 30 to 40 px | 600 | minus 0.02em | White. "Four ways to work with Growth Lab" |
-| Way name (H3) | 26 to 32 px | 600 | minus 0.02em | Brand coral. Fix, Grow, Automate, Decide; its line is centred on the node |
+| Way name (H3) | 26 to 32 px | 600 | minus 0.02em | Brand coral. Fix, Grow, Automate, Decide, under the node |
 | Section heading (H2, white sections) | 30 to 40 px | 600 | minus 0.02em | Ink, `text-wrap: balance` |
 | Workshop name (H3) | 22 to 26 px | 600 | minus 0.02em | Ink |
 | Person name (H3) | 18 px | 600 | minus 0.01em | Ink, role below in ink 3 |
@@ -54,12 +54,11 @@ The presentation system for decks keeps its own rules. This document covers the 
 | Workshop title | 19 to 21 px | 600 | minus 0.01em | Ink, under the workshop name |
 | Pull quote | 17 px | 500 | 0 | Ink, behind a 2 px rule in the workshop accent |
 | Figure | 32 to 44 px | 600 | minus 0.03em | Ink, one line |
-| Column headings on black | 14 px | 600 | 0 | "What you get" and "What we look at" above the four ways rows, `--gl-on-black`, from 1000 px only |
-| List labels | 15 px | 600 | 0 | "What you get" and "What we look at" in white on black, under 1000 px (screen reader only above); "What it tells you" in ink; "Ideal for" and "You’ll leave with" in ink with an 18 px icon in the workshop accent |
+| List labels | 15 px | 600 | 0 | "What you get" and "What we look at" in white on black, each with an 18 px purple line icon; "What it tells you" in ink; "Ideal for" and "You’ll leave with" in ink with an 18 px icon in the workshop accent |
 | Benefit bullets | 18 px | 400 | 0 | Ink, small purple square markers |
 | Tagline (promise) | 18 px (17 on phones) | 600 | minus 0.01em | White on black, under the offer name. Two sentences break between sentences |
 | Offer name | 15 px | 500 | 0 | `--gl-purple-soft` on black, under the way name |
-| Detail on black | 16 px | 400 | 0 | `--gl-on-black`, line height 1.55, purple 6 px dots |
+| Detail on black | 15 px | 400 | 0 | `--gl-on-black`, line height 1.55, purple 6 px dots |
 | Body | 16 to 17 px | 400 | 0 | Line height 1.6 |
 | Header button, form labels | 15 px | 500 | minus 0.005em | Sentence case. "(optional)" in 400, ink 3 |
 | Coral action label | 19 px | 700 | minus 0.005em | White on coral. Large text by WCAG only at this size and weight |
@@ -74,7 +73,7 @@ Brand accents are verified from the live growthlab.co.za stylesheet (`--acc-purp
 
 | Token | Value | Use |
 | --- | --- | --- |
-| `--gl-purple` | `#7761FF` | Primary accent. Cube faces, the four ways nodes and bullets, the evidence bullets, the Value Engineering accent |
+| `--gl-purple` | `#7761FF` | Primary accent. Cube faces, the four ways nodes, label icons and bullets, the evidence bullets, the Value Engineering accent |
 | `--gl-coral` | `#FF4E4E` | Brand coral. Large display text (the four way names), the coral action button, the Technology Strategy accent and small graphics |
 | `--gl-coral-hover` | `#EE3A3A` | Hover on the coral button only |
 | `--gl-amber` | `#FEBC2E` | Very sparingly, only where it has a job. Never as text on white |
@@ -92,7 +91,7 @@ Brand accents are verified from the live growthlab.co.za stylesheet (`--acc-purp
 | `--gl-ink-3` | `#666666` | Meta, attribution, small print |
 | `--gl-black` | `#111111` | Ground of the black four ways section |
 | `--gl-on-black` | `#D4D4D4` | Body text on black |
-| `--gl-line-on-black` | `#333333` | Hairlines on black, between the four ways rows |
+| `--gl-line-on-black` | `#333333` | Hairline on black, between each way's promise and its detail |
 | `--gl-rune-top`, `--gl-rune-bottom` | `#F1F1F1`, `#E3E3E3` | The rune's faint gradient |
 | `--gl-core-top`, `-left`, `-right` | `#3A3A38`, `#222221`, `#111111` | The cube's black core |
 
@@ -115,7 +114,7 @@ Measured contrast (WCAG 2.2):
 | White on black (`#111111`) | 18.9 | All text, taglines |
 | On black (`#D4D4D4`) on black | 12.7 | Body text |
 | Coral on black | 5.8 | The four way names, any size |
-| Purple on black | 4.4 | Icon tiles and bullet dots |
+| Purple on black | 4.4 | Icon tiles, label icons and bullet dots |
 | Purple soft on black | 13.2 | Offer names and the focus ring inside the black section |
 
 ## 5. Surfaces, layout and sizing
@@ -126,7 +125,7 @@ Measured contrast (WCAG 2.2):
 | --- | --- |
 | Header | White |
 | Hero ("Make your martech investment pay.") | White. The value cube sits on a light grey panel inside it, and the client logo strip runs along its foot, on white. The headline and text form one block, vertically centred on the panel (version 2.12) |
-| Four ways to work (Fix, Grow, Automate, Decide) | **Black `#111111`, full width.** White section heading, one row per way split by hairlines, purple icon tiles, coral names, purple soft offer names, white semibold promises, light grey detail, no arrows, no numbers. All Geist Sans |
+| Four ways to work (Fix, Grow, Automate, Decide) | **Black `#111111`, full width.** White section heading, four columns each read top to bottom, purple icon tiles, coral names, purple soft offer names, white semibold promises, light grey detail with small purple label icons, no arrows, no numbers. All Geist Sans |
 | Evidence, workshops and getting going (after the black section) | White, separated by hairlines inside the content width. No cards, tiles or grey panels. See section 11 |
 | Rune band | White, with the faint grey rune cropped by the hairline |
 | Footer | White |
@@ -181,7 +180,8 @@ The header keeps one height on every page so the logo does not shift between the
 
 ## 9. Icons and stage nodes
 
-- Way icons: line icons on a 1200 unit grid with a 48 unit round stroke (bars 64), in white inside 56 px purple nodes (48 px on phones) with a 14 px radius, one at the start of each four ways row. The ways are options, not steps, so no line or arrow joins the nodes (version 2.12). Current icons (version 2.12): magnifier with a pulse line, the health check (Fix, `i-fix`), rising bars with an arrow (Grow, `i-grow`), a large and a small sparkle for AI (Automate, `i-automate`), scales (Decide, `i-decide`).
+- Way icons: line icons on a 1200 unit grid with a 48 unit round stroke (bars 64), in white inside 56 px purple nodes (48 px on phones) with a 14 px radius, one at the head of each of the four ways. The ways are options, not steps, so no line or arrow joins the nodes (version 2.12). Current icons (version 2.12): magnifier with a pulse line, the health check (Fix, `i-fix`), rising bars with an arrow (Grow, `i-grow`), a large and a small sparkle for AI (Automate, `i-automate`), scales (Decide, `i-decide`).
+- Four ways label icons (version 2.12): two small line icons on a 24 unit grid with a 1.6 unit round stroke, at 18 px in `--gl-purple` beside their labels: a box for "What you get" (`i-get`, echoing the value cube) and an eye for "What we look at" (`i-look`).
 - Workshop icons: small line icons on a 24 unit grid with a 1.6 unit round stroke. At 28 px in the workshop's accent colour, beside the workshop name and centred on its first line: a cut diamond for Value Engineering (purple, `i-value`) and a route between two points for Technology Strategy (coral, `i-route`). At 18 px in the accent beside the list labels: two people for "Ideal for" (`i-people`) and a target for "You’ll leave with" (`i-target`). No other icons in the white sections.
 
 ## 10. Components
@@ -191,7 +191,7 @@ The header keeps one height on every page so the logo does not shift between the
   - Dark pill (`--gl-ink`, white 15 px 500 text, 44 px high) for "Let’s Talk" in the header (it read "Book an audit" until version 2.6).
   - Coral pill (`--gl-coral`, white 19 px 700 text, 52 px high, `--gl-coral-hover` on hover) for "Let’s Talk", in the getting going section and as the contact form's submit, where it runs full width under 640 px. White on coral is 3.25:1, so the label must stay 19 px bold or larger. Never put smaller or lighter text on coral.
   - Every link, button and summary is at least 24 px each way, and both pills at least 44 px high.
-- **Four ways section (version 2.12, Neil's layout review):** black `#111111`, full width, `--gl-section` padding top and bottom. The white H2 "Four ways to work with Growth Lab", then one row per way in a list, split by `--gl-line-on-black` hairlines, read left to right like a simple comparison table, in this order: the node; the coral name (H3), the offer name in `--gl-purple-soft` and the white promise; "What you get", one sentence; "What we look at", three short points with purple dots, both in `--gl-on-black`. From 1000 px the rows share four tracks (node, service 1.15 fr, what you get 1 fr, what we look at 1 fr), and the two labels appear once as column headings above the rows (`aria-hidden`; each row keeps its own H4 labels for screen readers). Under 1000 px each way stacks beside its node with its own labels, the two details side by side down to 760 px. Copy stays short: what you get in one sentence of about 20 words, what we look at in three points of no more than nine words. No arrows, no numbers, no accordion.
+- **Four ways section (version 2.12, Neil's layout review):** black `#111111`, full width, `--gl-section` padding top and bottom. The white H2 "Four ways to work with Growth Lab", then the four ways as a list of columns, each read top to bottom in this order: the node; the coral name (H3); the offer name in `--gl-purple-soft`; the white promise; a `--gl-line-on-black` hairline; "What you get" (H4 with the `i-get` box icon), one sentence; "What we look at" (H4 with the `i-look` eye icon), three short points with purple dots. Detail text is `--gl-on-black` at 15 px. Four columns from 1000 px, sharing rows (CSS subgrid) so the promises, hairlines and labels line up across them; two columns on tablets; one column at 560 px and under. Copy stays short: what you get in one sentence of about 20 words, what we look at in three points of no more than nine words. No arrows, no numbers, no accordion.
 - **Client logo strip:** at the foot of the white hero, before the black four ways section, as quiet credibility rather than an extra panel. Rules:
   - **Logos:** the twelve brands in `config/client-logos.json` (Sanlam, KFC, Old Mutual, Philips, Santam, Sportsmans Warehouse, Momentum, Famous Brands, Telesure, Multiply, Budget Insurance, First for Women). Each is a genuine logo from the source recorded in `SOURCES.md`, as a clean black variant on transparent, in `site/assets/clients/`. Never redraw, retype, stretch, crop or substitute a sub brand. A brand without a genuine file is left out and named as missing by the build and in the page source. White "knockout" files (a white box with the logo cut out, invisible on white) are converted with `scripts/knockout_to_black.py`, which removes the box without touching the logo's outlines.
   - **Size:** one stable row height (30 px logos on desktop, 24 px on phones, in a row 1.6 times that), with a per logo `scale` in the manifest to even out optical weight. Gaps of 48 to 80 px (40 px on phones). No cards, labels or claims.
@@ -341,7 +341,7 @@ Three white sections sit between the black four ways section and the rune band, 
 
 ## Change log
 
-- **2.12, 15 October 2026, four ways layout (Neil).** The four dense columns were hard to take in. Each way is now one row, read as the service, what you get, then what we look at, with the two labels as column headings on desktop. Copy shortened (what you get to one sentence, what we look at to three short points). The arrows between the nodes are gone, since the ways are options rather than steps.
+- **2.12, 16 October 2026, four ways layout (Neil).** The dense columns were hard to take in. Copy shortened (what you get to one sentence, what we look at to three short points) and reordered top to bottom: name, offer, promise, what you get, what we look at. A left to right row layout was tried and set aside in favour of Neil's preferred vertical columns. New label icons: a box for "What you get" and an eye for "What we look at". The arrows between the nodes are gone, since the ways are options rather than steps.
 - **2.12, 15 October 2026, hero refinement (Neil).** The headline and text now form one block vertically centred on the cube panel (the longer two paragraph text had pushed it below the panel's centre). The value cube loops: build, rest 3 s, fold back to the core, grow again, with a quiet Pause control in the panel corner, resting off screen and still under reduced motion. No new files: page weight and loading are unchanged.
 - **2.12, 15 October 2026.** New copy from Neil, set in the existing layout and patterns. Hero body in two paragraphs. The black section becomes "Four ways to work with Growth Lab": Fix, Grow, Automate and Decide, each with a promise, an offer name and its detail (what we look at, what you get), aligned across the columns with subgrid; new icons for Fix and Automate; no 01 to 04 numbers, per section 5. Research: "What 1,634 real martech stacks can tell you about yours.", an introduction, "What it tells you" and three bullets, MartechTribe's four figures as one quiet row with hairlines, and the 200+ brands line. The Deloitte or Accenture question and response, the coral regular weight exception and the repeated map caption are gone; the map keeps its credit and glow. Workshops: Technology Strategy first, titles, descriptions, pull quotes, "Ideal for" and "You’ll leave with"; the duration row is gone. New tokens: `--gl-line-on-black`; `--gl-space-research` removed. Copy edits for house style only: "the world’s largest" (not "the world’s the largest"), the closing quote mark, "prioritise", lower case "martech", "best performing" and "board ready" without hyphens, and a comma for the em dash.
 - **2.11, 14 October 2026.** Release preparation for production (Neil authorised the launch). Added the email logo PNG (section 6). The production build omits the unapproved privacy notice and website terms and their footer links (section 16); the preview keeps them.

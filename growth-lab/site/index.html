@@ -21,6 +21,8 @@
   <symbol id="i-value" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h11l3.5 5-9 11L3 9z"/><path d="M3 9h18"/><path d="M10 4 8.5 9l3.5 11 3.5-11L14 4"/></g></symbol>
   <symbol id="i-route" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="5.5" r="2"/><path d="M7.5 18.5h8a3.25 3.25 0 0 0 0-6.5h-7a3.25 3.25 0 0 1 0-6.5h8"/></g></symbol>
   <symbol id="i-people" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3.25"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M15.5 5.6a3.25 3.25 0 0 1 0 5.8"/><path d="M17.5 14.4c2.1.6 3.5 2.5 3.5 5.1"/></g></symbol>
+  <symbol id="i-get" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></g></symbol>
+  <symbol id="i-look" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12s3.4-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.4 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></g></symbol>
   <symbol id="i-target" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></g><circle cx="12" cy="12" r="1.4" fill="currentColor"/></symbol>
   <symbol id="i-grow" viewBox="0 0 1200 1200"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path stroke-width="64" d="M324 900V804M516 900V708M708 900V612M900 900V516"/><path stroke-width="48" d="M288 588L480 408L600 504L912 252M768 252H912V396"/></g></symbol>
 </svg>
@@ -100,26 +102,23 @@
     <!-- client-logos:end -->
   </section>
 
-  <!-- Four ways to work with Growth Lab: one row each, read left to right as the service, what you
-       get, then what we look at. Rules: DESIGN_SYSTEM.md, sections 9 and 10. -->
+  <!-- Four ways to work with Growth Lab: four columns, each read top to bottom as the service, what
+       you get, then what we look at. Rules: DESIGN_SYSTEM.md, sections 9 and 10. -->
   <section class="approach" aria-labelledby="ways-title">
     <div class="wrap">
       <h2 id="ways-title">Four ways to work with Growth Lab</h2>
-      <div class="ways-head" aria-hidden="true"><span>What you get</span><span>What we look at</span></div>
       <ul class="ways" role="list">
         <li class="way" id="fix">
           <span class="node"><svg class="ico" aria-hidden="true"><use href="#i-fix"/></svg></span>
-          <div class="way-id">
-            <h3>Fix</h3>
-            <p class="offer">Martech Health Check and fixes</p>
-            <p class="tag">Get more from the platforms you already pay for</p>
-          </div>
+          <h3>Fix</h3>
+          <p class="offer">Martech Health Check and fixes</p>
+          <p class="tag">Get more from the platforms you already pay for</p>
           <div class="way-get">
-            <h4 class="way-label">What you get</h4>
+            <h4 class="way-label"><svg class="l-icon" aria-hidden="true" focusable="false"><use href="#i-get"/></svg>What you get</h4>
             <p class="body">A plain list of what is broken or unused, ranked by return. Then we make the fixes with your team.</p>
           </div>
           <div class="way-look">
-            <h4 class="way-label">What we look at</h4>
+            <h4 class="way-label"><svg class="l-icon" aria-hidden="true" focusable="false"><use href="#i-look"/></svg>What we look at</h4>
             <ul class="look" role="list">
               <li>What you pay for against what you use</li>
               <li>The customer data that never arrives</li>
@@ -129,17 +128,15 @@
         </li>
         <li class="way" id="grow">
           <span class="node"><svg class="ico" aria-hidden="true"><use href="#i-grow"/></svg></span>
-          <div class="way-id">
-            <h3>Grow</h3>
-            <p class="offer">Customer Journeys and Lifetime Value</p>
-            <p class="tag">Keep customers longer and earn more from each one</p>
-          </div>
+          <h3>Grow</h3>
+          <p class="offer">Customer Journeys and Lifetime Value</p>
+          <p class="tag">Keep customers longer and earn more from each one</p>
           <div class="way-get">
-            <h4 class="way-label">What you get</h4>
+            <h4 class="way-label"><svg class="l-icon" aria-hidden="true" focusable="false"><use href="#i-get"/></svg>What you get</h4>
             <p class="body">A lifetime value map, the journeys that matter most built and live, and proof of what each one earns.</p>
           </div>
           <div class="way-look">
-            <h4 class="way-label">What we look at</h4>
+            <h4 class="way-label"><svg class="l-icon" aria-hidden="true" focusable="false"><use href="#i-look"/></svg>What we look at</h4>
             <ul class="look" role="list">
               <li>The moments that decide lifetime value</li>
               <li>Who might leave, and who is ready to buy</li>
@@ -149,17 +146,15 @@
         </li>
         <li class="way" id="automate">
           <span class="node"><svg class="ico" aria-hidden="true"><use href="#i-automate"/></svg></span>
-          <div class="way-id">
-            <h3>Automate</h3>
-            <p class="offer">AI Production Workflows</p>
-            <p class="tag">Produce campaigns in days, not weeks, with AI your team controls</p>
-          </div>
+          <h3>Automate</h3>
+          <p class="offer">AI Production Workflows</p>
+          <p class="tag">Produce campaigns in days, not weeks, with AI your team controls</p>
           <div class="way-get">
-            <h4 class="way-label">What you get</h4>
+            <h4 class="way-label"><svg class="l-icon" aria-hidden="true" focusable="false"><use href="#i-get"/></svg>What you get</h4>
             <p class="body">AI workflows your team uses every day, from brief to first draft, review and reporting, with your rules built in.</p>
           </div>
           <div class="way-look">
-            <h4 class="way-label">What we look at</h4>
+            <h4 class="way-label"><svg class="l-icon" aria-hidden="true" focusable="false"><use href="#i-look"/></svg>What we look at</h4>
             <ul class="look" role="list">
               <li>Where the time goes from brief to launch</li>
               <li>The content you produce most</li>
@@ -169,17 +164,15 @@
         </li>
         <li class="way" id="decide">
           <span class="node"><svg class="ico" aria-hidden="true"><use href="#i-decide"/></svg></span>
-          <div class="way-id">
-            <h3>Decide</h3>
-            <p class="offer">Martech Strategy and Investment Case</p>
-            <p class="tag">Know what to buy, renew or replace before you sign</p>
-          </div>
+          <h3>Decide</h3>
+          <p class="offer">Martech Strategy and Investment Case</p>
+          <p class="tag">Know what to buy, renew or replace before you sign</p>
           <div class="way-get">
-            <h4 class="way-label">What you get</h4>
+            <h4 class="way-label"><svg class="l-icon" aria-hidden="true" focusable="false"><use href="#i-get"/></svg>What you get</h4>
             <p class="body">A peer benchmark, your investments ranked by return, a roadmap and a case your executive can sign off.</p>
           </div>
           <div class="way-look">
-            <h4 class="way-label">What we look at</h4>
+            <h4 class="way-label"><svg class="l-icon" aria-hidden="true" focusable="false"><use href="#i-look"/></svg>What we look at</h4>
             <ul class="look" role="list">
               <li>Your stack against 1,634 benchmarked stacks</li>
               <li>Gaps, overlaps and spend across your platforms</li>

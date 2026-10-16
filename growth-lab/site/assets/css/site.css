@@ -173,55 +173,45 @@ h1 {
 .cube-toggle { position: absolute; top: 12px; right: 12px; }
 .cube-toggle:hover { background: var(--gl-panel-strong); color: var(--gl-ink); }
 
-/* Four ways to work with Growth Lab, on the deliberate black section. Keep it black. One row per
-   way, read left to right like a simple comparison table: the node, then the name, offer and
-   promise, then what you get, then what we look at. On wide screens the two detail labels are
-   column headings above the rows (each row keeps them for screen readers); below 1000 px each row
-   stacks and shows its own labels. The ways are options, not steps, so no arrows join them */
-.approach { background: var(--gl-black); color: var(--gl-white); padding-block: var(--gl-section); }
+/* Four ways to work with Growth Lab, on the deliberate black section. Keep it black. Four columns,
+   each read top to bottom: the node, the name, the offer and the promise, then a hairline, "What you
+   get" and "What we look at", each label with a small purple line icon. From 1000 px the columns
+   share rows (subgrid), so the promises, hairlines and labels line up across them; two columns on
+   tablets, one on phones. The ways are options, not steps, so no arrows join them */
+.approach { background: var(--gl-black); color: var(--gl-white); padding-block: var(--gl-section); --node: 56px; }
 .approach :focus-visible { outline-color: var(--gl-purple-soft); }
 .approach > .wrap > h2 {
-  margin-bottom: clamp(32px, 4vw, 56px); color: var(--gl-white);
+  margin-bottom: clamp(36px, 4.5vw, 64px); color: var(--gl-white);
   font-size: clamp(30px, 2.9vw, 40px); line-height: 1.1; letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold);
 }
-.approach { --node: 56px; --ways-cols: var(--node) minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr); --ways-gap: clamp(24px, 3vw, 48px); }
-.ways-head { display: none; }
-.ways { border-bottom: 1px solid var(--gl-line-on-black); }
-.way {
-  display: grid; grid-template-columns: var(--ways-cols); column-gap: var(--ways-gap);
-  padding-block: clamp(28px, 3vw, 40px); border-top: 1px solid var(--gl-line-on-black); scroll-margin-top: 24px;
-}
+.ways { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: clamp(28px, 3.4vw, 48px); }
+.way { min-width: 0; display: flex; flex-direction: column; scroll-margin-top: 24px; }
 .node { width: var(--node); height: var(--node); border-radius: var(--gl-radius-node); background: var(--gl-purple); display: grid; place-items: center; }
 .node .ico { width: 34px; height: 34px; color: var(--gl-white); }
-.way-id, .way-get, .way-look { min-width: 0; }
-/* The name's line is centred on the node */
 .way h3 {
-  margin-top: calc((var(--node) - 1.1em) / 2); color: var(--gl-coral);
-  font-size: clamp(26px, 2.2vw, 32px); line-height: 1.1; letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold);
+  margin-top: 24px; color: var(--gl-coral);
+  font-size: clamp(26px, 2.3vw, 32px); line-height: 1.1; letter-spacing: var(--gl-track-heading); font-weight: var(--gl-weight-semibold);
 }
-.way .offer { margin-top: 6px; font-size: var(--gl-text-ui); line-height: 1.45; font-weight: var(--gl-weight-medium); color: var(--gl-purple-soft); }
-.way .tag { margin-top: 14px; max-width: 24em; font-size: 18px; line-height: 1.4; font-weight: var(--gl-weight-semibold); letter-spacing: -0.01em; color: var(--gl-white); text-wrap: balance; }
-.way-label { font-size: var(--gl-text-ui); line-height: 1.4; font-weight: var(--gl-weight-semibold); color: var(--gl-white); }
-.way .body, .look li { font-size: 16px; line-height: 1.55; color: var(--gl-on-black); text-wrap: pretty; }
+.way .offer { margin-top: 6px; font-size: var(--gl-text-ui); line-height: 1.45; font-weight: var(--gl-weight-medium); color: var(--gl-purple-soft); text-wrap: balance; }
+.way .tag { margin-top: 12px; font-size: 18px; line-height: 1.4; font-weight: var(--gl-weight-semibold); letter-spacing: -0.01em; color: var(--gl-white); text-wrap: balance; }
+.way-get { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--gl-line-on-black); }
+.way-look { margin-top: 24px; }
+.way-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: var(--gl-text-ui); line-height: 1.4; font-weight: var(--gl-weight-semibold); color: var(--gl-white);
+}
+.l-icon { flex: none; width: 18px; height: 18px; color: var(--gl-purple); }
+.way .body, .look li { font-size: var(--gl-text-ui); line-height: 1.55; color: var(--gl-on-black); text-wrap: pretty; }
 .way .body { margin-top: 8px; max-width: 34ch; }
-.look { display: grid; gap: 8px; margin-top: 8px; }
+.look { display: grid; gap: 8px; margin-top: 10px; }
 .look li { position: relative; padding-left: 18px; }
 .look li::before {
   content: ""; position: absolute; left: 1px; top: calc(0.775em - 3px);
   width: 6px; height: 6px; border-radius: 50%; background: var(--gl-purple);
 }
 @media (min-width: 1000px) {
-  .ways-head {
-    display: grid; grid-template-columns: var(--ways-cols); column-gap: var(--ways-gap); padding-bottom: 14px;
-    font-size: 14px; line-height: 1.4; font-weight: var(--gl-weight-semibold); color: var(--gl-on-black);
-  }
-  .ways-head span:first-child { grid-column: 3; }
-  .ways-head span:last-child { grid-column: 4; }
-  /* The column headings stand in for the row labels, which stay for screen readers */
-  .way-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-  /* First lines of the detail sit level with the name */
-  .way-get, .way-look { padding-top: 15px; }
-  .way .body, .look { margin-top: 0; }
+  .ways { grid-template-rows: repeat(6, auto); }
+  .way { display: grid; grid-row: span 6; grid-template-rows: subgrid; align-content: start; }
 }
 
 /* White sections after the black stages: evidence, workshops, then getting going. One job each,
@@ -441,11 +431,8 @@ h1 {
   .hero-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "title" "device" "lead"; grid-template-rows: auto; }
   .device-card { margin-top: 36px; }
   .lead { margin-top: 36px; }
-  /* Each way stacks: the node beside its name, offer and promise, then the two details side by side */
-  .way { grid-template-columns: var(--node) minmax(0, 1fr) minmax(0, 1fr); row-gap: 24px; }
-  .way-id { grid-column: 2 / -1; }
-  .way-get { grid-column: 2; }
-  .way-look { grid-column: 3; }
+  /* Two columns of ways on tablets */
+  .ways { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: clamp(48px, 7vw, 64px); }
   .evidence-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
   .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; }
   .fig:nth-child(odd) { padding-left: 0; border-left: 0; }
@@ -458,7 +445,6 @@ h1 {
 }
 @media (max-width: 760px) {
   .rune-stage { --rune-w: min(84vw, 520px); }
-  .way-get, .way-look { grid-column: 2 / -1; }
   .workshop-grid { grid-template-columns: minmax(0, 1fr); }
   .workshop { padding-right: 0; }
   .workshop + .workshop { padding-left: 0; border-left: 0; border-top: 1px solid var(--gl-line); margin-top: 36px; padding-top: 36px; }
@@ -474,9 +460,11 @@ h1 {
   .logo { height: 26px; }
   .site-header .logo { height: 30px; }
   .device-card { padding-inline: 8px; }
+  /* One column on phones */
+  .ways { grid-template-columns: minmax(0, 1fr); row-gap: 48px; }
   .approach { --node: 48px; }
   .node .ico { width: 30px; height: 30px; }
-  .way { column-gap: 16px; row-gap: 20px; }
+  .way h3 { margin-top: 18px; }
   .way .tag { font-size: 17px; }
   /* Icon only on phones, so it never meets "Win more customers."; its name stays in aria-label */
   .cube-toggle { top: 8px; right: 8px; min-width: 32px; padding: 4px; justify-content: center; }

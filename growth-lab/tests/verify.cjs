@@ -316,20 +316,21 @@ async function homeChecks(page, vp) {
         white: ['#evidence', '#workshops', '#start'].map((s) => colour(s, 'backgroundColor')),
         node: colour('.node', 'backgroundColor'), h2: colour('.way h3', 'color'), tag: colour('.way .tag', 'color'),
         body: colour('.way .body', 'color'), look: colour('.way .look li', 'color'), offer: colour('.way .offer', 'color'),
-        label: colour('.way-label', 'color'), head: colour('.ways-head', 'color'), rule: colour('.way', 'borderTopColor') },
+        label: colour('.way-label', 'color'), rule: colour('.way-get', 'borderTopColor') },
       ways: { h2: t('.approach h2'), h2Colour: colour('.approach h2', 'color'), list: document.querySelector('.ways').tagName,
-        head: (() => { const h = document.querySelector('.ways-head'); return { shown: visible(h) && h.getBoundingClientRect().height > 0, hidden: h.getAttribute('aria-hidden'),
-          cols: [...h.children].map((c) => ({ text: c.textContent.trim(), l: Math.round(c.getBoundingClientRect().left) })) }; })(),
+        heads: document.querySelectorAll('.ways-head').length,
         connectors: [...document.querySelectorAll('.way')].filter((w) => !['none', 'normal'].includes(getComputedStyle(w, '::before').content) ||
           !['none', 'normal'].includes(getComputedStyle(w, '::after').content)).length,
         items: [...document.querySelectorAll('.way')].map((st) => {
           const part = (sel) => box(st.querySelector(sel));
           return { id: st.id, name: t('h3', st), tag: t('.tag', st), offer: t('.offer', st), labels: [...st.querySelectorAll('h4')].map((h) => h.textContent.trim()),
             labelsShown: [...st.querySelectorAll('h4')].map((h) => h.getBoundingClientRect().width > 2),
+            labelIcons: [...st.querySelectorAll('h4 .l-icon')].map((ic) => ({ href: ic.querySelector('use').getAttribute('href'), colour: getComputedStyle(ic).color,
+              size: Math.round(ic.getBoundingClientRect().width), ok: !!document.querySelector(ic.querySelector('use').getAttribute('href')) })),
             order: [...st.querySelectorAll('h3, .offer, .tag, .way-get, .way-look')].map((e) => e.tagName === 'H3' ? 'name' : e.className.replace('way-', '')),
             look: [...st.querySelectorAll('.look li')].map((l) => l.textContent.trim()), get: t('.body', st),
             icon: st.querySelector('.node use').getAttribute('href'), iconOk: !!document.querySelector(st.querySelector('.node use').getAttribute('href')),
-            node: part('.node'), id_: part('.way-id'), getBox: part('.way-get'), lookBox: part('.way-look'), box: box(st) };
+            node: part('.node'), name_: part('h3'), tagBox: part('.tag'), getBox: part('.way-get'), lookBox: part('.way-look'), box: box(st) };
         }) },
       numbering: document.querySelectorAll('.way .num').length + [...document.querySelectorAll('.approach *')].filter((e) => /^0[1-4]$/.test(e.textContent.trim())).length,
       header: { links: [...document.querySelectorAll('.site-header a')].map((a) => `${a.textContent.trim() || a.getAttribute('aria-label')}|${a.getAttribute('href')}|${a.className}`),
@@ -405,9 +406,9 @@ async function homeChecks(page, vp) {
   check(`${tag} hero white, stages black, new sections white`, g.hero === 'rgb(255, 255, 255)' && g.stages === 'rgb(17, 17, 17)' &&
     g.white.every((c) => c === 'rgb(255, 255, 255)'), `${g.hero}, ${g.stages}, ${g.white.join(', ')}`);
   const ratios = { heading: contrast(g.h2, g.stages), tagline: contrast(g.tag, g.stages), body: contrast(g.body, g.stages), look: contrast(g.look, g.stages),
-    offer: contrast(g.offer, g.stages), label: contrast(g.label, g.stages), head: contrast(g.head, g.stages), tile: contrast(g.node, g.stages) };
+    offer: contrast(g.offer, g.stages), label: contrast(g.label, g.stages), tile: contrast(g.node, g.stages) };
   check(`${tag} black section: coral names, white promises and labels, purple soft offers, readable detail, purple tiles`, ratios.heading >= 4.5 && ratios.tagline >= 7 &&
-    ratios.body >= 7 && ratios.look >= 7 && ratios.offer >= 7 && ratios.label >= 7 && ratios.head >= 7 && ratios.tile >= 3 &&
+    ratios.body >= 7 && ratios.look >= 7 && ratios.offer >= 7 && ratios.label >= 7 && ratios.tile >= 3 &&
     g.h2 === 'rgb(255, 78, 78)' && g.tag === 'rgb(255, 255, 255)' && g.offer === 'rgb(217, 211, 255)' && g.rule === 'rgb(51, 51, 51)',
     Object.entries(ratios).map(([k, v]) => `${k} ${v.toFixed(2)}`).join(', '));
   const wy = x.ways;
@@ -420,17 +421,21 @@ async function homeChecks(page, vp) {
   check(`${tag} short copy: one sentence of what you get, three short points of what we look at`, wy.items.every((it) => it.get.split(' ').length <= 22 &&
     it.look.length === 3 && it.look.every((l) => l.split(' ').length <= 9)), wy.items.map((it) => `${it.get.split(' ').length} words`).join(', '));
   check(`${tag} each way has its own line icon in the purple node, and no arrows join them`, wy.items.every((it, i) => it.icon === WAYS[i].icon && it.iconOk) && wy.connectors === 0);
-  check(`${tag} the four ways stack as rows in order, split by hairlines`, wy.items.every((it, i) => i === 0 || it.box.t >= wy.items[i - 1].box.b - 1));
+  check(`${tag} What you get and What we look at labels, always shown, each with its own small purple line icon`, wy.heads === 0 &&
+    wy.items.every((it) => it.labelsShown.every((v) => v) && it.labelIcons.length === 2 && it.labelIcons[0].href === '#i-get' && it.labelIcons[1].href === '#i-look' &&
+      it.labelIcons.every((ic) => ic.ok && ic.colour === 'rgb(119, 97, 255)' && ic.size === 18)), JSON.stringify(wy.items[0].labelIcons));
+  check(`${tag} each way reads top to bottom: node, name, offer, promise, then what you get, then what we look at`, wy.items.every((it) =>
+    it.node.b <= it.name_.t && it.tagBox.b <= it.getBox.t && it.getBox.b <= it.lookBox.t));
+  const tops = (k) => wy.items.map((it) => Math.round(it[k].t));
   if (vp.width >= 1000) {
-    check(`${tag} each row reads across: node, service, what you get, what we look at, under two column headings (row labels kept for screen readers)`,
-      wy.head.shown && wy.head.hidden === 'true' && JSON.stringify(wy.head.cols.map((c) => c.text)) === JSON.stringify(['What you get', 'What we look at']) &&
-      wy.items.every((it) => it.node.r <= it.id_.l && it.id_.r <= it.getBox.l && it.getBox.r <= it.lookBox.l && Math.abs(it.getBox.t - it.lookBox.t) < 1 &&
-        Math.abs(it.getBox.l - wy.head.cols[0].l) <= 1 && Math.abs(it.lookBox.l - wy.head.cols[1].l) <= 1 && it.labelsShown.every((v) => !v)),
-      wy.items.map((it) => `${Math.round(it.id_.l)}/${Math.round(it.getBox.l)}/${Math.round(it.lookBox.l)}`).join(' | '));
+    check(`${tag} four columns side by side; the hairlines and both labels line up across them`, new Set(tops('box')).size === 1 &&
+      new Set(tops('getBox')).size === 1 && new Set(tops('lookBox')).size === 1 && wy.items.every((it, i) => i === 0 || it.box.l >= wy.items[i - 1].box.r),
+      `${tops('getBox').join('/')} and ${tops('lookBox').join('/')}`);
+  } else if (vp.width > 560) {
+    check(`${tag} two columns of ways`, tops('box')[0] === tops('box')[1] && tops('box')[2] === tops('box')[3] && tops('box')[2] > tops('box')[0] &&
+      wy.items[1].box.l >= wy.items[0].box.r, tops('box').join('/'));
   } else {
-    check(`${tag} each way stacks: service and promise, then what you get and what we look at with their own labels`, !wy.head.shown &&
-      wy.items.every((it) => it.id_.b <= it.getBox.t && it.id_.b <= it.lookBox.t && it.labelsShown.every((v) => v) && it.node.r <= it.getBox.l),
-      wy.items.map((it) => `${Math.round(it.getBox.l)}/${Math.round(it.lookBox.l)}`).join(' | '));
+    check(`${tag} one column of ways, in order`, wy.items.every((it, i) => i === 0 || it.box.t >= wy.items[i - 1].box.b));
   }
   check(`${tag} no 01 to 04 numbering`, x.numbering === 0);
   check(`${tag} sections in order between the stages and the rune`, x.inOrder);
