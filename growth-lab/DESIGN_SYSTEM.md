@@ -373,6 +373,7 @@ Version 2.12.1 (16 October 2026), so Google indexes the site correctly and links
 
 ## Change log
 
+- **2.13.2, 16 October 2026, released to growthlab.co.za (Neil).** Growth-Lab-2026 commit 9b96f5c, deployment `dpl_FMPyiLwq68Qv9QNLMBsDgZabCtpJ`; the live homepage and stylesheet match the build byte for byte.
 - **2.13.2, 16 October 2026, research section foot (Neil).** The enquiry under the explorer and the MartechMap block (the map, its credit, "The whole market your stack is chosen from", the line and "View the full market map" with its dialog) are gone: they did not add value. The research brands move back directly under the figures, as in 2.12.1, with even space between the explorer, the figures and the brands and as much room after them as above the heading. The homepage now has two actions, both "Let’s Talk". The map files stay in the source.
 - **2.13.1, 16 October 2026, released to growthlab.co.za (Neil).** Growth-Lab-2026 commit 4a50341, deployment `dpl_9T8KTkH7WfgJenpYRWJUhuHXQEny`; the live homepage matches the build byte for byte.
 - **2.13.1, 16 October 2026, hero text (Neil).** The headline stays; the two paragraphs under it are Neil's new copy word for word (`SOURCES.md`): what Growth Lab helps with (getting more from the marketing technology you already own, customer data and AI, less wasted spend, where to invest next), then how (the biggest opportunities, clear priorities, working with your team). The meta description, link preview text and structured data repeat its first sentence. Nothing else changes.
