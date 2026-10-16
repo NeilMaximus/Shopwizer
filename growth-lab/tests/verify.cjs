@@ -775,7 +775,8 @@ async function fitChecks(browser, base) {
     });
     seen.push([name, height, m]);
     if (width === 1536) {
-      await page.evaluate(() => { const el = document.querySelector('#evidence-title'); window.scrollTo(0, el.getBoundingClientRect().top + scrollY - 24); });
+      // An instant jump: the page's own smooth scrolling would catch the capture mid way
+      await page.evaluate(() => { const el = document.querySelector('#evidence-title'); window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 24, behavior: 'instant' }); });
       await page.waitForTimeout(200);
       await page.screenshot({ path: path.join(SHOTS, 'research-fit-1536x864.png') });
     }
