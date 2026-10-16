@@ -51,7 +51,7 @@ const CSS = `
   .share .mx-name, .share .mx-tag { font-size: 12px; }
   .share .mx-axis { font-size: 13px; }
   .share .matrix { row-gap: 5px; padding-top: 4px; }
-  .share .mx-plot { aspect-ratio: 7 / 5; }
+  .share .mx-plot { aspect-ratio: 16 / 10; }
 
   /* Positions, two by two as on a desktop */
   .share .quads { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }

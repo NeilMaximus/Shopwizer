@@ -275,6 +275,8 @@ h1 {
 .rx-visual { grid-area: visual; display: flex; flex-direction: column; min-width: 0; }
 .rc-title { font-size: clamp(20px, 1.7vw, 24px); line-height: 1.25; letter-spacing: -0.015em; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-wrap: balance; }
 .rc-lede { margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--gl-ink-2); text-wrap: pretty; }
+/* The matrix view opens by saying it is one industry's example, so no one reads the benchmark as retail only */
+.rc-lede strong { font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 .rc-credit { margin-top: auto; padding-top: 12px; font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3); }
 .rx-next {
   grid-area: next; justify-self: start; display: inline-flex; align-items: center; gap: 14px; min-height: 52px; padding: 6px 6px 6px 18px;
