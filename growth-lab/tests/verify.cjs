@@ -60,7 +60,7 @@ const HOME = {
 // get, then what we look at. Shortened copy (Neil, 15 October 2026). No 01 to 04 numbers on the page
 const WAYS = [
   { id: 'fix', name: 'Fix', icon: '#i-fix', tag: 'Get more from the platforms you already pay for', offer: 'Martech Health Check and fixes',
-    get: 'A plain list of what is broken or unused, ranked by return. Then we make the fixes with your team.',
+    get: 'A practical outline of what is broken or unused, ranked by return. Then we make the fixes with your team.',
     look: ['What you pay for against what you use', 'The customer data that never arrives', 'What slows your team down'] },
   { id: 'grow', name: 'Grow', icon: '#i-grow', tag: 'Keep customers longer and earn more from each one', offer: 'Customer Journeys and Lifetime Value',
     get: 'A lifetime value map, the journeys that matter most built and live, and proof of what each one earns.',

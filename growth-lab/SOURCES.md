@@ -14,7 +14,7 @@ Neil's copy of 15 October 2026 (no 01 to 04 numbers on the page, per `DESIGN_SYS
 
 | Way | What you get | What we look at |
 | --- | --- | --- |
-| Fix | A plain list of what is broken or unused, ranked by return. Then we make the fixes with your team. | What you pay for against what you use. The customer data that never arrives. What slows your team down |
+| Fix | A practical outline of what is broken or unused, ranked by return. Then we make the fixes with your team. | What you pay for against what you use. The customer data that never arrives. What slows your team down |
 | Grow | A lifetime value map, the journeys that matter most built and live, and proof of what each one earns. | The moments that decide lifetime value. Who might leave, and who is ready to buy. What each journey and offer earns today |
 | Automate | AI workflows your team uses every day, from brief to first draft, review and reporting, with your rules built in. | Where the time goes from brief to launch. The content you produce most. The brand and compliance rules it must pass |
 | Decide | A peer benchmark, your investments ranked by return, a roadmap and a case your executive can sign off. | Your stack against 1,634 benchmarked stacks. Gaps, overlaps and spend across your platforms. The use cases that would earn the most |
