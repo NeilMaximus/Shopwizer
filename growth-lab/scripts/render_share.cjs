@@ -34,7 +34,7 @@ const CSS = `
   .share-panel { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 20px; border-radius: 22px; background: var(--gl-panel); }
   .share-panel > .rc-credit, .share-cover > .rc-credit { margin-top: auto; padding-top: 12px; font-size: 12px; }
   .share .rc-title { font-size: 21px; line-height: 1.25; }
-  .share .rc-lede { font-size: 14.5px; }
+  .share .rc-lede { font-size: 14px; line-height: 1.45; }
 
   /* Cover: the research heading and what it tells you, from the page */
   .share-cover { display: flex; flex-direction: column; flex: 1; padding: 14px 4px 0; }
@@ -47,21 +47,29 @@ const CSS = `
   .share-cover .benefits li { font-size: 16.5px; padding-left: 22px; }
 
   /* Matrix */
-  .share .matrix { margin-top: 14px; }
+  .share .matrix { margin-top: 10px; }
   .share .mx-name, .share .mx-tag { font-size: 12px; }
   .share .mx-axis { font-size: 12px; }
 
   /* Positions, two by two as on a desktop */
-  .share .quads { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
-  .share .quad { padding: 13px 14px; }
-  .share .quad-tag { font-size: 12.5px; }
-  .share .quad-what { margin-top: 6px; font-size: 15px; line-height: 1.3; }
-  .share .quad-eg { margin-top: 6px; font-size: 13px; line-height: 1.45; }
+  .share .quads { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+  .share .quad { padding: 13px 13px 12px; }
+  .share .quad-tag { gap: 8px; font-size: 13px; }
+  .share .q-icon { width: 28px; height: 28px; border-radius: 8px; }
+  .share .q-icon svg { width: 17px; height: 17px; }
+  .share .quad-what { margin-top: 8px; font-size: 14.5px; line-height: 1.3; }
+  .share .quad-why { margin-top: 4px; margin-bottom: 10px; font-size: 12.5px; line-height: 1.42; }
+  /* The example names alone: the card's place on the chart already says what they are */
+  .share .quad-eg { padding-top: 9px; }
+  .share .eg-label { display: none; }
+  .share .eg-names span { font-size: 12.5px; padding: 2px 9px; }
 
   /* Score */
   .share .rc-points { margin-top: 12px; gap: 8px; }
   .share .rc-points li { font-size: 15.5px; }
   .share .score { margin-top: 14px; padding: 16px; }
+  .share-rows .score { margin-top: 0; padding: 16px 16px 14px; }
+  .share-rows > .share-panel > .rc-credit, .share-rows .share-panel > .rc-credit { padding-top: 8px; }
   .share .score-head { font-size: 19px; }
   .share .score-head span { display: block; }
   .share .meter { margin-top: 16px; height: 12px; }
@@ -73,12 +81,13 @@ const CSS = `
   .share-score .score-head { font-size: 23px; }
   .share-score .meter { height: 14px; margin-top: 22px; }
   .share-score .meter-key { font-size: 14px; margin-top: 14px; }
-  .share .score-cols { margin-top: 0; padding-top: 0; border-top: 0; gap: 12px; }
-  .share .score-col ul { gap: 8px; margin-top: 8px; }
-  .share .score-col li { row-gap: 1px; }
-  .share .s-name { font-size: 14.5px; }
-  .share .s-how { font-size: 13px; }
-  .share .score-key { font-size: 13px; }
+  .share .score-cols { margin-top: 0; padding-top: 0; border-top: 0; row-gap: 14px; }
+  .share .score-strong { padding-top: 14px; }
+  .share .score-col ul { gap: 11px; margin-top: 10px; }
+  .share .score-col li { row-gap: 2px; }
+  .share .s-name { font-size: 14px; }
+  .share .s-how { font-size: 12.5px; }
+  .share .score-key { font-size: 12.5px; margin-top: 14px; padding-top: 10px; }
 `;
 
 const server = http.createServer((req, res) => {
@@ -156,7 +165,7 @@ server.listen(0, '127.0.0.1', async () => {
         frame('02-where-you-sit', panel(take('.rc-title', matrix), take('.rc-lede', matrix), take('.matrix', matrix), take('.rc-credit', matrix))),
         frame('03-what-each-position-means', panel(take('.rc-title', positions), take('.quads', positions), take('.rc-credit', positions))),
         frame('04-your-apex-score', panel(title('Your Apex Score'), take('.rc-points', score), scoreTop, take('.rc-credit', score)), 'share-score'),
-        frame('05-what-to-fix-first', panel(title('What to fix first'), scoreRows, take('.rc-credit', score)))
+        frame('05-what-to-fix-first', panel(scoreRows, take('.rc-credit', score)), 'share-rows')
       );
       const sprite = document.getElementById('i-calendar').closest('svg');
       sprite.classList.add('share-sprite');

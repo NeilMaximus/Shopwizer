@@ -379,8 +379,14 @@ async function homeChecks(page, vp) {
           const overlap = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
           const plot = rc.querySelector('.mx-plot'), pb = rect(plot), tb = rect(track);
           const dots = [...plot.querySelectorAll('.mx-dot')].map((d) => { const r = rect(d); return { q: [...d.classList].find((c) => c.startsWith('q-')).slice(2), named: d.classList.contains('is-named'),
-            name: t('.mx-name', d), colour: cs(d).backgroundColor, x: (r.left + r.width / 2 - pb.left) / pb.width * 100, y: (r.top + r.height / 2 - pb.top) / pb.height * 100 }; });
+            name: d.dataset.name || null, colour: cs(d).backgroundColor, x: (r.left + r.width / 2 - pb.left) / pb.width * 100, y: (r.top + r.height / 2 - pb.top) / pb.height * 100 }; });
           const names = [...plot.querySelectorAll('.mx-name')].map(rect), allDots = [...plot.querySelectorAll('.mx-dot')].map(rect);
+          // Each name sits in clear space with a thin leader from its dot to the middle of its label
+          const leaders = [...plot.querySelectorAll('.mx-leaders line')].map((l) => ['x1', 'y1', 'x2', 'y2'].map((a) => +l.getAttribute(a)));
+          const callouts = [...plot.querySelectorAll('.mx-name')].map((n) => { const r = rect(n); return { name: n.textContent.trim(),
+            x: (r.left + r.width / 2 - pb.left) / pb.width * 100, y: (r.top + r.height / 2 - pb.top) / pb.height * 100 }; });
+          const axes = [t('.mx-axis-y', rc), t('.mx-axis-x', rc)];
+          const quadBoxes = [...rc.querySelectorAll('.quad')].map(rect);
           const goal = rect(plot.querySelector('.mx-goal')), v = rect(plot.querySelector('.mx-v')), h = rect(plot.querySelector('.mx-h'));
           const row = (li) => ({ name: t('.s-name', li), pts: t('.s-pts', li), icon: li.querySelector('use') ? li.querySelector('use').getAttribute('href') : '' });
           const meter = rect(rc.querySelector('.meter')), now = rect(rc.querySelector('.meter-now')), gain = rect(rc.querySelector('.meter-gain'));
@@ -391,7 +397,12 @@ async function homeChecks(page, vp) {
             namesInside: names.every((r) => r.left >= pb.left - 0.5 && r.right <= pb.right + 0.5 && r.top >= pb.top - 0.5 && r.bottom <= pb.bottom + 0.5),
             namesClear: names.every((r, i) => names.every((o, j) => i === j || !overlap(r, o)) && allDots.every((d) => !overlap(r, d))),
             tint: { colour: cs(plot.querySelector('.mx-goal')).backgroundColor, ok: Math.abs(goal.left - v.left) <= 1 && Math.abs(goal.right - pb.right) <= 1 && Math.abs(goal.top - pb.top) <= 1 && Math.abs(goal.bottom - h.top) <= 1 },
-            quads: [...rc.querySelectorAll('.quad')].map((q) => ({ q: q.querySelector('.quad-tag i').className.replace('q-', ''), eg: t('.quad-eg strong', q) })),
+            leaders, callouts, axes,
+            quads: [...rc.querySelectorAll('.quad')].map((q) => { const icon = q.querySelector('.q-icon'), use = icon && icon.querySelector('use');
+              return { q: icon ? [...icon.classList].find((c) => c.startsWith('q-') && c !== 'q-icon').slice(2) : '', icon: use ? use.getAttribute('href') : '',
+                iconDefined: !!(use && document.querySelector(use.getAttribute('href'))), names: [...q.querySelectorAll('.eg-names span')].map((n) => n.textContent.trim()) }; }),
+            quadsSameSize: quadBoxes.every((b) => Math.abs(b.width - quadBoxes[0].width) < 1 && Math.abs(b.height - quadBoxes[0].height) < 1),
+            slideHeights: slides.map((sl) => Math.round(sl.offsetHeight)),
             head: t('.score-head', rc), fix: [...rc.querySelectorAll('.score-fix li')].map(row), strong: [...rc.querySelectorAll('.score-strong li')].map(row),
             iconsDefined: [...rc.querySelectorAll('.s-icon use')].every((u) => !!document.querySelector(u.getAttribute('href'))),
             meter: { now: now.width / meter.width, gain: gain.width / meter.width, joined: Math.abs(gain.left - now.right) < 1 },
@@ -527,12 +538,25 @@ async function homeChecks(page, vp) {
   check(`${tag} matrix: all ${APEX.retailers.length} retailers placed from the data, in their quadrant colours`, c.dots.length === APEX.retailers.length &&
     APEX.retailers.every((r) => c.dots.some((d) => d.q === r.quadrant && Math.abs(d.x - r.x) < 1 && Math.abs(d.y - r.y) < 1)) &&
     c.dots.every((d) => d.colour === QUAD_COLOURS[d.q]) && Math.abs(c.divider.x - APEX.dividers.x) < 0.5 && Math.abs(c.divider.y - APEX.dividers.y) < 0.5, `${c.dots.length} dots`);
-  check(`${tag} matrix: the four examples highlighted and named, labels inside the chart and clear of every dot`,
-    JSON.stringify(c.dots.filter((d) => d.named).map((d) => d.name).sort()) === JSON.stringify(APEX.examples.map((x) => x.name).sort()) &&
-    APEX.examples.every((x) => c.dots.some((d) => d.named && d.name === x.name && d.q === x.quadrant)) && c.namesInside && c.namesClear);
+  const exNames = APEX.examples.map((x) => x.name).sort();
+  check(`${tag} matrix: retailers South Africans know highlighted (${exNames.join(', ')}), labels inside the chart and clear of every dot`,
+    JSON.stringify(c.dots.filter((d) => d.named).map((d) => d.name).sort()) === JSON.stringify(exNames) &&
+    APEX.examples.every((x) => c.dots.some((d) => d.named && d.name === x.name && d.q === x.quadrant)) && c.namesInside && c.namesClear,
+    c.callouts.map((n) => n.name).join(', '));
+  check(`${tag} matrix: each name sits where the data puts it, joined to its own dot by a leader`, c.leaders.length === APEX.examples.length &&
+    APEX.examples.every((x) => { const r = APEX.retailers.find((rr) => rr.name === x.name), n = c.callouts.find((cc) => cc.name === x.name);
+      return !!n && Math.abs(n.x - x.callout[0]) < 1 && Math.abs(n.y - x.callout[1]) < 1 &&
+        c.leaders.some((l) => l[0] === r.x && l[1] === r.y && l[2] === x.callout[0] && l[3] === x.callout[1]); }));
+  check(`${tag} matrix axes use MartechTribe's terms: Martech presence and Martech performance`,
+    JSON.stringify(c.axes) === JSON.stringify(['Martech presence', 'Martech performance']), c.axes.join(' / '));
   check(`${tag} matrix: the Powerhouse quadrant, where the outperformers sit, is tinted`, c.tint.ok && c.tint.colour !== 'rgba(0, 0, 0, 0)', c.tint.colour);
-  check(`${tag} positions: each quadrant explained with its example and Apex Score`, c.quads.length === 4 &&
-    APEX.examples.every((x) => c.quads.some((q) => q.q === x.quadrant && q.eg === `${x.name}, ${x.score}/100.`)), c.quads.map((q) => q.eg).join(' | '));
+  check(`${tag} positions: four cards of one size, each with its own icon and its highlighted retailers`, c.quads.length === 4 && c.quadsSameSize &&
+    c.quads.every((q) => q.icon === `#i-${q.q}` && q.iconDefined) &&
+    Object.keys(QUAD_COLOURS).every((qq) => JSON.stringify(c.quads.find((q) => q.q === qq).names.slice().sort()) ===
+      JSON.stringify(APEX.examples.filter((x) => x.quadrant === qq).map((x) => x.name).sort())), c.quads.map((q) => `${q.q}: ${q.names.join(' + ')}`).join(' | '));
+  if (vp.width > 640) check(`${tag} every example in the carousel is the same size`, new Set(c.slideHeights).size === 1, c.slideHeights.join(', '));
+  if (vp.width >= 1000) check(`${tag} research copy starts level with the top of the carousel card`, Math.abs(e.copyBox.t - e.rcBox.t) <= 2,
+    `${Math.round(e.copyBox.t - e.rcBox.t)} px`);
   const pts = (rows) => rows.map((r) => `${r[0]} +${r[1]}`);
   check(`${tag} score: ${sc.now} today and ${sc.possible} within reach, the fixes add up and the meter shows both`, c.head === `You are at ${sc.now}/100. You can reach ${sc.possible}/100.` &&
     JSON.stringify(c.fix.map((r) => `${r.name} ${r.pts}`)) === JSON.stringify(pts(sc.fix)) && JSON.stringify(c.strong.map((r) => `${r.name} ${r.pts}`)) === JSON.stringify(pts(sc.strong)) &&
@@ -540,7 +564,7 @@ async function homeChecks(page, vp) {
     `meter ${(c.meter.now * 100).toFixed(1)} + ${(c.meter.gain * 100).toFixed(1)}`);
   check(`${tag} score areas carry plain icons, not technology logos; the only image in the carousel is the MartechMap`,
     [...c.fix, ...c.strong].every((r) => /^#i-/.test(r.icon)) && c.iconsDefined && JSON.stringify(c.images) === JSON.stringify(['rc-map']), c.images.join(', '));
-  check(`${tag} carousel opens on the first example with its controls, the panel fitted to it and nothing spilling out`,
+  check(`${tag} carousel opens on the first example with its controls, the card sized to it and nothing spilling out`,
     c.controls && c.dotCount === 4 && c.current === 0 && c.prevOff && !c.nextOff && c.fits && c.spill.length === 0, c.spill.join(', '));
 
   const w = x.workshops;
@@ -625,13 +649,23 @@ async function carouselChecks(page, vp) {
   await page.click('.rc-prev'); await settle(1); steps.push(['previous', 1, await state()]);
   await page.evaluate(() => { const tr = document.querySelector('.rc-track'); tr.scrollTo({ left: 2 * tr.clientWidth, behavior: 'instant' }); });
   await settle(2); steps.push(['swipe', 2, await state()]);
-  check(`${tag} next, previous, dots, arrow keys and a swipe each move one example, the dots follow and the panel fits each`,
+  check(`${tag} next, previous, dots, arrow keys and a swipe each move one example, the dots follow and the card fits each`,
     steps.every(([, want, st]) => st.cur === want && st.at === want && st.fits) && steps[1][2].next && !steps[1][2].prev,
     steps.map(([how, , st]) => `${how} > ${st.cur + 1}${st.fits ? '' : ' (unfitted)'}`).join(', '));
+  // A narrower window (or a phone turned on its side) keeps the example in view in place
+  await page.setViewportSize({ width: vp.width - 120, height: vp.height }); await settle(2);
+  const narrower = await state();
+  await page.setViewportSize({ width: vp.width, height: vp.height }); await settle(2);
+  const restored = await state();
+  check(`${tag} the carousel stays on the same example when the window changes width`, narrower.cur === 2 && narrower.at === 2 && restored.cur === 2 && restored.at === 2,
+    `${JSON.stringify(narrower)} then ${JSON.stringify(restored)}`);
+  // Screenshots in a window tall enough for the tallest example, so the capture never resizes the page
+  await page.setViewportSize({ width: vp.width, height: Math.max(vp.height, 2400) });
   for (let i = 0; i < 4; i++) {
     await page.click(`.rc-dot >> nth=${i}`); await settle(i);
     await page.locator('.rc').screenshot({ path: path.join(SHOTS, `carousel-${vp.name}-${i + 1}.png`) });
   }
+  await page.setViewportSize({ width: vp.width, height: vp.height });
   await page.click('.rc-dot >> nth=0'); await settle(0);
 }
 

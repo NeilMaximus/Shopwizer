@@ -249,26 +249,35 @@ QUADRANTS = {"powerhouse": "Powerhouse", "overbuilt": "Overbuilt", "precision": 
 def apex_matrix(source=ROOT / "config" / "apex-retail-example.json"):
     """Markup for the Apex Martech Matrix retail example in the research carousel, drawn from the
     measured data in config/apex-retail-example.json: every retailer's dot in its quadrant colour at
-    its measured position, the four example companies named. Nothing is invented or moved."""
+    its measured position, and the highlighted examples (retailers known in South Africa) as larger
+    dots whose name labels sit in clear space, joined to the dot by a thin leader. Nothing is invented
+    or moved: the label position is chosen in the data, the dot stays where MartechTribe put it."""
     cfg = json.loads(source.read_text(encoding="utf8"))
     named = {e["name"]: e for e in cfg["examples"]}
-    dots = []
+    found = {r["name"] for r in cfg["retailers"]} & set(named)
+    assert found == set(named), f"examples missing from the chart: {sorted(set(named) - found)}"
+    dots, leaders, labels = [], [], []
     for r in sorted(cfg["retailers"], key=lambda r: r["name"] in named):
         q = r["quadrant"]
         assert q in QUADRANTS and 0 <= r["x"] <= 100 and 0 <= r["y"] <= 100, f"bad retailer {r}"
+        pos = f'style="--x: {r["x"]}%; --y: {r["y"]}%"'
         if r["name"] in named:
-            assert named[r["name"]]["quadrant"] == q, f"{r['name']}: example quadrant differs from the chart"
-            side = named[r["name"]].get("label", "right")
-            assert side in ("left", "right", "above", "below"), f"bad label side for {r['name']}"
-            dots.append(f'              <span class="mx-dot q-{q} is-named label-{side}" style="--x: {r["x"]}%; --y: {r["y"]}%">'
-                        f'<span class="mx-name">{html.escape(r["name"])}</span></span>\n')
+            ex = named[r["name"]]
+            assert ex["quadrant"] == q, f"{r['name']}: example quadrant differs from the chart"
+            lx, ly = ex["callout"]
+            assert 0 < lx < 100 and 0 < ly < 100, f"bad callout for {r['name']}"
+            name = html.escape(r["name"])
+            dots.append(f'              <span class="mx-dot q-{q} is-named" data-name="{name}" {pos}></span>\n')
+            leaders.append(f'<line x1="{r["x"]}" y1="{r["y"]}" x2="{lx}" y2="{ly}"/>')
+            labels.append(f'              <span class="mx-name" style="--x: {lx}%; --y: {ly}%">{name}</span>\n')
         else:
-            dots.append(f'              <span class="mx-dot q-{q}" style="--x: {r["x"]}%; --y: {r["y"]}%"></span>\n')
+            dots.append(f'              <span class="mx-dot q-{q}" {pos}></span>\n')
     d = cfg["dividers"]
     return (f'            <div class="mx-plot" style="--mx-x: {d["x"]}%; --mx-y: {d["y"]}%" aria-hidden="true">\n'
             '              <span class="mx-goal"></span><span class="mx-line mx-v"></span><span class="mx-line mx-h"></span>\n'
             + "".join(f'              <span class="mx-tag mx-tag-{q}"><i class="q-{q}"></i>{label}</span>\n' for q, label in QUADRANTS.items())
-            + "".join(dots) +
+            + '              <svg class="mx-leaders" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">' + "".join(leaders) + '</svg>\n'
+            + "".join(dots) + "".join(labels) +
             '            </div>\n')
 
 

@@ -196,7 +196,8 @@
   /* Research carousel. One example at a time on a scroll snap track, so it swipes on touch screens and
      scrolls with a trackpad even without this script. The script adds previous and next buttons and
      one dot per example, keeps them in step with the track, and lets the arrow keys move between
-     examples. It never moves on its own (DESIGN_SYSTEM.md, section 11). */
+     examples. Every example shares one size, except on a phone, where the card fits the example in
+     view. It never moves on its own (DESIGN_SYSTEM.md, section 11). */
   function researchCarousel() {
     var rc = document.querySelector('.rc');
     if (!rc) { return; }
@@ -204,6 +205,8 @@
     var controls = rc.querySelector('.rc-controls'), dots = rc.querySelectorAll('.rc-dot');
     var prev = rc.querySelector('.rc-prev'), next = rc.querySelector('.rc-next');
     var current = -1;
+    // Every example shares one size, except on a phone, where they differ too much in height
+    var phone = window.matchMedia ? window.matchMedia('(max-width: 640px)') : null;
     function mark(i) {
       if (i === current) { return; }
       current = i;
@@ -214,8 +217,11 @@
       next.disabled = i === slides.length - 1;
       fit();
     }
-    // The panel takes the height of the example in view, so a short example leaves no empty space
-    function fit() { if (current >= 0) { track.style.height = slides[current].offsetHeight + 'px'; } }
+    // On a phone the card takes the height of the example in view, so a short example leaves no empty space
+    function fit() {
+      if (phone && phone.matches) { if (current >= 0) { track.style.height = slides[current].offsetHeight + 'px'; } }
+      else { track.style.height = ''; }
+    }
     function go(i) {
       i = Math.max(0, Math.min(slides.length - 1, i));
       track.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: reduce ? 'auto' : 'smooth' });
@@ -230,8 +236,22 @@
       if (e.key === 'ArrowRight') { e.preventDefault(); go(current + 1); }
       if (e.key === 'ArrowLeft') { e.preventDefault(); go(current - 1); }
     });
+    if (phone) {
+      if (phone.addEventListener) { phone.addEventListener('change', fit); } else if (phone.addListener) { phone.addListener(fit); }
+    }
+    // When the carousel changes width (a window resize or a phone turned on its side), the browser keeps
+    // the old scroll offset, which can leave it between two examples: put the current one back in place
+    var width = track.clientWidth;
+    function realign() {
+      if (current >= 0 && track.clientWidth !== width) {
+        width = track.clientWidth;
+        track.scrollTo({ left: slides[current].offsetLeft - slides[0].offsetLeft, behavior: 'auto' });
+      }
+      fit();
+    }
     if ('ResizeObserver' in window) {
-      var ro = new ResizeObserver(fit);
+      var ro = new ResizeObserver(realign);
+      ro.observe(track);
       Array.prototype.forEach.call(slides, function (sl) { ro.observe(sl); });
     }
     controls.hidden = false;

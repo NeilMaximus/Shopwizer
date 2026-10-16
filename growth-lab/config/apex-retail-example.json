@@ -60,7 +60,7 @@
     },
     {
       "rank": 42,
-      "name": "Ikea",
+      "name": "IKEA",
       "quadrant": "overbuilt",
       "x": 41.59,
       "y": 36.12
@@ -189,29 +189,68 @@
     {
       "name": "Amazon",
       "quadrant": "powerhouse",
-      "score": 75,
-      "label": "below"
+      "callout": [
+        84.66,
+        25
+      ]
+    },
+    {
+      "name": "Sainsbury’s",
+      "quadrant": "overbuilt",
+      "callout": [
+        36,
+        17
+      ]
+    },
+    {
+      "name": "IKEA",
+      "quadrant": "overbuilt",
+      "callout": [
+        30,
+        28
+      ]
+    },
+    {
+      "name": "H&M",
+      "quadrant": "precision",
+      "callout": [
+        68,
+        66
+      ]
+    },
+    {
+      "name": "Fossil",
+      "quadrant": "underbuilt",
+      "callout": [
+        43,
+        84
+      ]
+    }
+  ],
+  "_examples_note": "Highlighted because they are known in South Africa (Neil, 16 October 2026), each at its measured position in its own quadrant. callout is the centre of the name label, as percentages of the plot, chosen so the label clears every dot; a thin leader joins it to the dot. The chart and the earlier cards disagreed on Chalhoub Group and Zalando, which are no longer highlighted; the chart is followed throughout.",
+  "_source_cards": [
+    {
+      "name": "Amazon",
+      "quadrant": "powerhouse",
+      "score": 75
     },
     {
       "name": "Zalando",
       "quadrant": "overbuilt",
-      "score": 50,
-      "label": "left"
+      "score": 50
     },
     {
       "name": "Chalhoub Group",
       "quadrant": "precision",
-      "score": 51,
-      "label": "below"
+      "score": 51
     },
     {
       "name": "Bellavie",
       "quadrant": "underbuilt",
-      "score": 29,
-      "label": "above"
+      "score": 29
     }
   ],
-  "_examples_note": "The supplied cards call Chalhoub Group Overbuilt and Zalando Precision; the chart places them the other way round. The chart is followed here (its rank numbers fit the scores); confirm with MartechTribe.",
+  "_source_cards_note": "The four company cards Neil supplied with the chart (Apex Scores out of 100). Not shown since 16 October 2026, when Neil asked for examples South Africans know. Their scores are never carried over to other companies.",
   "scorecard": {
     "now": 75,
     "possible": 87,
