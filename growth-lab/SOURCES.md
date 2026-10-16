@@ -10,7 +10,7 @@ Headline, unchanged: "Make your martech investment pay." Body since version 2.13
 
 ## Four ways to work with Growth Lab
 
-Neil's copy of 15 October 2026 (no 01 to 04 numbers on the page, per `DESIGN_SYSTEM.md`): Fix (Martech Health Check and fixes), Grow (Customer Journeys and Lifetime Value), Automate (AI Production Workflows) and Decide (Martech Strategy and Investment Case). The names, offer names and promises are word for word. At Neil's request the same day, "What you get" and "What we look at" were shortened for a more digestible layout:
+Neil's copy of 15 October 2026 (no 01 to 04 numbers on the page, per `DESIGN_SYSTEM.md`): Fix (Martech Health Check and Fixes), Grow (Customer Journeys and Lifetime Value), Automate (AI Production Workflows) and Decide (Martech Strategy and Investment Case). The names, offer names and promises are word for word. At Neil's request the same day, "What you get" and "What we look at" were shortened for a more digestible layout:
 
 | Way | What you get | What we look at |
 | --- | --- | --- |
