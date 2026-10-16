@@ -212,8 +212,11 @@ h1 {
 
 /* Evidence: what the benchmark tells you beside the MartechMap, then MartechTribe's figures in one quiet
    row split by hairlines (no tiles, boxes or counters), then the brands that use the research */
-/* The copy starts level with the top of the carousel card (Neil, 16 October 2026) */
-.evidence-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: clamp(40px, 5vw, 80px); align-items: start; }
+/* The introduction in two balanced columns above the research explorer (version 2.13): the heading and its
+   coral first sentence on the left, the rest of the introduction and what it tells you on the right */
+.evidence-intro { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px clamp(40px, 6vw, 96px); align-items: start; }
+.evidence-tells { padding-top: 6px; }
+.evidence-tells .lede { margin-top: 0; }
 .benefits { margin-top: 22px; display: grid; gap: 12px; }
 .benefits li { position: relative; padding-left: 24px; font-size: 18px; line-height: 1.45; font-weight: var(--gl-weight-regular); color: var(--gl-ink); text-wrap: pretty; }
 .benefits li::before {
@@ -221,14 +224,12 @@ h1 {
   width: 8px; height: 8px; border-radius: 2px; background: var(--gl-purple);
 }
 .evidence-copy .lede { margin-top: 20px; }
-/* The coral first sentence stands as its own paragraph; "Your stack…" starts on a new line */
-.evidence-copy .lede p + p { margin-top: 0.7em; }
 /* The research heading and the introduction's first sentence in brand coral (Neil, version 2.12). The
    heading is large text (3.25:1 passes); the regular weight sentence is a recorded contrast exception
    (DESIGN_SYSTEM.md, section 11). The rest of the introduction stays ink 2 */
 .evidence .evidence-copy h2, .evidence-copy .lede-lead { color: var(--gl-coral); }
 .list-label { margin-top: 28px; font-size: var(--gl-text-ui); line-height: 1.4; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
-.evidence-copy .benefits { margin-top: 12px; }
+.evidence-tells .benefits { margin-top: 12px; }
 .nowrap { white-space: nowrap; }
 .map { min-width: 0; }
 /* Vendor artwork: shown whole at its own 16 by 9 with the credit band it carries, never cropped or
@@ -240,43 +241,77 @@ h1 {
      sits outside the image, so the map itself is never tinted */
   box-shadow: 0 0 0 1px var(--gl-line), 0 10px 44px -6px color-mix(in srgb, var(--gl-coral) 30%, transparent);
 }
-/* Research carousel (Neil, version 2.12): MartechTribe's Apex Martech Matrix retail example rebuilt in
-   Growth Lab colours, then the MartechMap, on one light grey panel. It moves only when the visitor
-   swipes, scrolls or uses the controls: never on its own. Quadrant colours: Powerhouse purple,
-   Precision coral, Overbuilt amber (with a grey ring, as amber is faint on white), Underbuilt ink 3 */
-.rc { min-width: 0; }
-.rc-track {
-  display: flex; align-items: stretch; overflow-x: auto; transition: height 0.3s var(--gl-ease); scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
-  scrollbar-width: none; background: var(--gl-panel); border-radius: var(--gl-radius-panel);
+/* Research explorer (version 2.13, replacing the carousel at Neil's request): MartechTribe's Apex Martech
+   Matrix retail example rebuilt in Growth Lab colours, then the MartechMap, as four views on one light grey
+   panel at the full content width. Four named tabs sit at the top, so the visitor sees the whole story at a
+   glance; a Next button at the foot of each view carries them through it. It changes only when the visitor
+   asks. Without JavaScript the tabs stay hidden and every view shows in turn.
+   Quadrant colours: Powerhouse purple, Precision coral, Overbuilt amber (with a grey ring, as amber is faint
+   on white), Underbuilt ink 3 */
+.rx { margin-top: clamp(40px, 5vw, 64px); padding: 8px; border-radius: var(--gl-radius-panel); background: var(--gl-panel); scroll-margin-top: 16px; }
+.rx-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.rx-tabs[hidden] { display: none; }
+.rx-tab {
+  display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 56px; padding: 8px 14px 8px 10px;
+  border: 0; border-radius: 20px; background: transparent; cursor: pointer; text-align: left;
+  font: inherit; font-size: 15px; line-height: 1.25; font-weight: var(--gl-weight-semibold); color: var(--gl-ink-2);
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
 }
-.rc-track::-webkit-scrollbar { display: none; }
-@media (prefers-reduced-motion: reduce) { .rc-track, .rc-dot, .rc-dot::before, .rc-prev, .rc-next { transition: none; } }
-.rc-track:focus-visible { outline-offset: 4px; border-radius: var(--gl-radius-panel); }
-/* Every example is the same size, so nothing jumps as the visitor moves through them: the credit sits at
-   the foot of each card and the map is centred in its card */
-.rc-slide { display: flex; flex-direction: column; flex: 0 0 100%; min-width: 0; scroll-snap-align: start; padding: clamp(20px, 1.6vw, 24px); }
-.rc-title { font-size: clamp(19px, 1.6vw, 21px); line-height: 1.3; letter-spacing: -0.01em; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
-.rc-lede { margin-top: 6px; font-size: var(--gl-text-ui); line-height: 1.5; color: var(--gl-ink-2); }
-.rc-credit { margin-top: auto; padding-top: 10px; font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3); }
-/* Controls (version 2.12, round 4): soft filled round paddles, as on current product galleries, and a
-   pagination pill that stretches for the example in view. No borders, no outlines until focused */
-.rc-controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; }
-.rc-controls[hidden] { display: none; }
-.rc-dots { display: flex; align-items: center; }
-.rc-dot { width: 24px; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; border-radius: var(--gl-radius-pill); transition: width 0.3s var(--gl-ease); }
-.rc-dot::before { content: ""; width: 8px; height: 8px; border-radius: var(--gl-radius-pill); background: var(--gl-purple-soft); transition: width 0.3s var(--gl-ease), background-color 0.2s; }
-.rc-dot:hover::before { background: color-mix(in srgb, var(--gl-purple) 55%, var(--gl-white)); }
-.rc-dot[aria-current="true"] { width: 44px; }
-.rc-dot[aria-current="true"]::before { width: 28px; background: var(--gl-purple); }
-.rc-arrows { display: flex; gap: 10px; }
-.rc-prev, .rc-next {
-  width: 44px; height: 44px; display: grid; place-items: center; padding: 0; cursor: pointer;
-  border: 0; border-radius: 50%; background: var(--gl-purple); color: var(--gl-white); transition: background-color 0.2s, transform 0.15s;
+.rx-tab:hover { background: var(--gl-panel-strong); color: var(--gl-ink); }
+.rx-tab[aria-selected="true"] { background: var(--gl-white); color: var(--gl-ink); box-shadow: 0 0 0 1px var(--gl-line); cursor: default; }
+.rx-ico { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--gl-white); color: var(--gl-ink-2); transition: background-color 0.2s, color 0.2s; }
+.rx-ico svg { width: 19px; height: 19px; }
+.rx-tab[aria-selected="true"] .rx-ico { background: var(--gl-purple); color: var(--gl-white); }
+.rx-tab:focus-visible, .rx-next:focus-visible { outline: 2px solid var(--gl-purple-strong); outline-offset: 2px; }
+.rx-views { display: grid; padding: clamp(20px, 2vw, 26px) clamp(18px, 2.8vw, 40px) clamp(20px, 2.6vw, 32px); }
+/* One view: its words, its picture and the way on. Phones and tablets stack them; from 1000 px the words sit
+   beside the picture */
+.rx-view { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "text" "visual" "credit" "next"; gap: 20px; min-width: 0; }
+.rx-view > .rc-credit { grid-area: credit; margin-top: -8px; padding-top: 0; }
+.rx-view[hidden] { display: none; }
+.rx-view + .rx-view { margin-top: 56px; }
+.rx-view:focus-visible { outline: 2px solid var(--gl-purple-strong); outline-offset: 8px; border-radius: 12px; }
+.rx-text { grid-area: text; min-width: 0; }
+.rx-visual { grid-area: visual; display: flex; flex-direction: column; min-width: 0; }
+.rc-title { font-size: clamp(20px, 1.7vw, 24px); line-height: 1.25; letter-spacing: -0.015em; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-wrap: balance; }
+.rc-lede { margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--gl-ink-2); text-wrap: pretty; }
+.rc-credit { margin-top: auto; padding-top: 12px; font-size: var(--gl-text-small); line-height: 1.5; color: var(--gl-ink-3); }
+.rx-next {
+  grid-area: next; justify-self: start; display: inline-flex; align-items: center; gap: 14px; min-height: 52px; padding: 6px 6px 6px 18px;
+  border: 0; border-radius: var(--gl-radius-pill); background: var(--gl-white); box-shadow: 0 0 0 1px var(--gl-line); cursor: pointer;
+  font: inherit; text-align: left; color: var(--gl-ink); transition: box-shadow 0.2s;
 }
-.rc-prev:hover:not([disabled]), .rc-next:hover:not([disabled]) { background: color-mix(in srgb, var(--gl-purple) 85%, var(--gl-ink)); }
-.rc-prev:active:not([disabled]), .rc-next:active:not([disabled]) { transform: scale(0.94); }
-.rc-prev[disabled], .rc-next[disabled] { cursor: default; background: var(--gl-purple-soft); color: var(--gl-white); }
-.rc-prev svg, .rc-next svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.rx-next[hidden] { display: none; }
+.rx-next:hover { box-shadow: 0 0 0 1px var(--gl-purple-soft); }
+.rx-next-text { display: flex; flex-direction: column; font-size: 15px; line-height: 1.3; font-weight: var(--gl-weight-semibold); }
+.rx-next-text small { font-size: 12.5px; font-weight: var(--gl-weight-medium); color: var(--gl-ink-3); }
+.rx-arrow { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--gl-purple); color: var(--gl-white); transition: background-color 0.2s, transform 0.2s var(--gl-ease); }
+.rx-arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.rx-next:hover .rx-arrow { background: color-mix(in srgb, var(--gl-purple) 85%, var(--gl-ink)); transform: translateX(2px); }
+/* With the script, one view at a time */
+.rx.is-tabbed .rx-view { margin-top: 0; }
+.rx.is-tabbed .rx-view:not([hidden]) { animation: rx-in 0.28s var(--gl-ease); }
+@keyframes rx-in { from { opacity: 0; } }
+@media (min-width: 641px) {
+  /* Every view shares the size of the tallest, so nothing below the panel moves when the visitor changes view */
+  .rx.is-tabbed .rx-view { grid-area: 1 / 1; }
+  .rx.is-tabbed .rx-view[hidden] { display: grid; visibility: hidden; }
+}
+@media (min-width: 1000px) {
+  .rx-view {
+    grid-template-columns: minmax(0, 0.32fr) minmax(0, 0.68fr); grid-template-rows: auto 1fr auto auto;
+    grid-template-areas: "text visual" ". visual" "credit visual" "next visual"; column-gap: clamp(32px, 4vw, 56px); row-gap: 20px;
+  }
+  .rx-view > .rc-credit { margin-top: 0; }
+  /* Beside its words the chart is a little wider than tall, so every view, with the tabs, fits a 1366 x 768
+     laptop screen */
+  .rx-view .mx-plot { aspect-ratio: 16 / 10; }
+  .rx-next { align-self: end; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rx-tab, .rx-ico, .rx-next, .rx-arrow { transition: none; }
+  .rx.is-tabbed .rx-view:not([hidden]) { animation: none; }
+}
 
 /* Quadrant colours, shared by the matrix, its tags and the position cards */
 .q-powerhouse { background: var(--gl-purple); }
@@ -285,9 +320,7 @@ h1 {
 .q-underbuilt { background: var(--gl-ink-3); }
 
 /* The matrix: a white plot on the panel, dots at their measured positions, the four examples named */
-/* The chart sits centred between the line above it and the credit below it (Neil, 16 October 2026) */
-.matrix { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 8px; margin-block: auto; padding-top: 16px; }
-.rc-slide > .matrix ~ .rc-credit { margin-top: 0; }
+.matrix { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 8px; }
 .mx-plot {
   position: relative; aspect-ratio: 5 / 4; background: var(--gl-white);
   border-radius: 12px; box-shadow: 0 0 0 1px var(--gl-line);
@@ -326,7 +359,7 @@ h1 {
 .mx-axis-x { justify-content: flex-end; }
 
 /* What each position means: four white cards laid out like the matrix */
-.quads { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 12px; margin-top: 16px; }
+.quads { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 12px; }
 .quad { display: flex; flex-direction: column; min-width: 0; padding: 16px; border-radius: 14px; background: var(--gl-white); }
 .quad-tag { display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 1.2; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 /* Each position has its own icon on a tile in its matrix colour: layers for Overbuilt, a bolt for
@@ -341,10 +374,10 @@ h1 {
 .eg-names span { padding: 3px 10px; border-radius: var(--gl-radius-pill); background: var(--gl-panel); font-size: 13px; line-height: 1.3; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); }
 
 /* Your Apex Score: three short points, then the example score */
-.rc-points { display: grid; gap: 6px; margin-top: 10px; }
-.rc-points li { position: relative; padding-left: 18px; font-size: var(--gl-text-ui); line-height: 1.45; color: var(--gl-ink-2); }
+.rc-points { display: grid; gap: 10px; margin-top: 14px; }
+.rc-points li { position: relative; padding-left: 18px; font-size: 16px; line-height: 1.5; color: var(--gl-ink-2); text-wrap: pretty; }
 .rc-points li::before { content: ""; position: absolute; left: 1px; top: calc(0.725em - 3px); width: 6px; height: 6px; border-radius: 2px; background: var(--gl-purple); }
-.score { margin-top: 14px; padding: 16px 18px; border-radius: 14px; background: var(--gl-white); }
+.score { padding: 18px 20px; border-radius: 14px; background: var(--gl-white); }
 .score-head { font-size: 17px; line-height: 1.35; font-weight: var(--gl-weight-semibold); color: var(--gl-ink); text-align: center; }
 .score-head strong { font-size: 1.35em; font-weight: var(--gl-weight-bold); }
 /* The meter shows the gap at a glance: purple is today, coral is what fixing the areas below adds */
@@ -379,7 +412,6 @@ h1 {
   grid-area: pts; min-width: 38px; padding: 3px 8px; border-radius: var(--gl-radius-pill); text-align: center;
   font-size: 13px; font-weight: var(--gl-weight-bold); color: var(--gl-ink); background: color-mix(in srgb, var(--score-accent) 16%, var(--gl-white));
 }
-.rc-slide .map { margin-block: auto; padding-top: 16px; }
 
 /* The credit under the map is small print */
 .map figcaption { margin-top: 14px; }
@@ -583,7 +615,8 @@ h1 {
   .lead { margin-top: 36px; }
   /* Two columns of ways on tablets */
   .ways { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: clamp(48px, 7vw, 64px); }
-  .evidence-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .evidence-intro { grid-template-columns: minmax(0, 1fr); }
+  .evidence-tells { padding-top: 0; }
   .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; }
   .fig:nth-child(odd) { padding-left: 0; border-left: 0; }
   .fig:nth-child(even) { padding-right: 0; }
@@ -606,15 +639,18 @@ h1 {
   .score-cols { row-gap: 24px; }
   .score-fix { padding-right: 0; }
   .score-strong { padding: 24px 0 0; border-left: 0; border-top: 1px solid var(--gl-line); }
-  /* On a phone the examples differ too much in height to share one size, so the card fits each example */
-  .rc-track { align-items: flex-start; }
+  /* On a phone the four tabs sit two by two, and each view keeps its own height */
+  .rx-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rx-tab { min-height: 52px; gap: 10px; padding: 8px 10px 8px 8px; font-size: 14px; border-radius: 18px; }
+  .rx-ico { width: 30px; height: 30px; border-radius: 9px; }
+  .rx-ico svg { width: 17px; height: 17px; }
   .score-head span { display: block; }
   .mx-name, .mx-tag { font-size: 11px; }
   .mx-tag-overbuilt, .mx-tag-powerhouse { top: 8px; }
   .mx-tag-underbuilt, .mx-tag-precision { bottom: 8px; }
   .mx-tag-overbuilt, .mx-tag-underbuilt { left: 8px; }
   .mx-tag-powerhouse, .mx-tag-precision { right: 8px; }
-  .rc-slide { padding: 18px; }
+  .rx-views { padding: 20px 12px 16px; }
   /* The research brand logos shrink with the client logos on phones */
   .brands-list { --brand-scale: 0.8; }
   .platforms-list { --platform-scale: 0.8; gap: 20px 32px; margin-top: 24px; }

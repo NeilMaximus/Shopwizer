@@ -3,7 +3,7 @@
    taken from the live page markup (site/index.html, whose matrix comes from
    config/apex-retail-example.json), so the images never drift from the website. Only the frame is
    added: the verified logo at its own proportions, growthlab.co.za, and the light grey panel the
-   carousel uses on the site. The MartechMap slide is left out because it cannot be read at phone size.
+   carousel uses on the site. The MartechMap view is left out because it cannot be read at phone size.
 
    Each image is 1080 x 1350 px (4:5, shown whole in a WhatsApp chat), drawn at 480 x 600 CSS px and
    2.25 times density, with type sized for a phone screen. The run fails if any card overflows.
@@ -33,8 +33,8 @@ const CSS = `
   .share-top span { font-size: 13px; font-weight: var(--gl-weight-medium); color: var(--gl-ink-3); }
   .share-panel { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 20px; border-radius: 22px; background: var(--gl-panel); }
   .share-panel > .rc-credit, .share-cover > .rc-credit { margin-top: auto; padding-top: 12px; font-size: 12px; }
-  .share .rc-title { font-size: 21px; line-height: 1.25; }
-  .share .rc-lede { font-size: 13px; line-height: 1.38; }
+  .share .rc-title { font-size: 21px; line-height: 1.25; letter-spacing: -0.01em; text-wrap: wrap; }
+  .share .rc-lede { margin-top: 6px; font-size: 13px; line-height: 1.38; }
 
   /* Cover: the research heading and what it tells you, from the page */
   .share-cover { display: flex; flex-direction: column; flex: 1; padding: 14px 4px 0; }
@@ -68,7 +68,7 @@ const CSS = `
 
   /* Score */
   .share .rc-points { margin-top: 12px; gap: 8px; }
-  .share .rc-points li { font-size: 15.5px; }
+  .share .rc-points li { font-size: 15.5px; line-height: 1.45; }
   .share .score { margin-top: 14px; padding: 16px; }
   .share-rows .score { margin-top: 0; padding: 16px 16px 14px; }
   .share-rows > .share-panel > .rc-credit, .share-rows .share-panel > .rc-credit { padding-top: 8px; }
@@ -150,8 +150,17 @@ server.listen(0, '127.0.0.1', async () => {
 
       const cover = document.createElement('div');
       cover.className = 'share-cover';
-      const copy = document.querySelector('.evidence-copy');
-      cover.append(take('h2', copy), take('.lede', copy), take('.list-label', copy), take('.benefits', copy), credit('Research: MartechTribe.'));
+      // The introduction sits in two columns on the page; the cover sets it as one block
+      const intro = document.querySelector('.evidence-intro');
+      const lede = document.createElement('div');
+      lede.className = 'lede';
+      intro.querySelectorAll('.lede').forEach((l) => {
+        const para = document.createElement('p');
+        para.textContent = l.textContent.trim();
+        if (l.classList.contains('lede-lead')) { para.className = 'lede-lead'; }
+        lede.append(para);
+      });
+      cover.append(take('h2', intro), lede, take('.list-label', intro), take('.benefits', intro), credit('Research: MartechTribe.'));
 
       const matrix = slide('rc-matrix');
       const positions = slide('rc-positions');

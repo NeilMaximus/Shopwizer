@@ -193,73 +193,67 @@
     apply();
   }
 
-  /* Research carousel. One example at a time on a scroll snap track, so it swipes on touch screens and
-     scrolls with a trackpad even without this script. The script adds previous and next buttons and
-     one dot per example, keeps them in step with the track, and lets the arrow keys move between
-     examples. Every example shares one size, except on a phone, where the card fits the example in
-     view. It never moves on its own (DESIGN_SYSTEM.md, section 11). */
-  function researchCarousel() {
-    var rc = document.querySelector('.rc');
-    if (!rc) { return; }
-    var track = rc.querySelector('.rc-track'), slides = rc.querySelectorAll('.rc-slide');
-    var controls = rc.querySelector('.rc-controls'), dots = rc.querySelectorAll('.rc-dot');
-    var prev = rc.querySelector('.rc-prev'), next = rc.querySelector('.rc-next');
-    var current = -1;
-    // Every example shares one size, except on a phone, where they differ too much in height
-    var phone = window.matchMedia ? window.matchMedia('(max-width: 640px)') : null;
-    function mark(i) {
-      if (i === current) { return; }
+  /* Research explorer (version 2.13). Four named tabs at the top of the panel and one view at a time below
+     them, with a Next button at the foot of each view's words, so the whole story is visible at a glance
+     and easy to step through. The tabs follow the ARIA tabs pattern: the arrow keys, Home and End move
+     between them. Above 640 px every view shares the size of the tallest (CSS), so nothing below moves.
+     Without this script every view shows in turn. It never moves on its own (DESIGN_SYSTEM.md, section 11). */
+  function researchExplorer() {
+    var rx = document.querySelector('.rx');
+    if (!rx) { return; }
+    var list = rx.querySelector('.rx-tabs'), tabs = rx.querySelectorAll('.rx-tab'), views = rx.querySelectorAll('.rx-view');
+    var current = 0;
+    function show(i, focusTab) {
+      i = Math.max(0, Math.min(tabs.length - 1, i));
+      for (var t = 0; t < tabs.length; t++) {
+        var on = t === i;
+        tabs[t].setAttribute('aria-selected', on ? 'true' : 'false');
+        tabs[t].tabIndex = on ? 0 : -1;
+        views[t].hidden = !on;
+      }
       current = i;
-      for (var d = 0; d < dots.length; d++) {
-        if (d === i) { dots[d].setAttribute('aria-current', 'true'); } else { dots[d].removeAttribute('aria-current'); }
-      }
-      prev.disabled = i === 0;
-      next.disabled = i === slides.length - 1;
-      fit();
+      if (focusTab) { tabs[i].focus(); }
     }
-    // On a phone the card takes the height of the example in view, so a short example leaves no empty space
-    function fit() {
-      if (phone && phone.matches) { if (current >= 0) { track.style.height = slides[current].offsetHeight + 'px'; } }
-      else { track.style.height = ''; }
-    }
-    function go(i) {
-      i = Math.max(0, Math.min(slides.length - 1, i));
-      track.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: reduce ? 'auto' : 'smooth' });
-      mark(i);
-    }
-    function sync() { mark(Math.round(track.scrollLeft / Math.max(1, track.clientWidth))); }
-    prev.addEventListener('click', function () { go(current - 1); });
-    next.addEventListener('click', function () { go(current + 1); });
-    Array.prototype.forEach.call(dots, function (dot, i) { dot.addEventListener('click', function () { go(i); }); });
-    track.addEventListener('scroll', function () { window.requestAnimationFrame(sync); }, { passive: true });
-    track.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowRight') { e.preventDefault(); go(current + 1); }
-      if (e.key === 'ArrowLeft') { e.preventDefault(); go(current - 1); }
+    Array.prototype.forEach.call(tabs, function (tab, i) {
+      var view = views[i];
+      view.setAttribute('role', 'tabpanel');
+      view.setAttribute('aria-labelledby', tab.id);
+      // A view with a Next button is reached through it; the last view takes focus itself
+      view.tabIndex = view.querySelector('.rx-next') ? -1 : 0;
+      tab.addEventListener('click', function () { show(i); });
     });
-    if (phone) {
-      if (phone.addEventListener) { phone.addEventListener('change', fit); } else if (phone.addListener) { phone.addListener(fit); }
+    list.addEventListener('keydown', function (e) {
+      var keys = { ArrowRight: current + 1, ArrowLeft: current - 1, Home: 0, End: tabs.length - 1 };
+      if (!(e.key in keys)) { return; }
+      e.preventDefault();
+      show((keys[e.key] + tabs.length) % tabs.length, true);
+    });
+    Array.prototype.forEach.call(rx.querySelectorAll('.rx-next'), function (btn) {
+      btn.hidden = false;
+      btn.addEventListener('click', function () {
+        show(current + 1);
+        // Keep the tabs in view, and carry focus to the view now showing so a screen reader reads it
+        if (rx.getBoundingClientRect().top < 0) { rx.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' }); }
+        views[current].focus({ preventScroll: true });
+      });
+    });
+    // The MartechMap sits in the last view: fetch it as the panel comes near, so it is ready when asked for
+    var lazy = rx.querySelectorAll('img[loading="lazy"]');
+    if (lazy.length && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        if (!entries[entries.length - 1].isIntersecting) { return; }
+        Array.prototype.forEach.call(lazy, function (img) { img.loading = 'eager'; });
+        io.disconnect();
+      }, { rootMargin: '600px 0px' });
+      io.observe(rx);
     }
-    // When the carousel changes width (a window resize or a phone turned on its side), the browser keeps
-    // the old scroll offset, which can leave it between two examples: put the current one back in place
-    var width = track.clientWidth;
-    function realign() {
-      if (current >= 0 && track.clientWidth !== width) {
-        width = track.clientWidth;
-        track.scrollTo({ left: slides[current].offsetLeft - slides[0].offsetLeft, behavior: 'auto' });
-      }
-      fit();
-    }
-    if ('ResizeObserver' in window) {
-      var ro = new ResizeObserver(realign);
-      ro.observe(track);
-      Array.prototype.forEach.call(slides, function (sl) { ro.observe(sl); });
-    }
-    controls.hidden = false;
-    mark(0);
+    rx.classList.add('is-tabbed');
+    list.hidden = false;
+    show(0);
   }
 
   liveCube();
-  researchCarousel();
+  researchExplorer();
   liveRune();
   clientStrip();
 })();

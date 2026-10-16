@@ -57,10 +57,12 @@ const HOME = {
   startH2: 'Experience that moves you forward.',
   startLede: 'Neil and Frans combine customer experience strategy, martech research and hands-on implementation to help you turn insights into results.',
 };
-// Research carousel (Neil, 16 October 2026): MartechTribe's Apex Martech Matrix retail example rebuilt in Growth Lab
-// colours, what each position means, the Apex Score, then the MartechMap. Positions and scores come from the data file
+// Research explorer (version 2.13, replacing the carousel): MartechTribe's Apex Martech Matrix retail example rebuilt in
+// Growth Lab colours, what each position means, the Apex Score, then the MartechMap, under four named tabs. Positions and
+// scores come from the data file
 const APEX = JSON.parse(fs.readFileSync(path.join(ROOT, 'config', 'apex-retail-example.json'), 'utf8'));
 const RC_TITLES = ['Where you sit against your industry', 'What each position means', 'Your Apex Score, and what to fix first', 'The whole market your stack is chosen from'];
+const RX_TABS = ['Where you sit', 'What each position means', 'Your Apex Score', 'The whole market'];
 const QUAD_COLOURS = { powerhouse: 'rgb(119, 97, 255)', precision: 'rgb(255, 78, 78)', overbuilt: 'rgb(254, 188, 46)', underbuilt: 'rgb(102, 102, 102)' };
 // Four ways to work with Growth Lab, on the black section, in this order, one row each: the service, what you
 // get, then what we look at. Shortened copy (Neil, 15 October 2026). No 01 to 04 numbers on the page
@@ -234,6 +236,9 @@ const finalTop = /class="f-top" points="([^"]+)"/.exec(staticHtml)[1];
 // Lazy images load only near the viewport: bring each one in and wait, then return to the top
 async function loadImages(page) {
   await page.evaluate(async () => {
+    // The research explorer shows one view at a time: open them all while the images load, then put it back
+    const views = [...document.querySelectorAll('.rx-view')].map((v) => [v, v.hidden]);
+    views.forEach(([v]) => { v.hidden = false; });
     for (const img of document.querySelectorAll('img')) {
       img.scrollIntoView({ block: 'center', behavior: 'instant' });
       await new Promise((r) => setTimeout(r, 120));
@@ -241,10 +246,8 @@ async function loadImages(page) {
         await new Promise((r) => { img.addEventListener('load', r, { once: true }); img.addEventListener('error', r, { once: true }); setTimeout(r, 4000); });
       }
     }
-    // Bringing the MartechMap into view slides the research carousel along, so it goes back to the first example
-    // and waits for its panel and dots to finish their short transitions
-    document.querySelectorAll('.rc-track').forEach((tr) => tr.scrollTo({ left: 0, behavior: 'instant' }));
-    await new Promise((r) => setTimeout(r, 600));
+    views.forEach(([v, was]) => { v.hidden = was; });
+    await new Promise((r) => setTimeout(r, 400));
     window.scrollTo({ top: 0, behavior: 'instant' });
   });
 }
@@ -349,14 +352,14 @@ async function homeChecks(page, vp) {
       numbering: document.querySelectorAll('.way .num').length + [...document.querySelectorAll('.approach *')].filter((e) => /^0[1-4]$/.test(e.textContent.trim())).length,
       header: { links: [...document.querySelectorAll('.site-header a')].map((a) => `${a.textContent.trim() || a.getAttribute('aria-label')}|${a.getAttribute('href')}|${a.className}`),
         navs: document.querySelectorAll('.site-header nav, .site-header ul').length },
-      evidence: { h2: t('#evidence h2'), h2Colour: cs(document.querySelector('#evidence h2')).color, lede: t('#evidence .lede'), leadText: t('#evidence .lede-lead'),
-        leadColour: cs(document.querySelector('#evidence .lede-lead')).color, leadOwnLine: (() => { const ps = document.querySelectorAll('#evidence .lede p');
-          return ps.length === 2 && ps[0].classList.contains('lede-lead') && ps[1].getBoundingClientRect().top >= ps[0].getBoundingClientRect().bottom; })(), coralText: [...document.querySelectorAll('#evidence *')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && cs(el).color === 'rgb(255, 78, 78)').map((el) => el.textContent.replace(/\s+/g, ' ').trim()), label: t('#evidence .list-label'),
+      evidence: { h2: t('#evidence h2'), h2Colour: cs(document.querySelector('#evidence h2')).color, lede: [...document.querySelectorAll('#evidence .lede')].map((l) => l.textContent.replace(/\s+/g, ' ').trim()).join(' '), leadText: t('#evidence .lede-lead'),
+        leadColour: cs(document.querySelector('#evidence .lede-lead')).color, leadOwnLine: (() => { const ps = document.querySelectorAll('#evidence .lede');
+          return ps.length === 2 && ps[0].tagName === 'P' && ps[0].classList.contains('lede-lead') && ps[1].tagName === 'P' && !ps[1].classList.contains('lede-lead'); })(), coralText: [...document.querySelectorAll('#evidence *')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && cs(el).color === 'rgb(255, 78, 78)').map((el) => el.textContent.replace(/\s+/g, ' ').trim()), label: t('#evidence .list-label'),
         labelTag: document.querySelector('#evidence .list-label').tagName,
         coral: [...document.querySelectorAll('#evidence *')].filter((el) => el.childElementCount === 0 && el.textContent.trim() && cs(el).color === 'rgb(255, 78, 78)').length,
         mapShadow: cs(map).boxShadow, mapFilter: cs(map).filter, mapOpacity: cs(map).opacity,
         benefits: [...document.querySelectorAll('#evidence .benefits li')].map((l) => l.textContent.trim()),
-        benefitColour: cs(document.querySelector('#evidence .benefits li')).color, ledeColour: cs(document.querySelector('#evidence .lede')).color,
+        benefitColour: cs(document.querySelector('#evidence .benefits li')).color, ledeColour: cs(document.querySelector('#evidence .evidence-tells .lede')).color,
         details: document.querySelectorAll('#evidence details, #evidence summary, #evidence .sources, #evidence .proof').length,
         links: document.querySelectorAll('#evidence a').length, visibleText: document.querySelector('#evidence').innerText,
         figcaption: t('#evidence figcaption'), credit: t('#evidence .map-credit'),
@@ -374,14 +377,30 @@ async function homeChecks(page, vp) {
             topMean: top.length ? top.reduce((a, i) => a + i.getBoundingClientRect().height, 0) / top.length : 30,
             topBase: parseFloat(getComputedStyle(document.querySelector('.clients') || document.body).getPropertyValue('--logo-h')) || 30,
             afterNote: imgs.every((i) => i.getBoundingClientRect().left >= note.getBoundingClientRect().right - 1 || i.getBoundingClientRect().top >= note.getBoundingClientRect().bottom - 1) }; })(),
-        figuresBelowMap: document.querySelector('#evidence .figures').getBoundingClientRect().top >= document.querySelector('#evidence .rc').getBoundingClientRect().bottom,
+        figuresBelowMap: document.querySelector('#evidence .figures').getBoundingClientRect().top >= document.querySelector('#evidence .rx').getBoundingClientRect().bottom,
         map: { ok: map.complete && map.naturalWidth > 0, ratio: map.naturalWidth / map.naturalHeight, boxRatio: map.getBoundingClientRect().width / map.getBoundingClientRect().height,
-          fit: cs(map).objectFit, alt: map.alt, box: box(map) }, copyBox: box(document.querySelector('.evidence-copy')), rcBox: box(document.querySelector('#evidence .rc')),
-        carousel: (() => {
-          const rc = document.querySelector('.rc'), track = rc.querySelector('.rc-track'), slides = [...rc.querySelectorAll('.rc-slide')];
+          fit: cs(map).objectFit, alt: map.alt, box: box(map) }, copyBox: box(document.querySelector('.evidence-copy')), tellsBox: box(document.querySelector('.evidence-tells')), introBox: box(document.querySelector('.evidence-intro')),
+        rxBox: box(document.querySelector('#evidence .rx')), figuresW: document.querySelector('#evidence .figures').getBoundingClientRect().width,
+        explorer: (() => {
+          const rx = document.querySelector('.rx'), list = rx.querySelector('.rx-tabs'), tabs = [...list.querySelectorAll('[role="tab"]')], views = [...rx.querySelectorAll('.rx-view')];
           const rect = (el) => el.getBoundingClientRect();
+          // As the visitor finds it: the tabs at the top, the first view open
+          const rxBox = rect(rx), first = views[0];
+          const viewHeights = views.map((v) => Math.round(v.offsetHeight));
+          const shown = views.map((v) => !v.hidden && getComputedStyle(v).visibility !== 'hidden' && v.offsetHeight > 0);
+          const tabsAbove = rect(list).bottom <= rect(first).top && rect(list).top - rxBox.top <= 12;
+          const marked = list.getAttribute('role') === 'tablist' && !!list.getAttribute('aria-label') && !list.hidden &&
+            tabs.every((tb, i) => tb.getAttribute('aria-controls') === views[i].id && views[i].getAttribute('role') === 'tabpanel' && views[i].getAttribute('aria-labelledby') === tb.id) &&
+            JSON.stringify(tabs.map((tb) => tb.getAttribute('aria-selected'))) === JSON.stringify(['true', 'false', 'false', 'false']) &&
+            JSON.stringify(tabs.map((tb) => tb.tabIndex)) === JSON.stringify([0, -1, -1, -1]);
+          const spill = [...first.querySelectorAll('*')].filter((el) => { const r = rect(el); return r.width > 0 && (r.right > rxBox.right + 0.5 || r.left < rxBox.left - 0.5); })
+            .map((el) => el.className.baseVal === undefined ? el.className : 'svg').slice(0, 4);
+          const nexts = views.map((v) => { const b = v.querySelector('.rx-next'); return b && !b.hidden ? b.textContent.replace(/\s+/g, ' ').trim() : null; });
+          // Then every view opened to measure what is inside it, and the explorer put back as it was
+          const was = views.map((v) => v.hidden);
+          views.forEach((v) => { v.hidden = false; });
           const overlap = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
-          const plot = rc.querySelector('.mx-plot'), pb = rect(plot), tb = rect(track);
+          const plot = rx.querySelector('.mx-plot'), pb = rect(plot);
           const dots = [...plot.querySelectorAll('.mx-dot')].map((d) => { const r = rect(d); return { q: [...d.classList].find((c) => c.startsWith('q-')).slice(2), named: d.classList.contains('is-named'),
             name: d.dataset.name || null, colour: cs(d).backgroundColor, x: (r.left + r.width / 2 - pb.left) / pb.width * 100, y: (r.top + r.height / 2 - pb.top) / pb.height * 100 }; });
           const names = [...plot.querySelectorAll('.mx-name')].map(rect), allDots = [...plot.querySelectorAll('.mx-dot')].map(rect);
@@ -389,31 +408,27 @@ async function homeChecks(page, vp) {
           const leaders = [...plot.querySelectorAll('.mx-leaders line')].map((l) => ['x1', 'y1', 'x2', 'y2'].map((a) => +l.getAttribute(a)));
           const callouts = [...plot.querySelectorAll('.mx-name')].map((n) => { const r = rect(n); return { name: n.textContent.trim(),
             x: (r.left + r.width / 2 - pb.left) / pb.width * 100, y: (r.top + r.height / 2 - pb.top) / pb.height * 100 }; });
-          const axes = [t('.mx-axis-y', rc), t('.mx-axis-x', rc)];
-          const quadBoxes = [...rc.querySelectorAll('.quad')].map(rect);
+          const axes = [t('.mx-axis-y', rx), t('.mx-axis-x', rx)];
+          const quadBoxes = [...rx.querySelectorAll('.quad')].map(rect);
           const goal = rect(plot.querySelector('.mx-goal')), v = rect(plot.querySelector('.mx-v')), h = rect(plot.querySelector('.mx-h'));
           const row = (li) => ({ name: t('.s-name', li), pts: t('.s-pts', li), icon: li.querySelector('use') ? li.querySelector('use').getAttribute('href') : '' });
-          const meter = rect(rc.querySelector('.meter')), now = rect(rc.querySelector('.meter-now')), gain = rect(rc.querySelector('.meter-gain'));
-          const dotCtl = [...rc.querySelectorAll('.rc-dot')];
-          return { titles: slides.map((sl) => t('.rc-title', sl)),
-            roles: rc.getAttribute('aria-roledescription') === 'carousel' && slides.every((sl) => sl.getAttribute('aria-roledescription') === 'slide' && sl.getAttribute('role') === 'group'),
+          const meter = rect(rx.querySelector('.meter')), now = rect(rx.querySelector('.meter-now')), gain = rect(rx.querySelector('.meter-gain'));
+          const out = { titles: views.map((vw) => t('.rc-title', vw)), tabs: tabs.map((tb) => tb.textContent.trim()), marked, tabsAbove, shown, viewHeights, spill, nexts,
             dots, divider: { x: (v.left - pb.left) / pb.width * 100, y: (h.top - pb.top) / pb.height * 100 },
             namesInside: names.every((r) => r.left >= pb.left - 0.5 && r.right <= pb.right + 0.5 && r.top >= pb.top - 0.5 && r.bottom <= pb.bottom + 0.5),
             namesClear: names.every((r, i) => names.every((o, j) => i === j || !overlap(r, o)) && allDots.every((d) => !overlap(r, d))),
             tint: { colour: cs(plot.querySelector('.mx-goal')).backgroundColor, ok: Math.abs(goal.left - v.left) <= 1 && Math.abs(goal.right - pb.right) <= 1 && Math.abs(goal.top - pb.top) <= 1 && Math.abs(goal.bottom - h.top) <= 1 },
             leaders, callouts, axes,
-            quads: [...rc.querySelectorAll('.quad')].map((q) => { const icon = q.querySelector('.q-icon'), use = icon && icon.querySelector('use');
+            quads: [...rx.querySelectorAll('.quad')].map((q) => { const icon = q.querySelector('.q-icon'), use = icon && icon.querySelector('use');
               return { q: icon ? [...icon.classList].find((c) => c.startsWith('q-') && c !== 'q-icon').slice(2) : '', icon: use ? use.getAttribute('href') : '',
                 iconDefined: !!(use && document.querySelector(use.getAttribute('href'))), names: [...q.querySelectorAll('.eg-names span')].map((n) => n.textContent.trim()) }; }),
             quadsSameSize: quadBoxes.every((b) => Math.abs(b.width - quadBoxes[0].width) < 1 && Math.abs(b.height - quadBoxes[0].height) < 1),
-            slideHeights: slides.map((sl) => Math.round(sl.offsetHeight)),
-            head: t('.score-head', rc), fix: [...rc.querySelectorAll('.score-fix li')].map(row), strong: [...rc.querySelectorAll('.score-strong li')].map(row),
-            iconsDefined: [...rc.querySelectorAll('.s-icon use')].every((u) => !!document.querySelector(u.getAttribute('href'))),
+            head: t('.score-head', rx), fix: [...rx.querySelectorAll('.score-fix li')].map(row), strong: [...rx.querySelectorAll('.score-strong li')].map(row),
+            iconsDefined: [...rx.querySelectorAll('.s-icon use, .rx-ico use')].every((u) => !!document.querySelector(u.getAttribute('href'))),
             meter: { now: now.width / meter.width, gain: gain.width / meter.width, joined: Math.abs(gain.left - now.right) < 1 },
-            images: [...rc.querySelectorAll('img')].map((i) => i.closest('.rc-slide').id),
-            controls: !rc.querySelector('.rc-controls').hidden, dotCount: dotCtl.length, current: dotCtl.findIndex((d) => d.getAttribute('aria-current') === 'true'),
-            prevOff: rc.querySelector('.rc-prev').disabled, nextOff: rc.querySelector('.rc-next').disabled, fits: Math.abs(tb.height - slides[0].offsetHeight) < 1.5,
-            spill: [...slides[0].querySelectorAll('*')].filter((el) => { const r = rect(el); return r.width > 0 && (r.right > tb.right + 0.5 || r.left < tb.left - 0.5); }).map((el) => el.className.baseVal === undefined ? el.className : 'svg').slice(0, 4) };
+            images: [...rx.querySelectorAll('img')].map((i) => i.closest('.rx-view').id) };
+          views.forEach((vw, i) => { vw.hidden = was[i]; });
+          return out;
         })() },
       workshops: { h2: t('#workshops h2'), lede: t('#workshops .lede'), disclosure: document.querySelectorAll('#workshops details, #workshops summary').length,
         items: [...document.querySelectorAll('.workshop')].map((w) => {
@@ -450,7 +465,7 @@ async function homeChecks(page, vp) {
       emailText: /@/.test(document.body.innerText),
       // Neil approved two positioning phrases (version 2.12 and 2.8); everything else is still screened
       banned: (document.querySelector('main').innerText.replace('the world’s largest independent benchmark of real martech stacks', '').replace('One of the leading international thinkers in martech', '').replace('We work across the leading solutions', '').match(/richest|world.?s|largest|leading|best in class|unrivalled|\bfees?\b|\bfree\b|\bpric|\bR\s?\d|1,500,505|booked|appointment|confirmed/gi) || []),
-      // The retail example lives only in the research carousel (Neil, 16 October 2026)
+      // The retail example lives only in the research explorer (Neil, 16 October 2026)
       platforms: (() => {
         const sec = document.getElementById('platforms'), list = sec.querySelector('.platforms-list'), title = sec.querySelector('.platforms-title');
         const imgs = [...list.querySelectorAll('img')], body = sec.querySelector('.plain-body').getBoundingClientRect(), lb = list.getBoundingClientRect();
@@ -468,7 +483,7 @@ async function homeChecks(page, vp) {
           above: title.getBoundingClientRect().top - body.top, below: document.querySelector('.rune-stage').getBoundingClientRect().top - lb.bottom,
           ink: getComputedStyle(sec).backgroundColor };
       })(),
-      retail: document.querySelectorAll('a[href*="martechtribe.com/blog"]').length + (/retail/i.test(document.body.textContent.replace(document.querySelector('.rc').textContent, '')) ? 1 : 0),
+      retail: document.querySelectorAll('a[href*="martechtribe.com/blog"]').length + (/retail/i.test(document.body.textContent.replace(document.querySelector('.rx').textContent, '')) ? 1 : 0),
       small, primaries: [...document.querySelectorAll('.btn-dark, .btn-coral')].filter(visible).map((b) => Math.round(b.getBoundingClientRect().height)),
       // The cube is drawn frame by frame; only its labels' colour transitions show up here, so they are left out
       anims: document.getAnimations().filter((a) => !(a.effect && a.effect.target && a.effect.target.closest && a.effect.target.closest('.device-card'))).map((a) => (a.effect && a.effect.target && a.effect.target.classList && a.effect.target.classList.contains('clients-track')) ? 'client-strip' : (a.animationName || a.transitionProperty || 'unknown')),
@@ -556,14 +571,17 @@ async function homeChecks(page, vp) {
     e.map.ok && Math.abs(e.map.ratio - 16 / 9) < 0.01 && Math.abs(e.map.boxRatio - 16 / 9) < 0.01 && e.map.fit !== 'cover' &&
     /chiefmartec and MartechTribe/.test(e.map.alt), `${Math.round(e.map.box.w)}x${Math.round(e.map.box.h)}`);
   if (vp.width >= 1000) {
-    const share = e.copyBox.w / (e.copyBox.w + e.rcBox.w);
-    check(`${tag} evidence split about 40 / 60`, e.copyBox.r <= e.rcBox.l && share > 0.36 && share < 0.44, `${Math.round(share * 100)}%`);
+    check(`${tag} research introduction in two balanced columns, the explorer below it at the full content width`,
+      e.copyBox.r <= e.tellsBox.l && Math.abs(e.copyBox.w - e.tellsBox.w) < 2 && Math.abs(e.copyBox.t - e.tellsBox.t) <= 12 && e.introBox.b <= e.rxBox.t &&
+      Math.abs(e.rxBox.w - e.figuresW) < 1.5, `columns ${Math.round(e.copyBox.w)} / ${Math.round(e.tellsBox.w)}, explorer ${Math.round(e.rxBox.w)} of ${Math.round(e.figuresW)} px`);
   } else {
-    check(`${tag} evidence copy first, carousel second`, e.copyBox.b <= e.rcBox.t && e.rcBox.t - e.copyBox.b <= 64);
+    check(`${tag} research introduction first, then the explorer`, e.copyBox.b <= e.tellsBox.t + 1 && e.introBox.b <= e.rxBox.t && e.rxBox.t - e.introBox.b <= 72);
   }
 
-  const c = e.carousel, sc = APEX.scorecard;
-  check(`${tag} research carousel: four examples in order, marked up as a carousel`, c.roles && JSON.stringify(c.titles) === JSON.stringify(RC_TITLES), c.titles.join(' | '));
+  const c = e.explorer, sc = APEX.scorecard;
+  check(`${tag} research explorer: four named tabs at the top, four views in order, marked up as tabs with the first open`,
+    c.marked && c.tabsAbove && JSON.stringify(c.tabs) === JSON.stringify(RX_TABS) && JSON.stringify(c.titles) === JSON.stringify(RC_TITLES) &&
+    JSON.stringify(c.shown) === JSON.stringify([true, false, false, false]), `${c.tabs.join(' | ')}; ${c.titles.join(' | ')}`);
   check(`${tag} matrix: all ${APEX.retailers.length} retailers placed from the data, in their quadrant colours`, c.dots.length === APEX.retailers.length &&
     APEX.retailers.every((r) => c.dots.some((d) => d.q === r.quadrant && Math.abs(d.x - r.x) < 1 && Math.abs(d.y - r.y) < 1)) &&
     c.dots.every((d) => d.colour === QUAD_COLOURS[d.q]) && Math.abs(c.divider.x - APEX.dividers.x) < 0.5 && Math.abs(c.divider.y - APEX.dividers.y) < 0.5, `${c.dots.length} dots`);
@@ -583,18 +601,17 @@ async function homeChecks(page, vp) {
     c.quads.every((q) => q.icon === `#i-${q.q}` && q.iconDefined) &&
     Object.keys(QUAD_COLOURS).every((qq) => JSON.stringify(c.quads.find((q) => q.q === qq).names.slice().sort()) ===
       JSON.stringify(APEX.examples.filter((x) => x.quadrant === qq).map((x) => x.name).sort())), c.quads.map((q) => `${q.q}: ${q.names.join(' + ')}`).join(' | '));
-  if (vp.width > 640) check(`${tag} every example in the carousel is the same size`, new Set(c.slideHeights).size === 1, c.slideHeights.join(', '));
-  if (vp.width >= 1000) check(`${tag} research copy starts level with the top of the carousel card`, Math.abs(e.copyBox.t - e.rcBox.t) <= 2,
-    `${Math.round(e.copyBox.t - e.rcBox.t)} px`);
+  if (vp.width > 640) check(`${tag} every view in the explorer is the same size, so nothing below it moves`, new Set(c.viewHeights).size === 1, c.viewHeights.join(', '));
   const pts = (rows) => rows.map((r) => `${r[0]} +${r[1]}`);
   check(`${tag} score: ${sc.now} today and ${sc.possible} within reach, the fixes add up and the meter shows both`, c.head === `You are at ${sc.now}/100. You can reach ${sc.possible}/100.` &&
     JSON.stringify(c.fix.map((r) => `${r.name} ${r.pts}`)) === JSON.stringify(pts(sc.fix)) && JSON.stringify(c.strong.map((r) => `${r.name} ${r.pts}`)) === JSON.stringify(pts(sc.strong)) &&
     sc.fix.reduce((a, r) => a + r[1], 0) === sc.possible - sc.now && Math.abs(c.meter.now - sc.now / 100) < 0.01 && Math.abs(c.meter.gain - (sc.possible - sc.now) / 100) < 0.01 && c.meter.joined,
     `meter ${(c.meter.now * 100).toFixed(1)} + ${(c.meter.gain * 100).toFixed(1)}`);
-  check(`${tag} score areas carry plain icons, not technology logos; the only image in the carousel is the MartechMap`,
+  check(`${tag} score areas and tabs carry plain icons, not technology logos; the only image in the explorer is the MartechMap`,
     [...c.fix, ...c.strong].every((r) => /^#i-/.test(r.icon)) && c.iconsDefined && JSON.stringify(c.images) === JSON.stringify(['rc-map']), c.images.join(', '));
-  check(`${tag} carousel opens on the first example with its controls, the card sized to it and nothing spilling out`,
-    c.controls && c.dotCount === 4 && c.current === 0 && c.prevOff && !c.nextOff && c.fits && c.spill.length === 0, c.spill.join(', '));
+  check(`${tag} each of the first three views ends with a Next button naming the view after it, and nothing spills out of the panel`,
+    JSON.stringify(c.nexts) === JSON.stringify(RX_TABS.slice(1).map((n) => `Next ${n}`).concat([null])) && c.spill.length === 0,
+    c.nexts.join(' | ') + (c.spill.length ? '; spill: ' + c.spill.join(', ') : ''));
 
   const w = x.workshops;
   check(`${tag} workshops: See the opportunity. Know where to act., with the new support line`, w.h2 === HOME.workshopsH2 && w.lede === HOME.workshopsLede, w.lede);
@@ -614,7 +631,7 @@ async function homeChecks(page, vp) {
     JSON.stringify(it.groups[1].values) === JSON.stringify(WORKSHOPS[i].leave)), w.items.map((it) => it.groups.map((g) => g.values.join(' / ')).join(' + ')).join(' | '));
   check(`${tag} same order in both: name, title, description, quote, then the two lists last`, w.items.every((it) => it.listsLast &&
     JSON.stringify(it.order) === JSON.stringify(['h3', 'w-title', 'outcome', 'w-quote', 'w-lists'])), w.items.map((it) => it.order.join(' > ')).join(' | '));
-  check(`${tag} open columns, no cards, no images; the retail example only in the research carousel`, w.items.every((it) => it.card === 'rgba(0, 0, 0, 0) none 0px' && it.images === 0) && x.retail === 0);
+  check(`${tag} open columns, no cards, no images; the retail example only in the research explorer`, w.items.every((it) => it.card === 'rgba(0, 0, 0, 0) none 0px' && it.images === 0) && x.retail === 0);
   if (vp.width > 760) {
     check(`${tag} the two lists line up across the columns`, Math.abs(w.items[0].listsTop - w.items[1].listsTop) < 1, w.items.map((it) => Math.round(it.listsTop)).join(', '));
     check(`${tag} workshops side by side with one hairline`, w.items[1].box.l >= w.items[0].box.r - 1 && Math.abs(w.items[0].box.w - w.items[1].box.w) < 2 &&
@@ -654,49 +671,46 @@ async function homeChecks(page, vp) {
 }
 
 
-// The carousel moves only when asked: it waits, then the next button, a dot, the arrow keys and a swipe each
-// move one example, the dots follow, and the panel takes the height of the example in view
-async function carouselChecks(page, vp) {
+// The explorer changes only when asked: it waits, then a tab, the Next button and the arrow, Home and End keys each
+// open one view, mark its tab and carry focus with them; above 640 px the panel keeps one size throughout
+async function explorerChecks(page, vp) {
   const tag = `[home ${vp.name}]`;
   const state = () => page.evaluate(() => {
-    const rc = document.querySelector('.rc'), track = rc.querySelector('.rc-track');
-    const cur = [...rc.querySelectorAll('.rc-dot')].findIndex((d) => d.getAttribute('aria-current') === 'true');
-    const slide = rc.querySelectorAll('.rc-slide')[cur];
-    return { cur, at: Math.round(track.scrollLeft / track.clientWidth * 100) / 100, prev: rc.querySelector('.rc-prev').disabled, next: rc.querySelector('.rc-next').disabled,
-      fits: !!slide && Math.abs(track.getBoundingClientRect().height - slide.offsetHeight) < 1.5 };
+    const rx = document.querySelector('.rx'), tabs = [...rx.querySelectorAll('[role="tab"]')], views = [...rx.querySelectorAll('.rx-view')];
+    const a = document.activeElement;
+    return { tab: tabs.findIndex((tb) => tb.getAttribute('aria-selected') === 'true'),
+      shown: views.map((v, i) => (!v.hidden && getComputedStyle(v).visibility !== 'hidden' && v.offsetHeight > 0 ? i : -1)).filter((i) => i >= 0),
+      focus: !a ? '' : a.classList.contains('rx-tab') ? `tab ${tabs.indexOf(a) + 1}` : a.classList.contains('rx-view') ? `view ${views.indexOf(a) + 1}` : a.tagName,
+      height: Math.round(rx.getBoundingClientRect().height) };
   });
-  const settle = (i) => page.waitForFunction((n) => { const tr = document.querySelector('.rc-track'); return Math.abs(tr.scrollLeft - n * tr.clientWidth) < 2; }, i, { timeout: 3000 })
-    .then(() => page.waitForTimeout(350)).then(() => true, () => false);
-  await page.locator('.rc').scrollIntoViewIfNeeded();
+  const settle = () => page.waitForTimeout(350);
+  await page.locator('.rx').scrollIntoViewIfNeeded();
   const start = await state();
   await page.waitForTimeout(4000);
   const later = await state();
-  check(`${tag} the carousel never moves on its own`, start.cur === 0 && later.cur === 0 && later.at === 0 && later.prev && !later.next, JSON.stringify(later));
+  check(`${tag} the explorer never moves on its own`, start.tab === 0 && later.tab === 0 && JSON.stringify(later.shown) === '[0]', JSON.stringify(later));
   const steps = [];
-  await page.click('.rc-next'); await settle(1); steps.push(['next', 1, await state()]);
-  await page.click('.rc-dot >> nth=3'); await settle(3); steps.push(['dot 4', 3, await state()]);
-  await page.focus('.rc-track'); await page.keyboard.press('ArrowLeft'); await settle(2); steps.push(['arrow left', 2, await state()]);
-  await page.click('.rc-prev'); await settle(1); steps.push(['previous', 1, await state()]);
-  await page.evaluate(() => { const tr = document.querySelector('.rc-track'); tr.scrollTo({ left: 2 * tr.clientWidth, behavior: 'instant' }); });
-  await settle(2); steps.push(['swipe', 2, await state()]);
-  check(`${tag} next, previous, dots, arrow keys and a swipe each move one example, the dots follow and the card fits each`,
-    steps.every(([, want, st]) => st.cur === want && st.at === want && st.fits) && steps[1][2].next && !steps[1][2].prev,
-    steps.map(([how, , st]) => `${how} > ${st.cur + 1}${st.fits ? '' : ' (unfitted)'}`).join(', '));
-  // A narrower window (or a phone turned on its side) keeps the example in view in place
-  await page.setViewportSize({ width: vp.width - 120, height: vp.height }); await settle(2);
-  const narrower = await state();
-  await page.setViewportSize({ width: vp.width, height: vp.height }); await settle(2);
-  const restored = await state();
-  check(`${tag} the carousel stays on the same example when the window changes width`, narrower.cur === 2 && narrower.at === 2 && restored.cur === 2 && restored.at === 2,
-    `${JSON.stringify(narrower)} then ${JSON.stringify(restored)}`);
-  // Screenshots in a window tall enough for the tallest example, so the capture never resizes the page
-  await page.setViewportSize({ width: vp.width, height: Math.max(vp.height, 2400) });
+  await page.click('.rx-tab >> nth=3'); await settle(); steps.push(['tab 4', 3, null, await state()]);
+  await page.click('.rx-tab >> nth=0'); await settle(); steps.push(['tab 1', 0, null, await state()]);
+  await page.click('#rc-matrix .rx-next'); await settle(); steps.push(['next', 1, 'view 2', await state()]);
+  await page.focus('.rx-tab[aria-selected="true"]'); await page.keyboard.press('ArrowRight'); await settle(); steps.push(['arrow right', 2, 'tab 3', await state()]);
+  await page.keyboard.press('End'); await settle(); steps.push(['End', 3, 'tab 4', await state()]);
+  await page.keyboard.press('ArrowRight'); await settle(); steps.push(['arrow right from the last', 0, 'tab 1', await state()]);
+  await page.keyboard.press('ArrowLeft'); await settle(); steps.push(['arrow left from the first', 3, 'tab 4', await state()]);
+  await page.keyboard.press('Home'); await settle(); steps.push(['Home', 0, 'tab 1', await state()]);
+  check(`${tag} tabs, the Next button and the arrow, Home and End keys each open one view, mark its tab and carry focus with it`,
+    steps.every(([, want, focus, st]) => st.tab === want && JSON.stringify(st.shown) === JSON.stringify([want]) && (!focus || st.focus === focus)),
+    steps.map(([how, , , st]) => `${how} > ${st.tab + 1} (${st.focus})`).join(', '));
+  if (vp.width > 640) check(`${tag} the explorer keeps one size whichever view is open`, steps.every(([, , , st]) => st.height === start.height),
+    `${start.height} px; ${steps.map(([, , , st]) => st.height).join(', ')}`);
+  // Screenshots in a window tall enough for the whole panel, so the capture never resizes the page
+  await page.setViewportSize({ width: vp.width, height: Math.max(vp.height, 2000) });
   for (let i = 0; i < 4; i++) {
-    await page.click(`.rc-dot >> nth=${i}`); await settle(i);
-    await page.locator('.rc').screenshot({ path: path.join(SHOTS, `carousel-${vp.name}-${i + 1}.png`) });
+    await page.click(`.rx-tab >> nth=${i}`); await settle();
+    await page.locator('.rx').screenshot({ path: path.join(SHOTS, `explorer-${vp.name}-${i + 1}.png`) });
   }
   await page.setViewportSize({ width: vp.width, height: vp.height });
-  await page.click('.rc-dot >> nth=0'); await settle(0);
+  await page.click('.rx-tab >> nth=0'); await settle();
 }
 
 /* Search and sharing (version 2.12.1, 16 October 2026): each page names itself for Google and for link
@@ -758,32 +772,41 @@ async function searchChecks(page, base) {
   check('[search] logo images are at most 72 px high, enough for a 2x screen and no heavier', tall.length === 0, tall.join(', ') || 'all within 72 px');
 }
 
-/* The research story on the screens South African visitors use most (StatCounter, desktop, 2026): at
-   1920 x 1080, 1536 x 864 and a 1440 x 900 Mac, the heading, introduction, example and its controls are
-   all in one window once the section reaches the top. Each viewport is the screen less the browser. */
-const FIT_SCREENS = [['1920 x 1080', 1920, 940], ['1536 x 864', 1536, 730], ['1440 x 900', 1440, 790]];
+/* The research explorer on the screens South African visitors use most (StatCounter, desktop, 2026): at 1920 x 1080,
+   1536 x 864, a 1440 x 900 Mac and 1366 x 768, the tabs, the open view and its Next button are all in one window once
+   the panel reaches the top, with room to spare. Each viewport is the screen less the browser. */
+const FIT_SCREENS = [['1920 x 1080', 1920, 940], ['1536 x 864', 1536, 730], ['1440 x 900', 1440, 790], ['1366 x 768', 1366, 630]];
 async function fitChecks(browser, base) {
   const seen = [];
   for (const [name, width, height] of FIT_SCREENS) {
     const page = await browser.newPage({ viewport: { width, height } });
     await page.goto(base, { waitUntil: 'load' });
     await page.evaluate(() => document.fonts.ready);
-    const m = await page.evaluate(() => {
-      const r = (s) => document.querySelector(s).getBoundingClientRect();
-      const h2 = r('#evidence-title'), rc = r('.rc'), ctl = r('.rc-controls'), copy = r('.evidence-copy');
-      return Math.round(Math.max(ctl.bottom, copy.bottom) - Math.min(h2.top, rc.top));
-    });
+    const m = await page.evaluate(() => Math.round(document.querySelector('.rx').getBoundingClientRect().height));
     seen.push([name, height, m]);
-    if (width === 1536) {
+    if (width === 1536 || width === 1366) {
       // An instant jump: the page's own smooth scrolling would catch the capture mid way
-      await page.evaluate(() => { const el = document.querySelector('#evidence-title'); window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 24, behavior: 'instant' }); });
+      await page.evaluate(() => { const el = document.querySelector('.rx'); window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 24, behavior: 'instant' }); });
       await page.waitForTimeout(200);
-      await page.screenshot({ path: path.join(SHOTS, 'research-fit-1536x864.png') });
+      await page.screenshot({ path: path.join(SHOTS, `research-fit-${name.replace(/ /g, '')}.png`) });
     }
     await page.close();
   }
-  check('[fit] the research story, heading to carousel controls, fits one window on the most used desktop screens',
+  check('[fit] the research explorer, tabs to foot, fits one window on the most used desktop screens, 1366 x 768 included',
     seen.every(([, h, m]) => m <= h - 24), seen.map(([n, h, m]) => `${n}: ${m} of ${h} px`).join(', '));
+  // Without JavaScript every view shows in turn, and the tabs and Next buttons, which would do nothing, stay hidden
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
+  const page = await ctx.newPage();
+  await page.goto(base, { waitUntil: 'load' });
+  const nj = await page.evaluate(() => {
+    const views = [...document.querySelectorAll('.rx-view')];
+    return { tabs: document.querySelector('.rx-tabs').hidden && document.querySelector('.rx-tabs').getBoundingClientRect().height === 0,
+      next: [...document.querySelectorAll('.rx-next')].every((b) => b.getBoundingClientRect().height === 0),
+      views: views.map((v) => v.offsetHeight > 0 && getComputedStyle(v).visibility === 'visible'),
+      inTurn: views.every((v, i) => i === 0 || v.getBoundingClientRect().top >= views[i - 1].getBoundingClientRect().bottom) };
+  });
+  check('[no script] every research view shows in turn, with no tabs or Next buttons that would do nothing', nj.tabs && nj.next && nj.views.every(Boolean) && nj.inTurn, JSON.stringify(nj));
+  await ctx.close();
 }
 
 async function fillContact(page, entry) {
@@ -967,7 +990,7 @@ async function apiChecks() {
     await pageChecks(page, `[home ${vp.name}]`, { sizing });
     await loadImages(page);
     await homeChecks(page, vp);
-    if (vp.name === 'desktop' || vp.name === 'mobile') await carouselChecks(page, vp);
+    if (vp.name === 'desktop' || vp.name === 'mobile') await explorerChecks(page, vp);
 
     // Rune breathing: it runs by default while on screen and drifts far enough to see at this width
     await page.locator('.rune-stage').scrollIntoViewIfNeeded();
@@ -1031,8 +1054,7 @@ async function apiChecks() {
           await page.screenshot({ path: path.join(SHOTS, 'focus-header.png'), clip: { x: 0, y: 0, width: 1440, height: 110 } });
         }
       }
-      const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', 'Where you sit against your i', 'Slide 1: Where you sit', 'Slide 2: What each position ',
-        'Slide 3: What to fix first', 'Slide 4: The whole market', 'Next example', 'Let’s Talk',
+      const expected = ['Skip to content', 'Growth Lab', 'Let’s Talk', 'Where you sit', 'Next What each position mean', 'Let’s Talk',
         'Growth Lab, back to top', 'Privacy', 'Website terms', 'Growth Lab on LinkedIn (open'];
       check('[home desktop] keyboard order follows the page and every stop shows a ring', stops.every((s) => s.ring) &&
         JSON.stringify(stops.map((s) => s.label)) === JSON.stringify(expected), stops.map((s) => s.label + (s.ring ? '' : ' (no ring)')).join(' > '));
@@ -1352,13 +1374,12 @@ async function apiChecks() {
     const narrow = await sp.evaluate(() => {
       const vw = document.documentElement.clientWidth;
       const outside = [...document.querySelectorAll('body *')].filter((el) => {
-        // Examples waiting to the side of the carousel are scrolled out of view, not outside the screen
-        if (el.closest('.rune-stage, .sr-only, .skip, .clients-viewport, .rc-track')) return false;
+        if (el.closest('.rune-stage, .sr-only, .skip, .clients-viewport')) return false;
         const r = el.getBoundingClientRect();
         return r.width > 0 && (r.right > vw + 0.5 || r.left < -0.5);
       }).map((el) => `${el.tagName}.${el.className}`).slice(0, 6);
-      const tb = document.querySelector('.rc-track').getBoundingClientRect();
-      for (const el of document.querySelectorAll('.rc-slide:first-child *')) {
+      const tb = document.querySelector('.rx').getBoundingClientRect();
+      for (const el of document.querySelectorAll('#rc-matrix *')) {
         const r = el.getBoundingClientRect();
         if (r.width > 0 && (r.right > tb.right + 0.5 || r.left < tb.left - 0.5) && outside.length < 6) outside.push(`${el.tagName} in the first example`);
       }

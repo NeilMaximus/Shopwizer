@@ -46,6 +46,10 @@
   <symbol id="i-overbuilt" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 7.5l9 4.5 9-4.5L12 3Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/></g></symbol>
   <symbol id="i-precision" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="3.5"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4"/></g></symbol>
   <symbol id="i-underbuilt" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="15" width="17" height="5.5" rx="1.5"/><rect x="3.5" y="4" width="17" height="8" rx="1.5" stroke-dasharray="2.2 2.4"/></g></symbol>
+  <symbol id="i-sit" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3.5v16.5h16.5"/><circle cx="9" cy="14.5" r="1.6"/><circle cx="13.5" cy="10" r="1.6"/><circle cx="18" cy="6" r="1.6"/></g></symbol>
+  <symbol id="i-positions" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7.5" height="7.5" rx="2"/><rect x="13" y="3.5" width="7.5" height="7.5" rx="2"/><rect x="3.5" y="13" width="7.5" height="7.5" rx="2"/><rect x="13" y="13" width="7.5" height="7.5" rx="2"/></g></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 17a8.5 8.5 0 0 1 17 0"/><path d="M12 17l4.5-5"/><circle cx="12" cy="17" r="1.3"/></g></symbol>
+  <symbol id="i-market" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M3.5 10.5h17M9.5 5v14M15 10.5V19"/></g></symbol>
   <symbol id="i-target" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></g><circle cx="12" cy="12" r="1.4" fill="currentColor"/></symbol>
   <symbol id="i-grow" viewBox="0 0 1200 1200"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path stroke-width="64" d="M324 900V804M516 900V708M708 900V612M900 900V516"/><path stroke-width="48" d="M288 588L480 408L600 504L912 252M768 252H912V396"/></g></symbol>
 </svg>
@@ -202,13 +206,13 @@
   <section class="plain evidence" id="evidence" aria-labelledby="evidence-title">
     <div class="wrap">
       <div class="plain-body">
-        <div class="evidence-grid">
+        <div class="evidence-intro">
           <div class="evidence-copy">
             <h2 id="evidence-title">What 1,634 real martech stacks can tell you about yours.</h2>
-            <div class="lede">
-              <p class="lede-lead">Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses.</p>
-              <p>Your stack, your spend and your plans, measured against how the top performers in your industry actually built theirs.</p>
-            </div>
+            <p class="lede lede-lead">Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses.</p>
+          </div>
+          <div class="evidence-tells">
+            <p class="lede">Your stack, your spend and your plans, measured against how the top performers in your industry actually built theirs.</p>
             <h3 class="list-label">What it tells you</h3>
             <ul class="benefits" role="list">
               <li>Where you sit against the top performers in your industry</li>
@@ -216,14 +220,25 @@
               <li>What the outperformers invested in that you have not</li>
             </ul>
           </div>
-          <!-- Research carousel: MartechTribe's Apex Martech Matrix retail example rebuilt in Growth Lab colours,
-               then the MartechMap. It moves only when the visitor asks. Rules: DESIGN_SYSTEM.md, section 11.
-               Data: config/apex-retail-example.json; sources: SOURCES.md -->
-          <div class="rc" role="region" aria-roledescription="carousel" aria-label="An example of what the benchmark shows">
-            <div class="rc-track" tabindex="0">
-              <div class="rc-slide" id="rc-matrix" role="group" aria-roledescription="slide" aria-label="1 of 4: Where you sit">
+        </div>
+        <!-- Research explorer (version 2.13): MartechTribe's Apex Martech Matrix retail example rebuilt in Growth Lab
+             colours, then the MartechMap, as four named views under tabs at the top of one panel. It changes only
+             when the visitor asks; without JavaScript every view shows in turn. Rules: DESIGN_SYSTEM.md, section 11.
+             Data: config/apex-retail-example.json; sources: SOURCES.md -->
+        <div class="rx" id="research-example">
+          <div class="rx-tabs" role="tablist" aria-label="An example of what the benchmark shows" hidden>
+            <button type="button" class="rx-tab" role="tab" id="rx-tab-1" aria-controls="rc-matrix" aria-selected="true"><span class="rx-ico"><svg aria-hidden="true" focusable="false"><use href="#i-sit"/></svg></span>Where you sit</button>
+            <button type="button" class="rx-tab" role="tab" id="rx-tab-2" aria-controls="rc-positions" aria-selected="false" tabindex="-1"><span class="rx-ico"><svg aria-hidden="true" focusable="false"><use href="#i-positions"/></svg></span>What each position means</button>
+            <button type="button" class="rx-tab" role="tab" id="rx-tab-3" aria-controls="rc-score" aria-selected="false" tabindex="-1"><span class="rx-ico"><svg aria-hidden="true" focusable="false"><use href="#i-gauge"/></svg></span>Your Apex Score</button>
+            <button type="button" class="rx-tab" role="tab" id="rx-tab-4" aria-controls="rc-map" aria-selected="false" tabindex="-1"><span class="rx-ico"><svg aria-hidden="true" focusable="false"><use href="#i-market"/></svg></span>The whole market</button>
+          </div>
+          <div class="rx-views">
+            <div class="rx-view" id="rc-matrix">
+              <div class="rx-text">
                 <h3 class="rc-title">Where you sit against your industry</h3>
                 <p class="rc-lede">Each retailer is placed by its martech presence, what its technology can do, and its martech performance, how well its team uses it.</p>
+              </div>
+              <div class="rx-visual">
                 <div class="matrix" role="img" aria-label="Retail example, 25 retailers placed by martech presence and martech performance, in four groups. Amazon is a Powerhouse, IKEA and Sainsbury’s are Overbuilt, H&amp;M is Precision and Fossil is Underbuilt.">
                   <p class="mx-axis mx-axis-y" aria-hidden="true"><svg class="mx-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 13.5V2.5M3.5 7 8 2.5 12.5 7"/></svg>Martech presence</p>
             <!-- apex-matrix:start -->
@@ -268,25 +283,36 @@
             <!-- apex-matrix:end -->
                   <p class="mx-axis mx-axis-x" aria-hidden="true">Martech performance<svg class="mx-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></p>
                 </div>
-                <p class="rc-credit">Retail example of 25 retailers. Apex Martech Matrix by MartechTribe and the CMO Council.</p>
               </div>
-              <div class="rc-slide" id="rc-positions" role="group" aria-roledescription="slide" aria-label="2 of 4: What each position means">
+              <p class="rc-credit">Retail example of 25 retailers. Apex Martech Matrix by MartechTribe and the CMO Council.</p>
+              <button type="button" class="rx-next" aria-controls="rc-positions" hidden><span class="rx-next-text"><small>Next</small> What each position means</span><span class="rx-arrow" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span></button>
+            </div>
+            <div class="rx-view" id="rc-positions">
+              <div class="rx-text">
                 <h3 class="rc-title">What each position means</h3>
+                <p class="rc-lede">Laid out as on the chart, with the retailers from this example in each.</p>
+              </div>
+              <div class="rx-visual">
                 <ul class="quads" role="list">
                   <li class="quad"><p class="quad-tag"><span class="q-icon q-overbuilt"><svg aria-hidden="true" focusable="false"><use href="#i-overbuilt"/></svg></span>Overbuilt</p><p class="quad-what">More technology than the team can use</p><p class="quad-why">Better skills and processes would unlock more from what is already owned.</p><p class="quad-eg"><span class="eg-names"><span>IKEA</span><span>Sainsbury’s</span></span></p></li>
                   <li class="quad"><p class="quad-tag"><span class="q-icon q-powerhouse"><svg aria-hidden="true" focusable="false"><use href="#i-powerhouse"/></svg></span>Powerhouse</p><p class="quad-what">Broad technology, used well</p><p class="quad-why">The investment pattern closely matches the retail outperformers.</p><p class="quad-eg"><span class="eg-names"><span>Amazon</span></span></p></li>
                   <li class="quad"><p class="quad-tag"><span class="q-icon q-underbuilt"><svg aria-hidden="true" focusable="false"><use href="#i-underbuilt"/></svg></span>Underbuilt</p><p class="quad-what">Behind on both</p><p class="quad-why">Broader functionality, with the skills and processes to use it, would close the gap.</p><p class="quad-eg"><span class="eg-names"><span>Fossil</span></span></p></li>
                   <li class="quad"><p class="quad-tag"><span class="q-icon q-precision"><svg aria-hidden="true" focusable="false"><use href="#i-precision"/></svg></span>Precision</p><p class="quad-what">Fewer tools, used very well</p><p class="quad-why">Creating value from execution today; broader functionality could add more.</p><p class="quad-eg"><span class="eg-names"><span>H&amp;M</span></span></p></li>
                 </ul>
-                <p class="rc-credit">Positions from the same retail example.</p>
               </div>
-              <div class="rc-slide" id="rc-score" role="group" aria-roledescription="slide" aria-label="3 of 4: What to fix first">
+              <p class="rc-credit">Positions from the same retail example.</p>
+              <button type="button" class="rx-next" aria-controls="rc-score" hidden><span class="rx-next-text"><small>Next</small> Your Apex Score</span><span class="rx-arrow" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span></button>
+            </div>
+            <div class="rx-view" id="rc-score">
+              <div class="rx-text">
                 <h3 class="rc-title">Your Apex Score, and what to fix first</h3>
                 <ul class="rc-points" role="list">
                   <li>A score out of 100 against your industry’s top performers</li>
                   <li>The areas that would lift it most, and by how much</li>
                   <li>Where you are already strong, so you do not overspend</li>
                 </ul>
+              </div>
+              <div class="rx-visual">
                 <div class="score" style="--now: 63%; --gain: 24%">
                   <p class="score-head"><span>You are at <strong>63</strong>/100.</span> <span>You can reach <strong>87</strong>/100.</span></p>
                   <div class="meter" aria-hidden="true"><span class="meter-now"></span><span class="meter-gain"></span></div>
@@ -310,29 +336,22 @@
                     </div>
                   </div>
                 </div>
-                <p class="rc-credit">Illustrative example, based on the Apex Martech Score by MartechTribe.</p>
               </div>
-              <div class="rc-slide" id="rc-map" role="group" aria-roledescription="slide" aria-label="4 of 4: The whole market">
+              <p class="rc-credit">Illustrative example, based on the Apex Martech Score by MartechTribe.</p>
+              <button type="button" class="rx-next" aria-controls="rc-map" hidden><span class="rx-next-text"><small>Next</small> The whole market</span><span class="rx-arrow" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span></button>
+            </div>
+            <div class="rx-view" id="rc-map">
+              <div class="rx-text">
                 <h3 class="rc-title">The whole market your stack is chosen from</h3>
                 <p class="rc-lede">Every solution in the market, analysed independently, so you see exactly how your stack performs.</p>
+              </div>
+              <div class="rx-visual">
                 <figure class="map">
-                  <img src="assets/media/martechmap-2026.jpg" srcset="assets/media/martechmap-2026-800.jpg 800w, assets/media/martechmap-2026.jpg 1600w" sizes="(min-width: 1240px) 620px, (min-width: 1000px) 52vw, calc(100vw - 40px)" width="1600" height="900" loading="lazy" decoding="async" alt="MartechMap 2026, the marketing technology landscape by chiefmartec and MartechTribe: thousands of product logos grouped by category.">
+                  <img src="assets/media/martechmap-2026.jpg" srcset="assets/media/martechmap-2026-800.jpg 800w, assets/media/martechmap-2026.jpg 1600w" sizes="(min-width: 1240px) 660px, (min-width: 1000px) 54vw, calc(100vw - 72px)" width="1600" height="900" loading="lazy" decoding="async" alt="MartechMap 2026, the marketing technology landscape by chiefmartec and MartechTribe: thousands of product logos grouped by category.">
                   <figcaption>
                     <p class="map-credit">Research: MartechTribe. MartechMap © chiefmartec and MartechTribe.</p>
                   </figcaption>
                 </figure>
-              </div>
-            </div>
-            <div class="rc-controls" hidden>
-              <div class="rc-dots" role="group" aria-label="Choose an example">
-                <button type="button" class="rc-dot" aria-label="Slide 1: Where you sit" aria-current="true"></button>
-                <button type="button" class="rc-dot" aria-label="Slide 2: What each position means"></button>
-                <button type="button" class="rc-dot" aria-label="Slide 3: What to fix first"></button>
-                <button type="button" class="rc-dot" aria-label="Slide 4: The whole market"></button>
-              </div>
-              <div class="rc-arrows">
-                <button type="button" class="rc-prev" aria-label="Previous example"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg></button>
-                <button type="button" class="rc-next" aria-label="Next example"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 3.5 10.5 8 6 12.5"/></svg></button>
               </div>
             </div>
           </div>

@@ -69,9 +69,9 @@ Copy edits made for house style only: "prioritise" (supplied "prioritize"), a co
 
 Version 2.4 had dropped the method sentence (the Apex Martech Score, GrowTechHQ and MartechTribe's benchmark research) from the Technology Strategy detail; version 2.12 brings it back in Neil's new description.
 
-## The Apex Martech Matrix (research carousel)
+## The Apex Martech Matrix (research explorer)
 
-Back on the page since 16 October 2026 (version 2.12, Neil), rebuilt in Growth Lab colours as the first three examples of the research carousel and as WhatsApp images (`share/whatsapp/`). Version 2.4 had removed it.
+Back on the page since 16 October 2026 (version 2.12, Neil), rebuilt in Growth Lab colours as the first three views of the research explorer (a carousel until version 2.13) and as WhatsApp images (`share/whatsapp/`). Version 2.4 had removed it.
 
 - **Source.** MartechTribe's Apex Martech Matrix, developed with the CMO Council, retail industry example. Neil supplied three images on 16 October 2026: the matrix chart, the four company cards (Amazon, Zalando, Chalhoub Group, Bellavie with their Apex Scores) and an example Apex Martech Score output ("75/100, can increase to 87/100", with "Fix these areas" and "Doing great here"). MartechTribe's article: https://martechtribe.com/blog/there-is-no-best-in-class-technology-its-official (caption there: "The Apex Martech Matrix, developed by MartechTribe in collaboration with the CMO Council. Retail Industry example."). The network here blocks martechtribe.com, so the article was not re-read on 16 October 2026.
 - **Data.** `config/apex-retail-example.json` holds every number the page shows. The 25 dot centres were measured from the chart image (plot area 1,154 x 1,066 px; single dots by colour detection, overlapping dots by eye, within about 2 px) and stored as percentages of the plot, with each retailer's quadrant taken from the chart's own colours and the dividers at 50.0 and 48.97 percent. Names come from the chart's numbered legend. Nothing is interpolated or invented: a dot that cannot be read is left out, never guessed.
