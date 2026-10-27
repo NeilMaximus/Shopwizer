@@ -43,7 +43,7 @@ const HOME = {
   waysH2: 'Four ways to work with Growth Lab',
   evidenceH2: 'What 1,634 real martech stacks can tell you about yours.',
   evidenceLede: 'Through MartechTribe, Growth Lab brings the world’s largest independent benchmark of real martech stacks to South African businesses. See how your technology compares with relevant peers, where you could get more from existing platforms and which investments deserve priority.',
-  figures: [['1,634', 'real stacks benchmarked. How companies like yours actually built theirs.'],
+  figures: [['1,634', 'real stacks in the research base. How companies like yours actually built theirs.'],
     ['15,505', 'solutions analysed. The whole market, including the ones your vendor does not mention.'],
     ['1,345', 'features indexed daily across 49 categories. Current to the day, not last year’s report.'],
     ['9 years', 'of independent research.']],
@@ -76,7 +76,7 @@ const WAYS = [
     look: ['Where the time goes from brief to launch', 'The content you produce most', 'The brand and compliance rules it must pass'] },
   { id: 'decide', name: 'Decide', icon: '#i-decide', tag: 'Know what to buy, renew or replace before you sign', offer: 'Martech Strategy and Investment Case',
     get: 'A peer benchmark, your investments ranked by return, a roadmap and a case your executive can sign off.',
-    look: ['Your stack against 1,634 benchmarked stacks', 'Gaps, overlaps and spend across your platforms', 'The use cases that would earn the most'] },
+    look: ['Your stack against 988 stacks in the Apex benchmark', 'Gaps, overlaps and spend across your platforms', 'The use cases that would earn the most'] },
 ];
 const WORKSHOPS = [
   { name: 'Technology Strategy Workshop', icon: '#i-route', colour: 'rgb(255, 78, 78)', title: 'Benchmark your stack. Prioritise your investments.',
@@ -753,7 +753,7 @@ async function searchChecks(page, base) {
       og: Object.fromEntries(['og:type', 'og:site_name', 'og:locale', 'og:title', 'og:description', 'og:url', 'og:image', 'og:image:width', 'og:image:height', 'og:image:alt'].map((k) => [k, meta(k)])),
       card: meta('twitter:card'), ld, robots: meta('robots'), h1: document.querySelectorAll('h1').length };
   }));
-  const pages = [['', SITE_URL, 'Make Your Martech Pay | Growth Lab'], ['contact.html', SITE_URL + 'contact.html', 'Contact Growth Lab']];
+  const pages = [['', SITE_URL, 'Martech Consultancy & Stack Benchmarking South Africa | Growth Lab'], ['contact.html', SITE_URL + 'contact.html', 'Contact Growth Lab']];
   for (const [url, canonical, title] of pages) {
     const h = await head(url);
     const tag = `[search ${url || 'home'}]`;
@@ -787,6 +787,10 @@ async function searchChecks(page, base) {
   check('[search] the legal pages stay out of search results and logo images are cached for a day',
     rule('/privacy.html') === 'X-Robots-Tag: noindex, nofollow' && rule('/terms.html') === 'X-Robots-Tag: noindex, nofollow' &&
     /max-age=86400/.test(rule('/assets/(clients|brands|platforms)/(.*)')), rule('/assets/(clients|brands|platforms)/(.*)'));
+  // The Webflow-era addresses Google still had indexed on 27 October 2026 go home with a 301, not a 404
+  const legacy = ['/about', '/case-studies-tech/cover-compare', '/case-studies-tech/sanalm-investments'];
+  check('[search] the old indexed addresses redirect home with a 301',
+    JSON.stringify((vercel.redirects || []).map((r) => [r.source, r.destination, r.statusCode])) === JSON.stringify(legacy.map((s) => [s, '/', 301])), JSON.stringify(vercel.redirects));
   // Logo files no larger than they are ever shown: 72 px covers the tallest logo (30 px) on a 2x screen
   const tall = [];
   for (const dir of ['clients', 'brands', 'platforms']) {

@@ -1,5 +1,22 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/about",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/case-studies-tech/cover-compare",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/case-studies-tech/sanalm-investments",
+      "destination": "/",
+      "statusCode": 301
+    }
+  ],
   "headers": [
     {
       "source": "/assets/fonts/(.*)",
